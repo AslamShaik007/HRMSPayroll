@@ -1,0 +1,196 @@
+{% extends 'payroll/base/base.html' %}
+{% load static %}
+
+{% block main_content%}
+    
+    <div class="container-fluid">
+           <div class="block-header">
+             <div class="pb-3">
+                 <div class="header">
+                     <ul class="nav nav-tabs2 text-center">
+                         <li class="nav-item px-0" style="width: 20%; margin-left: 20px; margin-right: 20px;"><span class="my_circleBtn">1</span><a class="nav-link  pt-3 pb-3  pl-4 {% if activeFor == 'listing_tickets' %}{{'active show'}}{% else %}{{''}}{% endif %}" data-toggle="tab" id="ESI_listtypes" href="#l_ESITypes" onclick="location.href='/qxbox{% url 'support:listing_ticketapi' %}'">Ticket Listing</a></li>
+                         <li class="nav-item px-0" style="width: 20%; margin-left: 20px; margin-right: 20px;"><span class="my_circleBtn">2</span><a class="nav-link pt-3 pb-3 pl-4 {% if activeFor == 'create_ticket' %}{{'active show'}}{% else %}{{''}}{% endif %}" data-toggle="tab" id="EPF_listtypes" href="#l_EPF_Types" onclick="location.href='/qxbox{% url 'support:ticketapi_create' %}'">Create Ticket</a></li>
+                     </ul>
+                     <!-- <li class="nav-item"><a class="nav-link active show" data-toggle="tab" id="departlisttypes" href="#l_departtypes">Departments</a></li> -->
+                 </div>
+             </div>
+ 
+             <div class="row clearfix pt-4">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="row pb-5 row">
+                            <div class="col-md-4 col-sm-12">
+                                <h1 class="ico_head" style="
+                                font-size: large;
+                            "><i class="icon-grid"></i> Ticket Listing </h1>
+                            </div>
+                            {% comment %} <div class="col-md-8 col-sm-12 text-right">
+                                <button type="button" class="btn addBtn mr-2" data-toggle="modal" data-target="#addDepartmentModal">Add Department</button>                        
+                                <a href="javascript:void(0);" class="full-screen"><i class="icon-frame"></i></a>
+                            </div> {% endcomment %}
+                            <div class="col-md-6 col-sm-12 text-right hidden-xs"></div>
+                        </div>
+                     
+                        <div class="body shadow-lg">
+                            <div class="tab-content mt-0">
+                                <div class="tab-pane show active" id="l_departtypes">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-custom spacing5 mb-0" id="deptTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>S No.</th> 
+                                                    <th>Ticket ID</th>
+                                                    <th>Title</th>
+                                                    <th>Category</th>
+                                                    <th>Description</th>
+                                                    <th>Organization Name</th>
+                                                    <th>Comments</th>
+                                                    <th>Rised By</th>
+                                                    <th>Resolved By</th>
+                                                    <th>Created At</th>
+                                                    <th>Ticket Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                {% for listing in data %}
+
+                                                    <tr>
+                                                        <td>{{ forloop.counter }}</td>                                                    
+                                                        <td>{{ listing.ticket_id }}</td>                                                    
+                                                        <td>{{ listing.title | title }}</td>  
+
+                                                        <td>
+                                                            {% if listing.category and listing.category == 'billingissue' %}
+                                                                {{ 'Billing Issue' }}
+                                                            {% elif listing.category and listing.category == 'accessissue' %}  
+                                                                {{ 'Access Issue' }}  
+                                                            {% elif listing.category and listing.category == 'payrollissue' %}   
+                                                                {{ 'Payroll Issue' }} 
+                                                            {% endif %}    
+                                                        </td>  
+
+                                                        <td>{{ listing.description }}</td>                                                    
+                                                        <td>{{ listing.organization__name | title }}</td>                                                    
+                                                        <td>{{ listing.comments }}</td>                                                    
+                                                        <td>{{ listing.raised_by.name | title }}</td>                                                    
+                                                        <td>{{ listing.resolved_by.name | title }}</td>                                                    
+                                                        <td>{{ listing.created_at|date:"M d, Y" }}</td>                                                    
+                                                        <td>
+
+                                                            {% if listing.status and listing.status == 'pen' %}
+                                                                {{ 'Pending' }}
+                                                            {% elif listing.status and listing.status == 'res' %}  
+                                                                {{ 'Resolved' }}  
+                                                            {% elif listing.status and listing.status == 'inv' %}   
+                                                                {{ 'Invalid' }} 
+                                                            {% elif listing.status and listing.status == 'pro' %}   
+                                                                {{ 'Processing' }} 
+                                                            {% endif %} 
+
+                                                            {% comment %} <select onchange="changeStatus('{{listing.ticket_id}}',this.value);" id="ticket_status" name="ticket_status" class="multiselect multiselect-custom single-selection">
+                                                                <option {% if listing.status == '' %}{{'selected'}}{% else %}{{''}}{% endif %} value="">Select Ticket Status</option>
+                                                                <option {% if listing.status == 'pen' %}{{'selected'}}{% else %}{{''}}{% endif %} value="pen" >Pending</option>
+                                                                <option {% if listing.status == 'res' %}{{'selected'}}{% else %}{{''}}{% endif %} value="res" >Resolved</option>
+                                                                <option {% if listing.status == 'inv' %}{{'selected'}}{% else %}{{''}}{% endif %} value="inv" >Invalid</option>
+                                                                <option {% if listing.status == 'pro' %}{{'selected'}}{% else %}{{''}}{% endif %} value="pro" >Processing</option>
+                                                            </select> {% endcomment %}
+                                                        </td>                                                                                                       
+                                                    </tr>
+
+                                                {% endfor %} 
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                              
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+{% endblock main_content %}
+
+{% block js %}
+
+<script type="text/javascript">
+    function changeStatus(baseId,ticket_status){
+
+        if(ticket_status != ''){
+      
+            var csrfmiddlewaretoken = "{{csrf_token}}";
+            // Send the data using post
+            $.ajax({
+                type: "POST",
+                url: "{% url 'support:ticketapi_auto_update' %}",
+                headers: {
+                    "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                },
+                data: {"status" : ticket_status, "ticket_id":baseId, 'csrfmiddlewaretoken':csrfmiddlewaretoken },
+                dataType : 'json',
+                beforeSend:function(){
+                    return confirm("Are you sure! Want to change the Status?");
+                },
+                success: function(result){
+                    console.log(result);
+                    {% comment %} var result = $.parseJSON(response); {% endcomment %}
+                    
+                    if((result.response).trim() == 'success' && result.msg == ''){
+                        swal({   
+                            title:"Success",
+                            text: "Status has been changed successfully",  
+                            type: "success",
+                            confirmButtonColor: "#007bff",
+                            confirmButtonText: "Ok",
+                            closeOnConfirm: true  
+                        },function() { 
+                            location.reload();
+                        });
+                    }else if(result.msg != ''){
+                        swal({ 
+                            title: (result.title).trim(),
+                            text: (result.msg).trim(), 
+                            type: (result.type).trim(),
+                            confirmButtonColor: "#007bff",
+                            confirmButtonText: "Ok",
+                            closeOnConfirm: true  
+                        },function() { 
+                            location.reload();
+                        });
+                    }else{
+                        swal({   
+                            title:"Error",
+                            text: "Something went wrong! Please try after some time.",  
+                            type: "error",
+                            confirmButtonColor: "#007bff",
+                            confirmButtonText: "Ok",
+                            closeOnConfirm: true  
+                        },function() { 
+                            location.reload();
+                        });
+                    }
+                },
+                error:function(xhr, status, err) {
+                    console.log(xhr);
+                    console.log(status);
+                    alert('Error - '+err);
+                }
+            });
+        }else{
+            swal({   
+                title:"Required",
+                text: "Please select status",  
+                type: "info",
+                confirmButtonColor: "#007bff",
+                confirmButtonText: "Ok",
+                closeOnConfirm: true  
+            },function() { 
+                location.reload();
+            });
+        }
+    }
+</script>
+
+{% endblock js %}

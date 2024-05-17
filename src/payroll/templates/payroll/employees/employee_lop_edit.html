@@ -1,0 +1,209 @@
+{% extends 'payroll/base/base.html' %}
+
+
+{% block css %}
+
+{% endblock %}
+
+{% block main_content %}
+
+<div class="container-fluid">
+
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+            <h1 class="ico_head"><i class="icon-users"></i>Employee LOP Details</h1>
+            </div>
+        </div>
+        <!-- <div class="row clearfix">
+            <div class="col-md-6 col-sm-12 d-flex mt-3 align-items-center">
+                <div><img src="./assets/images/xs/avatar2.jpg"   title="" alt="" class="w35 h35 rounded" ></div>
+                <div class="ml-2">
+                    <h5 class="mb-0"><strong>admintest 1 admin1 admin2</strong> </h5>
+                    <span>Development Team <span class="badge badge-warning">EMP ID:-0000</span></span>
+                </div>
+            </div>
+        </div> -->
+    </div>
+    <div class="row clearfix">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <!-- <div class="header">
+                    <ul class="header-dropdown dropdown">
+                        <li><a href="javascript:void(0);" class="full-screen"><i class="icon-frame"></i></a></li>
+                    </ul>
+                </div> -->
+                <div class="body shadow border-0">
+                    <div class="tab-content">
+                        <div class="tab-pane show active" id="bank_details">
+                            <div class="card">
+                                <div id="emp_det"></div>
+
+                            <form id="basic-form" class="add-form" method="post" novalidate="">
+                                <div class="row clearfix">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="bname">Month and Year</label>                                           
+                                            <input id="month_year" name="month_year" value="{{lop_date}}" type="hidden" class="form-control" />
+                                            <input value="{{lop_date|date:'M-Y'}}" type="text" class="form-control" disabled />
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="baccount">Leaves</label>
+                                            <input id="leaves" name="leaves" type="number" class="form-control" required min="0" step="0.5" oninput="validity.valid||(value='');" />
+                                        </div>
+                                        <span id="error_leaves" ></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="baccount">LOP</label>
+                                            <input id="lop" name="lop" type="number"  class="form-control" required min="0" step="0.5" oninput="validity.valid||(value='');" />
+                                        </div>
+                                        <span id="error_lop" ></span>
+                                        <span class="parsley-errors" id="lop_leave"></span>
+                                    </div>
+                                </div>
+                                <!-- <div class="row clearfix text-right">
+                                    <div class="col-md-12"><button class="btn btn-primary addBtn">Update</button></div>
+                                </div> -->
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function(){
+
+        set_employee_info('{{emp_id}}')
+
+
+        $.ajax({
+                 type: "GET",
+                 url: "/qxbox/{% url 'Employee_Lop' emp_id=emp_id %}",
+                 headers: {
+                            "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                        },
+                 success: function(response) {
+                    console.log(response);  
+
+                    if(Array.isArray(response)){
+                        response = response[0]
+                    }
+                    if(response){                                                
+
+                        if (response['totalLopCount']){
+                            $("#lop").val(response['totalLopCount'])
+                        }else{
+                            $("#lop").val(0)
+                        }
+                        if (response['totalLeavesCount']){
+                            $("#leaves").val(response['totalLeavesCount'])
+                        }else{
+                            $("#leaves").val(0)
+                        }
+                    }else{
+                        $("#leaves").val(0)
+                        $("#lop").val(0)
+                    }
+                 },
+                error: function (xhr, status, e) {
+                    alert('Error');
+                }
+             });
+
+       
+        $('#basic-form').submit(function(e){
+            e.preventDefault();
+            $('#error_lop').hide();
+            var lop = $('#lop').val();
+            var leaves = $('#leaves').val();                                                  
+            var month_year = $('#month_year').val();                                                  
+
+            $.ajax({
+                type: "POST",
+                url: "/qxbox/{% url 'Employee_Lop' emp_id=emp_id %}",
+                headers: {
+                            "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                        },
+                data:{"total_leaves":leaves,"lop_days":lop,"month_year":month_year},
+                success: function(response) {                    
+                    swal({
+                        title: 'updated',
+                        type: "success",
+                        confirmButtonColor: "#007bff",
+                        confirmButtonText: "Ok",
+                        closeOnConfirm: true
+                        },
+                        function(isConfirm) {
+                        window.location.replace("/qxbox/payroll/active-employees");
+                        });                    
+                }
+            });
+                
+
+            });
+
+
+        $("#lop").change(function () {
+
+        var days_per_month = "31";
+        var lop = parseInt($(this).val());
+        if(days_per_month<lop  ) {
+
+            $("#lop").val("");
+            $('#error_lop').show();
+                    setTimeout(function() {
+                    $('#error_lop').hide().fadeOut('slow');
+                    }, 3000);
+            error_lop.innerHTML = "<span style='color:#E15858; font-size:0.8em;float:right;'>"+
+            "LOP days should not be greater than working days.</span>" ;
+
+
+        }
+        else{
+                error_lop.innerHTML = "";
+        }
+
+
+        });
+
+
+        $("#leaves").change(function () {
+        $('#error_leaves').show();
+        var days_per_month = "31";
+        var leaves = parseInt($(this).val());
+        if(days_per_month<leaves  ) {
+
+            $("#leaves").val("");
+            $('#error_leaves').show();
+                    setTimeout(function() {
+                    $('#error_leaves').hide().fadeOut('slow');
+                    }, 3000);
+            error_leaves.innerHTML = "<span style='color:#E15858; font-size:0.8em;float:right;'>"+
+            "Leave days should not be greater than working days.</span>" ;
+        }
+        else{
+                error_leaves.innerHTML = "";
+        }
+        });
+
+    });
+
+ </script>
+
+<script>
+    if(window.location.href.indexOf("/qxbox/payroll/active-employees/")) {
+        $("#employeeNavItem").addClass("active")
+    }
+</script>
+{% endblock %}

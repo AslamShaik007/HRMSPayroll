@@ -1,0 +1,339 @@
+{% extends 'payroll/base/base.html' %}
+
+
+{% block css %}
+<style>
+    .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    }
+
+    .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    }
+
+    .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+
+    .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+
+    .sliderchecked {
+    background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+    border-radius: 34px;
+    }
+
+    .slider.round:before {
+    border-radius: 50%;
+    }
+
+    div.dataTables_wrapper div.dataTables_length label {
+    color: #000 !important;
+    }
+</style>
+{% endblock %}
+
+{% block main_content %}
+
+<div class="container-fluid">
+
+
+
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+                <h1 class="ico_head"><i class="icon-users"></i>Employee Salary Details</h1>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12 d-flex mt-3 align-items-center">
+                <div>
+                    <!-- <img src="./assets/images/xs/avatar2.jpg"   title="" alt="" class="w35 h35 rounded" ></div> -->
+                <div class="ml-2">
+                    <!-- <h5 class="mb-0"><strong>admintest 1 admin1 admin2</strong> </h5> -->
+                    <!-- <span>Development Team<span class="badge badge-warning">EMP ID:-0000</span></span> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div id="emp_det"></div>
+
+                <div class="body shadow border-0">
+                    <div class="tab-content">
+                        <div class="tab-pane show active" id="salary_details">
+                            <div class="col-md-12 text-right"></div>
+                            <form id="basic-form" class="add-form" method="post" novalidate="">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>Yearly CTC</label>
+                                        <input type="number" id="ctc_per_year" class="form-control"  name="yearly_ctc" onchange="validateFloatKeyPress(this);">
+                                    </div>
+                                   
+                                    <div class="col-md-3">
+                                        <label>Gross Per Year</label>
+                                        <input disabled="" id="gross_per_year" class="form-control"  name="annual_gross_salary" id="annual_gross_salary" >
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Gross Per Month</label>
+                                        <input type="number" id="gross_per_month"  class="form-control grosspermonth" name="monthly_gross_salary"  disabled>
+                                        <span id="error_salary" style="color:red;"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Montly CTC</label>
+                                        <input type="number" id="monthly_ctc" readonly class="form-control" name="monthly_ctc" >
+                                    </div>
+                                   
+                                </div>
+                                <div class="row"><br></div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>Montly Incentive</label>
+                                        <input type="number" id="monthly_inc" class="form-control"  name="monthly_incentive" id="monthly_incentive" >
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Arrears</label>
+                                        <input type="number" id="arrears"  class="form-control"  name="arrears" id="arrears" >
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Fixed Pay</label>
+                                        <input disabled="" type="number" id="fixed_salary"  class="form-control"  name="fixed_salary" id="fixed_salary" >
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Variable Pay</label>
+                                        <input disabled=""  type="number" id="variable_pay"  class="form-control"  name="variable_pay" id="variable_pay" >
+                                    </div>
+                                    
+                                </div>
+                                <div class="row"><br></div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>Monthly TDS</label>
+                                        <input type="number" id="monthly_tds" class="form-control"  name="monthly_tds" id="monthly_tds" disabled>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Special Deductions</label>
+                                        <input type="number" id="sp_deduction"  class="form-control"  name="other_deductions" id="other_deductions" >
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Advance Deductions</label>
+                                        <input type="number" id="adv_deduction" class="form-control"  name="advance_amount" id="advance_amount" >
+                                    </div>
+                                    <div class="col-md-3"></div>
+                                </div>
+                                <div class="row"><br></div>
+                              
+                                <!-- <input type="hidden" name="yearly_ctc"  value="305280"> -->
+                                <!-- <input type="hidden" name="emp_id" id="emp_id" value="2"> -->
+                                <input type="hidden" name="con_mode" value="edit" />
+                                <div class="row"><br></div>
+                                <div class="row clearfix">
+                                    <div  class="col-md-12" style="text-align:center !important;">
+                                        <button class="btn btn-primary addBtn">Update</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+
+<script>
+
+    $(document).ready(function(){
+        $('#basic-form').submit(function(e){
+            $('#error_salary').hide();
+        e.preventDefault();
+        // var monthly_gross_salary = $('#gross_per_month').val();
+
+    // if(monthly_gross_salary!="" ) {
+            $.ajax({
+                    type: "PATCH",
+                    url: "/qxbox/{% url 'employee_view_salary' id=emp_id %}",
+                    dataType: 'json',
+                    headers: {
+                        "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                    },
+                    data:{
+                     
+                        "montlyIncentive":$("#monthly_inc").val(),
+                        "arrears":$("#arrears").val(),
+                        "specialDeductions":$("#sp_deduction").val(),                        
+                        "advanceDeductions":$("#adv_deduction").val(),
+                        "ctc":$("#ctc_per_year").val()
+                    },
+                    success: function (response) {
+
+                            swal({   title:'updated',
+                            type: "success",
+                            confirmButtonColor: "#007bff",
+                            confirmButtonText: "Ok",
+                            closeOnConfirm: true  },
+                            function(isConfirm){
+                            window.location.replace("/qxbox/payroll/active-employees/");
+                            });
+
+                            window.setTimeout(function () {
+                            window.location.replace("/qxbox/payroll/active-employees/");
+                                }, 500);
+
+                    }
+                });
+            // }
+
+        });
+    });
+</script>
+
+
+<script>
+function validateFloatKeyPress(ctc_per_year) {
+
+    // var v = parseFloat(monthly_gross_salary.value);
+
+    // monthly_gross_salary.value = (isNaN(v)) ? '' : Math.round(v);
+    // var months = 12;
+
+    // var monthly_ctc = document.getElementById('monthly_ctc');
+    var yearly_ctc = parseInt(ctc_per_year.value);
+
+    if(yearly_ctc>=381600){
+        annual_gross_salaryResult = yearly_ctc - 21600;
+    }else if(yearly_ctc < 381600 && yearly_ctc >= 267120){
+        annual_gross_salaryResult = (yearly_ctc / (12*(1 + 0.06))) * 12
+    }else{
+        annual_gross_salaryResult = (yearly_ctc / (12*(1 + 0.06 + 0.0325)) ) * 12
+    }
+
+    // var annual_gross_salaryResult = monthly_gross_salary.value * months;
+    $("#gross_per_year").val(Math.round(annual_gross_salaryResult));
+    // var basic_salary = monthly_gross_salary.value*50/100;
+
+  
+
+    // var monthly_ctcResult = v+pf_employer+esi_employer;
+
+    $("#monthly_ctc").val(Math.round(yearly_ctc/12));
+    $("#gross_per_month").val(Math.round(annual_gross_salaryResult/12))
+    // yearly_ctc.value = Math.round(monthly_ctcResult*12);
+   
+    }
+
+</script>
+
+
+
+
+<script>
+    $(document).ready(function(){
+
+        set_employee_info('{{emp_id}}')
+
+
+            $.ajax({
+                    type: "GET",
+                    url: "/qxbox/{% url 'employee_view_salary' id=emp_id %}",
+                    dataType: 'json',
+                    headers: {
+                        "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                    },
+                    success: function (response) {
+
+                    if (response && response != 0) {
+
+                        employeeSalaryBreakup = response['data']
+
+                        $("#gross_per_month").val(employeeSalaryBreakup['grossPerMonth']);
+                           $("#gross_per_year").val(employeeSalaryBreakup['grossPerYear']);
+                           $("#monthly_ctc").val(employeeSalaryBreakup['monthlyCtc']);
+                           $("#ctc_per_year").val(employeeSalaryBreakup['ctc']);
+                           $("#fixed_salary").val(employeeSalaryBreakup['fixedSalary']);
+                           $("#variable_pay").val(employeeSalaryBreakup['variablePay']);
+                           $("#basic").val(employeeSalaryBreakup['Basic']);
+                           $("#hra").val(employeeSalaryBreakup['HRA']);
+                           $("#conveyance").val(employeeSalaryBreakup['Conveyance']);
+                           $("#sp_allowance").val(employeeSalaryBreakup['spAllowance']);
+
+                           $("#monthly_inc").val(employeeSalaryBreakup['monthlyIncentive']);
+                           $("#arrears").val(employeeSalaryBreakup['arrears']);
+                           $("#sp_deduction").val(employeeSalaryBreakup['specialDeductions']);
+                           $("#monthly_tds").val(employeeSalaryBreakup['monthlyTds']);
+                           $("#adv_deduction").val(employeeSalaryBreakup['advanceDeductions']);
+                    }
+                },
+                    error:function(xhr, status, e) {
+                        $("#gross_per_month").val(0);
+                           $("#gross_per_year").val(0);
+                           $("#monthly_ctc").val(0);
+                           $("#ctc_per_year").val(0);
+                           $("#basic").val(0);
+                           $("#hra").val(0);
+                           $("#conveyance").val(0);
+                           $("#sp_allowance").val(0);
+
+                           $("#monthly_inc").val(0);
+                           $("#arrears").val(0);
+                           $("#sp_deduction").val(0);
+                           $("#monthly_tds").val(0);
+                           $("#adv_deduction").val(0);
+                    }
+                });
+
+              
+            });
+
+</script>
+
+<script>
+    if(window.location.href.indexOf("/qxbox/payroll/active-employees/")) {
+        $("#employeeNavItem").addClass("active")
+    }
+</script>
+
+{% endblock %}

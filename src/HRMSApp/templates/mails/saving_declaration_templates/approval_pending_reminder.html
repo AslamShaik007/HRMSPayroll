@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body class="fontFamily">
+    <p>Dear {{name}} [{{emp_code}}],</p>
+
+    <p>A savings declaration from your team members mentioned below, is awaiting your review and approval.</p>
+    <p>Kindly proceed at your earliest convenience.</p>
+    <p>We request you to review and approve the details submitted.</p>
+    <p>Thank you for your prompt attention.</p>
+
+    <br>
+    <table>
+        <thead>
+            <tr>
+                <th style="text-align:left; padding-right:100px;">EmpId</th>
+                <th style="text-align:left; padding-right:100px;">Name</th>
+                <th style="text-align:left; paddin-left: 10px;">Department</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in recds %}
+            <tr>
+                <td style="text-align:left; padding-right:100px;">{{item.employee__work_details__employee_number}}</td>
+                <td style="text-align:left; padding-right:100px;">{{item.employee__user__username}}</td>
+                <td style="text-align:left; padding-right:100px;">{{item.employee__work_details__department__name}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <p><b>Thanks &amp; Regards,</b></p> 
+    <p class="textItalic font120 fontWeightBolder">{{company_name}}.</p>
+</body>
+</html>

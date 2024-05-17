@@ -1,0 +1,587 @@
+{% extends 'payroll/base/base.html' %}
+
+{% block main_content %}
+
+<div class="container-fluid">
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+                <h1 class="ico_head"><i class="fa fa-list" aria-hidden="true"></i> Salary Components</h1>
+            </div>
+        </div>
+    </div>
+    <!-----------------Form Start------------------------------>
+    <div class="row clearfix">
+        <div class="col-lg-10 mx-auto">
+            <div class="card">
+                <div class="body shadow border-0 pb-3 pt-3">
+                    <form id="basic-form" method="post" class="add-form" enctype="multipart/form-data" novalidate="">
+                        <div class="row clearfix">
+                            <!-- Chandu -->
+                            <div class="col-md-6" style="border-right: dashed 1px #ddd;" >
+                                <div class="row">
+                                    <div class="col-md-11">
+                                        <div class="form-group">
+                                            <label for="o-name" class="font-weight-bold font-16">Earning Type</label>
+                                            <div class="multiselect_div">
+                                                <select id="earning_type" name="earning_type" class="form-control" required>
+                                                    <option value="">Select Earning Type</option>
+                                                    <option value="Earning">Earning</option>
+                                                    <option value="Employee Deduction">Employee Deduction</option>
+                                                    <option value="Employer Deduction">Employer Deduction
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-11">
+                                        <div class="form-group">
+                                            <label for="o-name" class="font-weight-bold font-16">Earning Name</label>
+                                            <input id="component_name" name="component_name" type="text" value="" class="form-control" required="" maxlength="50" />
+                                        </div>
+                                        <span id="error_name"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-11">
+                                        <div class="form-group">
+                                            <label for="o-name" class="font-weight-bold font-16">Name In Payslip</label>
+                                            <input id="name_on_payslip" name="name_on_payslip" type="text" value="" class="form-control" required="" maxlength="50" />
+                                        </div>
+                                        <span id="error_payslip"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div id="dvearning" class="w-100" style="display: none">
+                                        <div class="col-md-11">
+                                            <div class="form-group">
+                                                <label class="mb-0" class="font-weight-bold font-16">Calculation Type</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-11">
+                                            <div class="form-group demo-masked-input">
+                                                <label class="fancy-radio mb-1 custom-color-blue">
+                                                    <input name="flat_amount" value="1" type="radio" />
+                                                    <span class="font-16"><i></i>Flat Amount</span>
+                                                </label>
+                                                <label class="fancy-radio mb-0 custom-color-blue">
+                                                    <input name="flat_amount" value="2" type="radio" />
+                                                    <span class="font-16"><i></i>Percentage of Basic</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-11">
+                                        <div class="form-group w-auto 1 rbox show msg_blo amount_box"
+                                            style="display: block;">
+                                            <label for="o-name" class="font-weight-bold font-16">Enter Amount</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">&#8377;</span>
+                                                </div>
+                                                <input type="number" name="enter_amount1" required id="enter_amount1" value="" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" max="10000" />
+                                            </div>
+                                            <span id="error_amt" class="w-100" style="color:red"></span>
+                                        </div>
+                                        <div class="form-group w-auto 2 rbox msg_blo2 per_box">
+                                            <label for="o-name" class="font-weight-bold font-16">Enter Percentage</label>
+                                            <div class="input-group">
+                                                <input type="number" name="enter_amount" required id="enter_amount" value="" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" min="0" />
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </div>
+                                            <span id="error_per"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <!----------------Deduction Start------------->
+                                    <div id="dvdeduction" class="w-100" style="display: none">
+                                        <div class="col-md-11">
+                                            <div class="form-group w-100 1 rbox show" style="display: block;">
+                                                <label for="o-name">Threshold Base Amount</label> <br>
+                                                <div class="input-group msg_blo">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">&#8377;</span>
+                                                    </div>
+                                                    <input type="number" name="threshold_base_amount" id="threshold_base_amount" required class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" max="21000" onchange="validateFloatKeyPress(this);" />
+                                                </div>
+                                                <span id="error_thr" style="color:red"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!------------------Deduction------------------->
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="form-group demo-masked-input">
+                                            <label class="fancy-checkbox mb-0" id="SalaryCompnent_Add_New">
+                                                <input type="checkbox" id="is_active" name="is_active" />
+                                                <span class="font-weight-bold font-16" title="Click on here Mark as Active/In-Active">Mark this as Active</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- <div class="row clearfix">
+                                    <div class="col-md-12">
+                                        <div class="form-group text-right">
+                                            <a href="http://127.0.0.1:8000/payroll/salary-component/" class="addBtn btn btn-primary mr-2">Back</a>                                    
+                                            <button class="btn btn-primary addBtn text-uppercase">Save</button>
+                                        </div>
+                                    </div>
+                                </div> -->
+                            </div>
+                            <div class="col-md-6">
+                                <!-- style="border-left: dashed 1px #ddd;"  -->
+                                <div class="mt-4 pl-3" id="SalarayComp_OtherConfigurations">
+                                    <h6 class="font-18 font-weight-bold">Other Configurations</h6>
+                                    <label class="fancy-checkbox d-block mb-4">
+                                        <input type="checkbox" id="is_part_of_salary_structure" name="is_part_of_salary_structure" />
+                                            <span class="font-weight-bold font-16">Make this component a part of employee's salary structure</span>
+                                        </label>
+                                    <label class="fancy-checkbox d-block mb-4">
+                                        <input type="checkbox" id="is_taxable" name="is_taxable" />
+                                        <span class="font-weight-bold font-16">It is a taxable component
+                                            <!-- <button type="button" class="btn p-0" data-toggle="tooltip" data-placement="top" title="The income tax amount will be divided equally and deducted every month across the financial year."><i class="fa fa-info-circle text-primary font-16" aria-hidden="true"></i></button> -->
+                                        </span>
+                                        <small class="d-block font-15" style="margin-left: 1.9rem;">
+                                            The income tax amount will be divided equally and deducted every month across the financial year.</small>
+                                    </label>                                                                                                  
+                                    <label class="fancy-checkbox d-block mb-3">
+                                        <input type="checkbox" id="is_visible_on_payslip" name="is_visible_on_payslip" />
+                                        <span class="font-weight-bold font-16">Show this component in payslip</span> 
+                                    </label>
+                                </div>
+                                <div class="row clearfix pt-5 mt-5">
+                                    <div class="col-md-12">
+                                        <div class="form-group text-right">
+                                            <a href="/qxbox{% url 'salary_component' %}" class="addBtn btn btn-primary mr-2"><i class="fa fa-arrow-left mr-1" aria-hidden="true"></i> Back</a>                                    
+                                            <button class="btn btn-primary addBtn text-uppercase"><i class="fa fa-floppy-o mr-1" aria-hidden="true"></i> Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Shekar -->
+
+                        <div class="col-md-6">
+
+                        </div>
+                </div>
+
+                <div class="row clearfix">
+                    <div class="col-md-5">
+                        <div class="row clearfix">
+
+
+
+
+
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="col-md-7">
+
+                </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+
+<script type="text/javascript">
+    $(function () {
+
+        $("#earning_type").change(function () {
+            if ($(this).val() == "Earning") {
+                console.log("hide dvd");
+                $("#dvearning").show();
+                $("#dvdeduction").hide();
+                $(".amount_box").show()
+
+            } else if ($(this).val() == "Employee Deduction") {
+                console.log("hide dvea");
+                $("#dvdeduction").show();
+                $("#dvearning").hide();
+                $(".amount_box").hide()
+                $(".per_box").hide()
+            } else if ($(this).val() == "Employer Deduction") {
+                $("#dvdeduction").show();
+                $("#dvearning").hide();
+                $(".amount_box").hide()
+                $(".per_box").hide()
+            }
+        });
+    });
+</script>
+
+<script></script>
+<script>
+    $("#is_active").click(function () {
+        $('input[name="is_active"]').attr("checked", "checked");
+        $(this).val('1');
+    });
+    $("#is_part_of_salary_structure").click(function () {
+        $('input[name="is_part_of_salary_structure"]').attr("checked", "checked");
+        $(this).val('1');
+    });
+    $("#is_prorated").click(function () {
+        $('input[name="is_prorated"]').attr("checked", "checked");
+        $(this).val('1');
+    });
+    $("#is_part_of_flexible_plan").click(function () {
+        $('input[name="is_part_of_flexible_plan"]').attr("checked", "checked");
+        $(this).val('1');
+    });
+    $("#is_part_of_epf").click(function () {
+        $('input[name="is_part_of_epf"]').attr("checked", "checked");
+        $(this).val('1');
+    });
+    $("#is_part_of_esi").click(function () {
+        $('input[name="is_part_of_esi"]').attr("checked", "checked");
+        $(this).val('1');
+    });
+    $("#is_visible_on_payslip").click(function () {
+        $('input[name="is_visible_on_payslip"]').attr("checked", "checked");
+        $(this).val('1');
+    });
+    $("#is_taxable").click(function () {
+        $('input[name="is_taxable"]').attr("checked", "checked");
+        $(this).val('1');
+    });
+
+</script>
+<style type="text/css">
+    .dpmaster .dropify-wrapper {
+        max-height: 120px;
+    }
+
+    .rbox {
+        display: none;
+    }
+</style>
+
+<script type="text/javascript">
+
+
+    $(function () {
+        $('#error_thr').show();
+
+        $("#threshold_base_amount").change(function () {
+            var max = 21000;
+            var min = 0;
+            if ($(this).val() > max) {
+                $('#threshold_base_amount').val("");
+
+                $('#error_thr').text("Please enter correct amount").show();
+            }
+
+            else if ($(this).val() < min) {
+                $('#threshold_base_amount').val("");
+
+                $('#error_thr').text("Please enter correct amount").show();
+
+            }
+
+            else {
+                $('#error_thr').text("");
+            }
+        });
+
+
+
+    });
+
+
+    $(function () {
+        $('#error_amt').show();
+        $("#enter_amount1").change(function () {
+
+            var max = 10000;
+            var min = 0;
+            if ($(this).val() > max) {
+                //   $(this).val(max);
+                $('#enter_amount1').val("");
+
+                $('#error_amt').text("Please enter correct amount").show();
+            }
+
+            else if ($(this).val() < min) {
+                $('#enter_amount1').val("");
+
+                $('#error_amt').text("Please enter correct amount").show();
+
+
+                //   $(this).val(min);
+            }
+            else {
+                $('#error_amt').text("");
+            }
+        });
+
+
+
+    });
+    $(document).ready(function () {
+        $('#basic-form').submit(function (e) {
+
+            $('#error_per').hide();
+            $('#error_payslip').hide();
+            $('#error_name').hide();
+            $('#error_thr').hide();
+            $('#error_amt').hide();
+            e.preventDefault();
+            var earning_type = $('#earning_type').val();
+            var component_name = $('#component_name').val();
+            var name_on_payslip = $('#name_on_payslip').val();
+
+            var calc_type = $("input[name='flat_amount']:checked").val();
+            var threshold_base_amount = 0;
+            var flat_amount = 0;
+            var perc_amount = 0;
+
+            if (!calc_type) {
+                calc_type = 0
+                threshold_base_amount = $('#threshold_base_amount').val();
+            } else if (calc_type == 1) {
+                flat_amount = $("#enter_amount1").val()
+            } else {
+                perc_amount = $("#enter_amount").val()
+            }
+
+            var is_active = $('#is_active').is(":checked") ? "true" : "false";
+            var is_part_of_salary_structure = $('#is_part_of_salary_structure').is(":checked") ? "true" : "false";
+            var is_taxable = $('#is_taxable').is(":checked") ? "true" : "false";
+            var is_prorated = $('#is_prorated').is(":checked") ? "true" : "false";
+            var is_part_of_flexible_plan = $('#is_part_of_flexible_plan').is(":checked") ? "true" : "false";
+            var is_part_of_epf = $('#is_part_of_epf').is(":checked") ? "true" : "false";
+            var is_part_of_esi = $('#is_part_of_esi').is(":checked") ? "true" : "false";
+            var is_visible_on_payslip = $('#is_visible_on_payslip').is(":checked") ? "true" : "false";
+
+            // console.log({
+            //                 "company":{{request.session.cmp_id}},
+            //                 "earningType": earning_type,
+            //                 "componentName": component_name,
+            //                 "nameOnPayslip": name_on_payslip,
+            //                 "calculationType": calc_type,
+            //                 "flatAmount": flat_amount,
+            //                 "pctOfBasic": perc_amount,
+            //                 "thresholdBaseAmount": threshold_base_amount,
+            //                 "isActive": is_active,
+            //                 "isPartOfSalaryStructure": is_part_of_salary_structure,
+            //                 "isTaxable": is_taxable,
+            //                 "isProrated": is_prorated,
+            //                 "isPartOfFlexiblePlan": is_part_of_flexible_plan,
+            //                 "isPartOfEpf": is_part_of_epf,
+            //                 "isPartOfEsi": is_part_of_esi,
+            //                 "isVisibleOnPayslip": is_visible_on_payslip
+            //             });
+
+
+            if (earning_type != "" && component_name != "" && name_on_payslip != "") {
+                $.ajax({
+                    type: "POST",
+                    url: "/qxbox/{% url 'get_pay_salary_components' company_id=request.session.cmp_id %}",
+                    data: {
+                        "company": {{ request.session.cmp_id }},
+                        "earningType": earning_type,
+                        "componentName": component_name,
+                        "nameOnPayslip": name_on_payslip,
+                        "calculationType": calc_type,
+                        "flatAmount": flat_amount,
+                        "pctOfBasic": perc_amount,
+                        "thresholdBaseAmount": threshold_base_amount,
+                        "isActive": is_active,
+                        "isPartOfSalaryStructure": is_part_of_salary_structure,
+                        "isTaxable": is_taxable,
+                        "isProrated": is_prorated,
+                        "isPartOfFlexiblePlan": is_part_of_flexible_plan,
+                        "isPartOfEpf": is_part_of_epf,
+                        "isPartOfEsi": is_part_of_esi,
+                        "isVisibleOnPayslip": is_visible_on_payslip
+                    },
+                        headers: {
+                        "Authorization": "Bearer " + localStorage.getItem('acc_token')
+                    },
+            success: function (response) {
+
+                swal({
+                    title: "update",
+                    type: "success",
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: true
+                },
+                    function (isConfirm) {
+                        window.location.replace("/qxbox/payroll/salary-component");
+                    });
+
+                window.setTimeout(function () {
+                    window.location.replace("/qxbox/payroll/salary-component");
+                }, 500);
+
+            }
+                    });
+                }
+
+
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('input[type="radio"]').click(function () {
+            var inputValue = $(this).attr("value");
+            var targetBox = $("." + inputValue);
+            $(".rbox").not(targetBox).hide();
+            $(targetBox).show();
+        });
+        /*
+            $( "#pct_of_basic" ).click(function() {
+                $('#flat_amount').val('');
+                $('input[name=flat_amount]').removeAttr('value');
+                $(this).val('2');
+
+          });
+          $( "#flat_amount" ).click(function() {
+            $('#pct_of_basic').val('');
+            $('input[name=pct_of_basic]').removeAttr('value');
+                $(this).val('1');
+
+          });
+
+        */
+
+    });
+/*
+        $(document).ready(function(){
+            $('#earning_type').change(function(){
+             var type = $(this).val();
+            //alert(type);
+            if(type=='Deduction'){
+    
+             $('.cal_type').attr('style', 'display:none');
+                $('#thres_type').css("display","block");
+    
+    
+            }
+            else{
+             $('#thres_type').css("display","none");
+             $('.cal_type').attr('style', 'display:block');
+            }
+              });
+          });
+    
+        */
+
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+
+        $("#component_name").change(function () {
+            var inputvalues = $(this).val();
+            var reg = /^[a-zA-Z ]*$/;
+            if (inputvalues.match(reg)) {
+                error_name.innerHTML = "";
+            }
+            else {
+                $("#component_name").val("");
+
+                error_name.innerHTML = "<span style='color: red;'>" +
+                    "Name field should accept only Alphabets</span>"
+
+            }
+        });
+        $("#name_on_payslip").change(function () {
+            var inputvalues = $(this).val();
+            var reg = /^[a-zA-Z ]*$/;
+            if (inputvalues.match(reg)) {
+                error_payslip.innerHTML = "";
+            }
+            else {
+                $("#name_on_payslip").val("");
+
+                error_payslip.innerHTML = "<span style='color: red;'>" +
+                    "Name field should accept only Alphabets</span>"
+
+            }
+        });
+
+        $("#enter_amount").change(function () {
+            var inputvalues = $(this).val();
+            var reg = /^((0|[1-9]\d?)(\.\d{1,2})?|100(\.00?)?)$/;;
+            if (inputvalues.match(reg)) {
+                error_per.innerHTML = "";
+            }
+            else {
+                $("#enter_amount").val("");
+                // alert("You entered invalid IFSC code");
+                //document.getElementById("txtifsc").focus();
+                error_per.innerHTML = "<span style='color: red;'>" +
+                    "Please enter correct percentage</span>"
+                // ("#bank_ifsc_code").html("You entered invalid IFSC code");
+            }
+
+
+        });
+        $("#threshold_base_amount").keypress(function (e) {
+            //if the letter is not digit then display error and don't type anything
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                //display error message
+                $("#error_thr").html("Digits Only").show().fadeOut("slow");
+                return false;
+            }
+        });
+
+        $("#enter_amount1").keypress(function (e) {
+            //if the letter is not digit then display error and don't type anything
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                //display error message
+                $("#error_amt").html("Digits Only").show().fadeOut("slow");
+                return false;
+            }
+        });
+
+        $('.multiselect-custom').change(function () {
+
+            $("#name_on_payslip").val("");
+            $("#component_name").val("");
+            $("#threshold_base_amount").val("");
+            $("#enter_amount1").val("");
+            $("#enter_amount").val("");
+
+            $("#is_active").prop("checked", false);
+            $("#is_part_of_salary_structure").prop("checked", false);
+            $("#is_taxable").prop("checked", false);
+            $("#is_prorated").prop("checked", false);
+            $("#is_part_of_flexible_plan").prop("checked", false);
+            $("#is_part_of_epf").prop("checked", false);
+            $("#is_part_of_esi").prop("checked", false);
+            $("#is_visible_on_payslip").prop("checked", false);
+
+        });
+
+    });
+</script>
+
+<script>
+    if(window.location.href.indexOf("/qxbox/payroll/epf-details/")) {
+        $("#payrollCompNavItem").addClass("active")
+    }
+</script>
+
+{% endblock %}

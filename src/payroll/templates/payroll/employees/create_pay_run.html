@@ -1,0 +1,471 @@
+{% extends 'payroll/base/base.html' %}
+{% load custom_tags %}
+{% block css %}
+<style type="text/css">
+    .has-search .form-control-feedback {
+        position: absolute;
+        z-index: 2;
+        display: block;
+        width: 2.375rem;
+        height: 2.375rem;
+        line-height: 2.075rem; right:15px;
+        text-align: center;
+        cursor: pointer;
+        color: #aaa;
+    }
+        /*next css*/
+    .table{width:100%;}
+    .top_sp{
+        margin-top:20px;
+    }
+    .reports-header {
+        margin: 30px auto 20px;
+    }
+    .text-center {
+        text-align: center;
+    }
+    .table.form16-table, .table.reports-table {
+        margin: 25px auto;
+    }
+    .zp-table {
+        border-bottom: 1px solid rgba(239,236,236,.42);
+        border-left: none;
+        border-right: none;
+    }
+    .table-centered {
+        width: 60%;
+    }
+    .table-responsive {
+        overflow-x: auto;
+        min-height: .01%;
+    }
+    .table.form16-table tbody>tr>td.sub-headder, .table.form16-table tbody>tr>th.sub-headder, .table.form16-table tfoot>tr>th.sub-headder, .table.reports-table tbody>tr>td.sub-headder, .table.reports-table tbody>tr>th.sub-headder, .table.reports-table tfoot>tr>th.sub-headder {
+        border: none;
+        padding-top: 20px;
+        padding-bottom: 0;
+    }
+    .table.form16-table tbody>tr>td, .table.form16-table tbody>tr>th, .table.form16-table tfoot>tr>th, .table.reports-table tbody>tr>td, .table.reports-table tbody>tr>th, .table.reports-table tfoot>tr>th {
+        border-top: 0;
+        border-bottom: 1px solid #f1f1f1;
+        padding: 12px 25px;
+        font-size: 14px!important;
+    }
+    .zp-table tr td:last-of-type, .zp-table tr th:last-of-type {
+        padding-right: 30px;
+    }
+    .zp-table tr td:first-of-type, .zp-table tr th:first-of-type {
+        padding-left: 30px;
+    }
+    .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+        padding: 8px;
+        line-height: 1.6;
+        vertical-align: top;
+        border-top: 1px solid rgba(239,236,236,.42);
+    }
+    .zp-table td, .zp-table thead>tr>th {
+        border-color: rgba(239,236,236,.42);
+        vertical-align: middle;
+    }
+    .zp-table thead>tr>th {
+        font-weight: 400;
+        background-color: #f8faff !important;
+        color: #555;
+        font-size: 12px;
+        height: 40px;
+        text-transform: uppercase;
+    }
+    .table.reports-table tfoot.highlight-bg>tr>th {
+        background: #fcfcfc;
+    }
+    .table.reports-table tfoot>tr>th {
+        border-top: 0;
+        border-bottom: 1px solid #f1f1f1;
+        padding: 12px 25px;
+        font-size: 14px!important;
+    }
+    /*newly added*/
+    .table.reports-table {
+        margin: 25px auto;
+    }
+    .zp-table {
+        border-bottom: 1px solid rgba(239,236,236,.42);
+        border-left: none;
+    }
+    .india-reports-table, .table.zp-table.table-responsive.table-hover.reports-table.fixed-scroll-table {
+        table-layout: fixed;
+    }
+    .table-responsive {
+        overflow-x: auto;
+        min-height: .01%;
+    }
+    .zp-table.table thead:first-child>tr:first-child>th {
+        border-top: 1px solid rgba(239,236,236,.42);
+        border-bottom: 1px solid rgba(239,236,236,.42);
+    }
+    .table.form16-table thead>tr>th, .table.reports-table thead>tr>th {
+        padding: 8px 25px;
+    }
+    .zp-table tr td:first-of-type, .zp-table tr th:first-of-type {
+        padding-left: 30px;
+    }
+    .zp-table thead>tr>th {
+        font-weight: 400;
+        background-color: #f8faff;
+        color: #555;
+        font-size: 12px;
+        height: 40px;
+        text-transform: uppercase;
+    }
+    .zp-table td, .zp-table thead>tr>th {
+        border-color: rgba(239,236,236,.42);
+        vertical-align: middle;
+    }
+
+    .spinner-border{
+        vertical-align: sub !important;
+    }
+</style>
+{% endblock %}
+
+
+{% block main_content %}
+
+<div class="container-fluid">
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+                <h1 class="ico_head"><i class="icon-credit-card"></i> Payroll</h1>
+            </div>
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-12">
+            <div class="card mb-2">
+                <div class="body pb-2 pt-3 shadow">
+                    <h6 class="ico_head"> Process Pay Run </h6>
+                    
+                        <div class="row mt-2 mb-2">                           
+                            <div class='w-auto ml-3'>
+                                <button type="button" onclick="processPayroll(this)" class='btn btn-success'>Finally process the payroll </button>                                
+                            </div>
+                            <div class='w-auto ml-3'>
+                                <form method="post" action="/qxbox/{% url 'rollback_payroll' %}">{% csrf_token %}
+                                    {% for emp in payroll %}                                    
+                                        <input type="hidden" class="pay_ids" name="pay_id[]" value="{{emp.id}}" />
+                                    {% endfor %}
+                                    <button type="submit" class='btn btn-danger rollback'>Roll back the payroll</button>
+
+                                </form>
+                            </div>
+                            <div class='w-auto ml-3'>
+                                <a href="#" class="btn btn btn-info" onclick="tableToExcelsasa('sortingtable', 'Exported Table')" title=""><i class="fa fa-download"></i> Download</a>
+                            </div>
+                        </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="body pb-0 pt-3 shadow">
+                    <div id="ember168" class="reports-content scrollbox scroll-x scroll-y ember-view">
+                        <table class="display table table-responsive table-hover" id="sortingtable">
+                            <thead>
+                                <tr>
+                                    <th>Action</th>
+                                    <th>Org. Name</th>
+                                    <th>Month</th>
+                                    <th>Emp. Code</th>
+                                    <th>Employee Name</th>
+                                    <th>Department</th>
+                                    <th>Designation</th>
+                                    
+                                    <th>FT/NEFT</th>
+                                    <th>Bank Account No.</th>
+                                    <th>IFSC</th>
+                                    <th>PAN Number</th>
+                                    <th>PF Number</th>
+                                    <th>UAN Number</th>
+                                    <th>ESI Number</th>
+                                    <th>Date of Join</th>
+                                    <th>Date of Exit</th>
+
+                                    <th>Working Days</th>
+                                    <th>Monthly Days</th>
+                                    <th>Leaves</th>
+                                    <th>LOP</th>
+                                    <th>Paid Days</th>
+                                    <th>Overtime Days</th>
+                                    <th>Overtime Amount</th>
+                                    <th>No. of Leaves Encash</th>
+                                    <th>Leaves Encash Amount</th>
+                                    <th>Fixed Salary</th>
+                                    <th>Variable Pay</th>
+                                    <th>Monthly TDS</th>
+                                    <th>LOP Deductions</th>
+                                    <th>Special Deductions</th>
+                                    <th>Advance Deductions</th>
+                                    <th>Monthly Incentive</th>
+                                    <th>Arrears</th>
+                                    <th>Monthly Gross</th>
+                                    <th>Gross Salary</th>
+                                    <th>Earned Gross</th>
+                                    <th>E. Basic</th>
+                                    <th>E. HRA</th>
+                                    <th>E. Conveyance Allowance</th>
+                                    <th>E. Special Allowance</th>
+                                    <th>Net Salary</th>
+                                    <th>Employee PF</th>
+                                    <th>Employee ESI</th>
+                                    <th>Professional Tax</th>
+                                    <th>Employer PF</th>
+                                    <th>Employer ESI</th>
+                                    <th>Employee Total Deductions</th>
+                                    <th>Employer Deductions</th>
+                                    <th>Net Pay</th>
+                                    <th>Monthly CTC</th>
+                                    <th>Annual CTC</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for emp in payroll %}
+                                    
+                        
+                                
+                                <tr {% if emp.is_tds_fifty_percent %}style="color: red;"{% elif emp.is_tds_percent_deducted %} style="color: rgb(60, 14, 243);" {% endif %}>
+                                    <td><button type="button" class="btn btn-info btn-lg btn-edit-tds" data-toggle="modal" data-target="#edittds_{{emp.id}}">Edit</button></td>
+
+                                                                    <!-- Modal -->
+                                    <div id="edittds_{{emp.id}}" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                    
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title">Update TDS</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                            <form method="post" method="post">{% csrf_token %}
+                                                <input type="hidden" value='{{emp.id}}' name="payroll_id">
+                                                <input type="hidden" value='{{emp_id}}' name="emp_id">
+                                                <input type="hidden" value='{{dept_id}}' name="dept_id">
+                                                <input type="hidden" value='{{month_year}}' name="month_year">
+                                                <input type="hidden" value='1' name="no_emp">
+                                                <div class="form-group">
+                                                    <label>Net Salary</label>
+                                                    <input type="text" class="form-control" id="nets_{{emp.id}}"  name="nets" value="{{emp.net_salary}}" readonly>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Tax %age</label>
+                                                    <input type="number" class="form-control" id="txp_{{emp.id}}" name="txp" min="0" max="100"></input>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Tds Deducted</label>
+                                                    <input type="number" class="form-control" id="tds_{{emp.id}}" name="tds" value="{{emp.monthly_tds}}" readonly></input>
+                                                </div>
+                                                
+                                                <p id="changed_tds_{{emp.id}}"></p>
+
+                                                <div class="form-group">
+                                                    <label>Net Pay</label>
+                                                    <input type="number" class="form-control" id="netp_{{emp.id}}" name="netp" value="{{emp.net_pay}}" readonly></input>
+                                                </div>                                         
+                                                
+                                                <p id="changed_netp_{{emp.id}}"></p>
+
+                                                <button type="submit" class="btn btn-success btn-lg">Submit</button>
+                                            </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    
+                                        </div>
+                                    </div>
+                               
+                                <!-- <tr> -->
+                                    <!-- <td></td> -->
+                               
+                                    
+                                    <td>{{emp.org_name}}</td>
+                                    <td>{{emp.month_year|date:"M-Y" }}</td>
+                                    <td>{{emp.emp_code}}</td>
+                                    <td>{{emp.emp_name|capfirst}}</td>
+                                    <td>{{emp.department|capfirst}}</td>
+                                    <td>{{emp.designation}}</td>
+
+                                    <td>{{emp.fund_transfer_type}}</td>                                    
+
+                                    <td>{{emp.account_number|slugify}}&nbsp</td>
+                                    <td>{{emp.ifsc_code}}</td>
+                                    
+                                    <td>{{emp.pan_number}}</td>
+
+                                    <td>{{emp.pf_num | null_as_na}}</td>
+                                    <td>{{emp.uan_num | null_as_na}}&nbsp</td>
+                                    <td>{{emp.esi_num |null_as_na}}&nbsp</td>
+                                    
+                                    
+                                    <td>{{emp.doj|date:"d-m-Y" }}</td>
+                                    <td>{{emp.doe}}</td>
+
+                                    <td style="text-align: center;">{{emp.working_days}}</td>
+                                    <td style="text-align: center;">{{emp.month_days}}</td>
+                                    <td style="text-align: center;">{{emp.leaves}}</td>
+                                    <td style="text-align: center;">{{emp.lop}}</td>
+                                    <td style="text-align: center;">{{emp.paid_days}}</td>
+                                    <td style="text-align: center;">{{emp.overtime_days}}</td>
+                                    <td style="text-align: center;">{{emp.overtime_pay}}</td>
+                                    <td style="text-align: center;">{{emp.leaves_to_encash}}</td>
+                                    <td style="text-align: center;">{{emp.leaves_encash_total_amount}}</td>
+                                    
+                                    <td style="text-align: center;">{{emp.fixed_salary}}</td>
+                                    <td style="text-align: center;">{{emp.variable_pay}}</td>
+
+                                    
+                                    
+                                    <td style="text-align: centesr;">{{emp.monthly_tds}}</td>
+                                    <td style="text-align: center;">{{emp.lop_deduction}}</td>
+                                    <td style="text-align: center;">{{emp.special_deductions}}</td>
+                                    <td style="text-align: center;">{{emp.advance_deductions}}</td>
+                                    <td style="text-align: center;">{{emp.monthly_incentive}}</td>
+                                    <td style="text-align: center;">{{emp.arrears}}</td>
+                                    <td style="text-align: center;">{{emp.gross_monthly}}</td>
+                                    <td style="text-align: center;">{{emp.gross_salary}}</td>
+                                    <td style="text-align: center;">{{emp.earned_gross}}</td>
+                                    <td style="text-align: center;">{{emp.e_basic}}</td>
+                                    <td style="text-align: center;">{{emp.e_hra}}</td>
+                                    <td style="text-align: center;">{{emp.e_conv}}</td>
+                                    <td style="text-align: center;">{{emp.e_special_allow}}</td>
+                                    <td style="text-align: center;">{{emp.net_salary}}</td>
+                                    <td style="text-align: center;">{{emp.emp_pf}}</td>
+                                    <td style="text-align: center;">{{emp.emp_esi}}</td>
+                                    <td style="text-align: center;">{{emp.pt}}</td>
+                                    <td style="text-align: center;">{{emp.own_pf}}</td>
+                                    <td style="text-align: center;">{{emp.own_esi}}</td>
+                                    <td style="text-align: center;">{{emp.total_employee_contribution}}</td>
+                                    <td style="text-align: center;">{{emp.total_employer_contribution}}</td>
+                                    <td style="text-align: center;">{{emp.net_pay}}</td>
+                                    <td style="text-align: center;">{{emp.total_employer_contribution|add:emp.net_salary }}</td>
+                                    <td style="text-align: center;">{{emp.ctc_yearly}}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+     $(document).ready(function() {
+            $('#sortingtable').DataTable({
+                responsive: true,
+                        pageLength: 10,
+                        paginate: true,
+                        lengthMenu: [
+                            [10, 25, 50, -1],
+                            [10, 25, 50, 'All']
+                        ]
+                        // info: false,                                             
+            });
+        });
+</script>
+<script>
+    $("input[name='txp']").change(function() {
+        // console.log($(this).val(),$("input[name='nets']").val());        
+        let rid =  $(this).attr('id').split('_') ;
+        rid = rid[1]
+
+        var chn_tds = Math.round($("input[id='nets_"+rid+"']").val()*($(this).val()/100))
+        
+          //txp_{{emp.id}}
+        $("#changed_tds_"+rid).text(
+            chn_tds
+        )
+        var chn_p = parseFloat($("input[id='netp_"+rid+"']").val()) + parseFloat($("input[id='tds_"+rid+"']").val())
+        $("#changed_netp_"+rid).text(
+            Math.round(chn_p - chn_tds)
+        )
+    });
+</script>
+<script>
+    var tableToExcelsasa = (function() {
+        var urisasasa = 'data:application/vnd.ms-excel;base64,', template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>'
+        , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+        , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+        return function(table, name) {
+        if (!table.nodeType) table = document.getElementById(table)
+        var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+        window.location.href = urisasasa + base64(format(template, ctx))
+        }
+    })()
+</script>
+<script type="text/javascript">
+    function processPayroll(elem){
+        // console.log('hi');
+        $(elem).attr('disabled','disabled')        
+        $(elem).html(`
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                     Processing...
+                 `)
+        $(".rollback").hide()
+        $('.btn-edit-tds').hide()
+        let pay_id = []
+        $('.pay_ids').each(function() {
+            var value = $(this).val();  // Get the value of the current input element
+            pay_id.push(value);         // Add the value to the array
+        });
+
+        // console.log(pay_id);
+        let fdata = new FormData();        
+        fdata.append("pay_id",pay_id)
+        console.log(fdata);
+
+        $.ajax({
+            type: 'POST',
+            url: "/qxbox/{% url 'process_payroll' %}",
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            data: fdata,
+            headers: {
+                "Authorization": "Bearer "+localStorage.getItem('acc_token')
+            },
+            success: function (data,textStatus) {
+
+                // console.log(data);
+
+                setTimeout(function(){ 
+                    $(elem).removeAttr('disabled')
+                    $(elem).removeAttr('onclick')
+                    $(elem).html("Processed, Payslips available") 
+                    swal("Payroll run successful")
+
+                }, 5000);
+               
+            },
+            error:function(xhr, status, e) {
+                $('.btn-edit-tds').show()
+
+                swal("Error! Running Payroll")
+            }
+        })
+     
+    }
+</script>
+
+{% endblock %}

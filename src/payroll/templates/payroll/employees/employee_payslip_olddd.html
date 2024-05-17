@@ -1,0 +1,328 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>EMPLOYEE PAYSLIP</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/qxbox/{% static 'assets/css/stylepay02.css' %}"/>
+    <!-- <link rel="stylesheet" href="/qxbox/{% static 'assets/css/Payroll_Bootstrap_4_5.css' %}"/> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+    <!-- <link rel="stylesheet" type="text/css" media="print" href="http://38.143.106.237/payrollprodstandalone/assets/css/stylepay02.css"> -->
+    <!-- <link rel="stylesheet" href="http://38.143.106.237/payrollprodstandalone/assets/vendor/bootstrap/css/bootstrap.min.css"> -->
+    <link rel="preconnect" media="print" href="https://fonts.gstatic.com" >
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body{font-family: 'Roboto', sans-serif; color:black; margin: 0; padding: 0; font-size:15px; font-weight:400;}
+        /* body{background:url(http://38.143.106.237/payrollprodstandalone/assets/salaryslip/) no-repeat center 200px; background-size: 70%; } */
+        .table{width:100%;}
+        .ribb{width:100%; height:20px; display:flex;}
+        .r_1{ background:#172355; width: calc(100% - 300px); height:20px;}
+        .r_2{ background:#e46b40; width:100px; height:20px;}
+        .r_3{ background:#f9cd38; width:100px; height:20px;}
+        .r_4{ background:#7fad17; width:100px; height:20px;}
+        .add_c{width: auto; float: right;}
+        .ctitle{ font-size:16px; font-weight:600; }
+        .mhead{ width: fit-content; background:#172355; font-size:32px; font-weight:600; padding:8px 25px; color:#fff; border-radius:40px; margin:40px auto; line-height: 40px;}
+        thead th{font-weight:600; font-size:15px;   }
+        tfoot td{ border-bottom:dashed 1px #000; border-top:dashed 1px #000; font-weight:600; font-size:16px;}
+        .leftl{width:148px; float: left;}
+
+        .table td, .table thead th{border-top:none;/* border-left:solid 1px #000;*/} .table thead th{ border-top: dashed 1px #000; border-bottom:dashed 1px #000;}
+        .table tfoot th{border-top:solid 1px #000!important;}
+        .table td, .table tfoot th, .table thead th{background:transparent!important; }
+        .table td, .table th {
+            padding:0.50rem 0.75rem;
+            vertical-align: middle;
+        }
+        .f_boot{position: relative; width:calc(100%-100px); bottom:0;}
+        @media print {
+        .table{width:100%;} .f_boot{position:fixed; width:calc(100% - 100px);}
+        }
+
+    {% if details.employee.company.watermark_status == 1 and details.employee.company.payslip_watermark  %}
+
+        .myWaterMark::after {
+            position: absolute;
+            top: 0;
+            left: 0;
+            content: '';            
+            background-image:url('{{details.employee.company.payslip_watermark.url}}'); 
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.1;
+            background-size: 70%;
+            width: 100%;
+            height: 100%;
+            border: 2px solid red;
+            z-index: -1;
+        }
+        {% endif %}
+
+    </style>
+
+    <style>
+    body{font-family: 'Roboto', sans-serif; color:black; margin: 0; padding: 0; font-size:15px; font-weight:400;}
+    @media print {
+    .table{width:100%;}
+    .p-pic{margin-right:15px;}
+    .p-pic img {
+        width: 60px;
+        height: auto;
+        border-radius: 90px;
+    }
+    }
+    /* body{background:url() no-repeat center 200px; background-size: 70%; } */
+    .table{width:100%;}
+    .ribb{width:100%; height:20px; display:flex;}
+    .r_1{ background:#172355; width: calc(100% - 300px); height:20px;}
+    .r_2{ background:#e46b40; width:100px; height:20px;}
+    .r_3{ background:#f9cd38; width:100px; height:20px;}
+    .r_4{ background:#7fad17; width:100px; height:20px;}
+    .add_c{width: auto; float: right;}
+    .ctitle{ font-size:16px; font-weight:600; }
+    .mhead{ width: fit-content; background:#172355; font-size:32px; font-weight:600; padding:8px 25px; color:#fff; border-radius:40px; margin:40px auto; line-height: 40px;}
+    thead th{font-weight:600; font-size:15px;   }
+    tfoot td{ border-bottom:dashed 1px #000; border-top:dashed 1px #000; font-weight:600; font-size:16px;}
+    .leftl{width:148px; float: left;}
+    .table td, .table thead th{border-top:none;/* border-left:solid 1px #000;*/} .table thead th{ border-bottom:dashed 1px #000; border-top:dashed 1px #000;}
+    .table tfoot th{border-top:dashed 1px #000!important; border-bottom:dashed 1px #000!important;}
+    .table td, .table tfoot th, .table thead th{background:transparent!important;}
+    .table td, .table th {
+        padding:0.50rem 0.75rem;
+        vertical-align: middle;
+    }
+    .p-pic{margin-right:15px;}
+    .p-pic img {
+        width: 60px;
+        height: auto;
+        border-radius: 90px;
+    }
+    </style>
+
+</head>
+
+<body style="position:relative;" class="myWaterMark">
+    <!--<div class="ribb"><div class="r_1"></div><div class="r_2"></div><div class="r_3"></div><div class="r_4"></div></div>-->
+    <!--<div style="padding:50px; width:calc(100% - 100px); min-height:calc(100vh - 20px); ">  -->
+    <div style="padding:50px; min-height:calc(100vh - 20px);">
+        <table style="width: 100%;">
+            <tr>
+                <td>
+                    {% if details.employee.company.company_image %}
+                        <img src="/qxbox{{details.employee.company.company_image.url}}" alt="" style="width: 150px;">
+                    {% endif %}
+                </td>
+
+                <td style="text-align: right;">
+                    <span class="ctitle" style="text-transform: capitalize; font-size:15px;">{{details.employee.company.company_name}}</span>
+                    <p style="text-transform: capitalize;  font-size:14px;">
+                        {{details.employee.company.registered_adress_line1}}<br>
+                        {{details.employee.company.registered_adress_line2}}<br>
+                        {{details.employee.company.registered_country}}<br>
+                        {{details.employee.company.registered_state}}, {{details.employee.company.registered_city}} - {{details.employee.company.registered_pincode}}<br>                      
+                    </p>
+                    <!-- <div style="text-align: center; bottom:140px;  width:100%;">
+                        <span class="ctitle" style="text-transform:uppercase;">Branch Offices</span>
+                        <p style="text-transform:uppercase;"></p>
+                    </div> -->
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+            </tr>
+        </table>
+        <div style="min-height:calc(100vh - 400px);">
+            
+            <div class="tcenter">
+                <h2 class="mhead" style="font-size: 30px; margin-top: 10px; margin-bottom: 16px;">Pay slip for the month of {{details.month_year|date:'M-Y'}}</h2>
+                <p style="text-align: center;">({{pay_day_start|date:"d-M-Y"}} / {{pay_day_end|date:"d-M-Y"}})</p>
+            </div>
+
+            <div style="display:flex; align-items: center; width:100%; border-bottom:dashed 1px #000; padding:0 0 20px 0; margin-bottom:20px;">
+                <div class="p-pic">
+ 
+                    {% if details.employee.employee_image %}
+                    <img src="/qxbox{{details.employee.employee_image.url}}" style="width: 60px; height: 60px; border-radius: 90px;" alt="">
+                    {% endif %}
+                 </div>
+                <div class="p-nam">
+                    <h5 style="text-transform: capitalize;">{{details.employee.first_name}} {{details.employee.middle_name}} {{details.employee.last_name}}</h5>
+                   <span style="text-transform: capitalize;">{{details.employee.work_details.designation.name}}</span>
+                </div>
+            </div>
+            <div style="width:100%;">
+                <div style="width:50%; float:left;">
+                    <table cellpadding="5" class="table" width="100%" cellspacing="0">
+                        <tr>
+                            <td style="width: 30%; font-size: 14px;"><div class="leftl">EMP ID:</div></td>
+                            <td style="width: 70%; font-size: 14px;"><strong> {{details.employee.work_details.employee_number}}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 30%; font-size: 14px;"><div class="leftl">DOJ:</div> </td>
+                            <td style="width: 70%; font-size: 14px;"><strong>{{details.employee.date_of_join}}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 30%; font-size: 14px;"><div class="leftl">Department:</div> </td>
+                            <td style="width: 70%; font-size: 14px;"><strong>{{details.employee.work_details.department.name}}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 30%; font-size: 14px;"><div class="leftl">Bank Name:</div> </td>
+                            <td style="width: 70%; font-size: 14px;"><strong>{{details.employee.salary_details.bank_name}}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 30%; font-size: 14px;"><div class="leftl">A/C No:</div> </td>
+                            <td style="width: 70%; font-size: 14px;"><strong>{{details.employee.salary_details.account_number}}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 30%; font-size: 14px;"><div class="leftl">PAN:</div> </td>
+                            <td style="width: 70%; font-size: 14px;"><strong style="text-transform: capitalize;">{% for doc in details.employee.employee_document_ids.all %}{% if doc.document_type|slugify == 'pan-card' %}{{doc.document_number}}{% endif %}{% endfor %}</strong></td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="width:50%; float:left;">
+                    <table cellpadding="5" class="table" width="100%" cellspacing="0">
+                        <tr>
+                            <td style="width: 40%; font-size: 14px;"><div class="leftl">Location:</div> </td>
+                            <td style="width: 70%; font-size: 14px;"><strong>{{details.employee.work_details.work_location}}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 40%; font-size: 14px;"><div class="leftl">ESI:</div> </td>
+                            <td style="width: 70%; font-size: 14px;"><strong>{{details.employee.emp_compliance_detail.esi_num}}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 40%; font-size: 14px;"><div class="leftl">UAN:</div> </td>
+                            <td style="width: 70%; font-size: 14px;"><strong>{{details.employee.emp_compliance_detail.uan_num}}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 40%; font-size: 14px;"><div class="leftl">Total Working Days:</div> </td>
+                            <td style="width: 70%; font-size: 14px;"><strong>{{details.paid_days}}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 40%; font-size: 14px;"><div class="leftl">LOP Days:</div> </td>
+                            <td style="width: 70%; font-size: 14px;"><strong>{{details.lop}}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 40%; font-size: 14px;"><div class="leftl">Annual CTC:</div> </td>
+                            <td style="width: 70%; font-size: 14px;"><strong>₹ {{details.yearly_ctc}}</strong></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div style="width:100%; margin-top:45px;">
+                {% load custom_tags %}
+                <table cellpadding="0" width="100%" cellspacing="0" style="width: 100%;">
+                    <tr style="border-top: 1px dashed black; border-bottom: 1px dashed black;">
+                        <th style="text-align: left; font-size: 14px; width: 40%; padding-top: 4px; padding-bottom: 4px;">Earnings</th>
+                        <th style="text-align: right; font-size: 14px; width: 9%; padding-top: 4px; padding-bottom: 4px;">Amount Rs.</th>
+                        <th style="width: 2%;"></th>
+                        <th style="text-align: left; font-size: 14px; width: 40%; padding-top: 4px; padding-bottom: 4px;">Deductions</th>
+                        <th style="text-align: right; font-size: 14px; width: 9%; padding-top: 4px; padding-bottom: 4px;">Amount Rs.</th>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left; font-size: 14px; width: 40%; padding-top: 4px; padding-bottom: 4px;">Basic</td>
+                        <td style="text-align: right; font-size: 14px; width: 9%; padding-top: 4px; padding-bottom: 4px;">{{details.s_basic}}</td>
+                        <td style="width: 2%;"></td>
+                        <td style="text-align: left; font-size: 14px; width: 40%; padding-top: 4px; padding-bottom: 4px;">Provident Fund</td>
+                        <td style="text-align: right; font-size: 14px; width: 9%; padding-top: 4px; padding-bottom: 4px;">{{details.employee_pf}}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left; font-size: 14px; width: 40%; padding-top: 4px; padding-bottom: 4px;">HRA</td>
+                        <td style="text-align: right; font-size: 14px; width: 9%; padding-top: 4px; padding-bottom: 4px;">{{details.s_hra}}</td>
+                        <td style="width: 2%;"></td>
+                        <td style="text-align: left; font-size: 14px; width: 40%; padding-top: 4px; padding-bottom: 4px;">ESI</td>
+                        <td style="text-align: right; font-size: 14px; width: 9%; padding-top: 4px; padding-bottom: 4px;">{{details.employee_esi|floatformat:"2"}}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left; font-size: 14px; width: 40%; padding-top: 4px; padding-bottom: 4px;">Conveyance Allowance</td>
+                        <td style="text-align: right; font-size: 14px; width: 9%; padding-top: 4px; padding-bottom: 4px;">{{details.s_conv}}</td>
+                        <td style="width: 2%;"></td>
+                        <td style="text-align: left; font-size: 14px; width: 40%; padding-top: 4px; padding-bottom: 4px;">Professional Tax</td>
+                        <td style="text-align: right; font-size: 14px; width: 9%; padding-top: 4px; padding-bottom: 4px;">{{details.profession_tax|floatformat:"2"}}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left; font-size: 14px; width: 40%; padding-top: 4px; padding-bottom: 4px;">Special Allowance</td>
+                        <td style="text-align: right; font-size: 14px; width: 9%; padding-top: 4px; padding-bottom: 4px;">{{details.s_special_allow}}</td>
+                        <td style="width: 2%;"></td>
+                        <td style="text-align: left; font-size: 14px; width: 40%; padding-top: 4px; padding-bottom: 4px;">Gross Deductions</td>
+                        <td style="text-align: right; font-size: 14px; width: 9%; padding-top: 4px; padding-bottom: 4px;">0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left; font-size: 14px; width: 40%; padding-top: 4px; padding-bottom: 4px;">Monthly Incentive</td>
+                        <td style="text-align: right; font-size: 14px; width: 9%; padding-top: 4px; padding-bottom: 4px;">{% if details.monthly_incentive %} {{details.monthly_incentive}} {% else %}0.00 {% endif %}</td>
+                        <td style="width: 2%;"></td>
+                        <td style="text-align: left; font-size: 14px; width: 40%; padding-top: 4px; padding-bottom: 4px;">LOP Deductions</td>
+                        <td style="text-align: right; font-size: 14px; width: 9%; padding-top: 4px; padding-bottom: 4px;">{{details.lop_deduction|floatformat:"2"}}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left; font-size: 14px; width: 40%; padding-top: 4px; padding-bottom: 4px;">Arrears</td>
+                        <td style="text-align: right; font-size: 14px; width: 9%; padding-top: 4px; padding-bottom: 4px;">{{details.arrears}}</td>
+                        <td style="width: 2%;"></td>
+                        <td style="text-align: left; font-size: 14px; width: 40%; padding-top: 4px; padding-bottom: 4px;">TDS Deductions</td>
+                        <td style="text-align: right; font-size: 14px; width: 9%; padding-top: 4px; padding-bottom: 4px;">{{details.monthly_tds|floatformat:"2"}}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left; font-size: 14px; width: 40%; padding-top: 4px; padding-bottom: 4px;"></td>
+                        <td style="text-align: right; font-size: 14px; width: 9%; padding-top: 4px; padding-bottom: 4px;"></td>
+                        <td style="width: 2%;"></td>
+                        <td style="text-align: left; font-size: 14px; width: 40%; padding-top: 4px; padding-bottom: 4px;">Special Deductions</td>
+                        <td style="text-align: right; font-size: 14px; width: 9%; padding-top: 4px; padding-bottom: 4px;">{{details.special_deductions|floatformat:"2"}}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left; font-size: 14px; width: 40%; padding-top: 4px; padding-bottom: 4px;"></td>
+                        <td style="text-align: right; font-size: 14px; width: 9%; padding-top: 4px; padding-bottom: 4px;"></td>
+                        <td style="width: 2%;"></td>
+                        <td style="text-align: left; font-size: 14px; width: 40%; padding-top: 4px; padding-bottom: 4px;">Advance Deductions</td>
+                        <td style="text-align: right; font-size: 14px; width: 9%; padding-top: 4px; padding-bottom: 4px;">{%if details.advance_deduction %} {{details.advance_deduction|floatformat:"2"}} {% else %} 0.00 {% endif %}</td>
+                    </tr>
+                    <tfoot style=" border-top: 1px dashed black;">
+                        <tr>
+                            <th style="text-align: left; font-size: 14px; width: 40%; padding-top: 10px;">Total Earnings</th>
+                            <th style="text-align: right; font-size: 14px; width: 9%; padding-top: 10px;" align="right" style="text-align:right;">₹ {{details.total_earnings}}</th>
+                            <th></th>
+                            <th align="right" style="text-align: left; font-size: 14px; width: 40%; padding-top: 10px;">Total Deductions</th>
+                            <th style="text-align: right; font-size: 14px; width: 9%; padding-top: 10px;">₹ {{details.total_deduction|floatformat:"2"}}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+                <table cellpadding="0" width="100%" cellspacing="0" style="width: 100%; border-top: 1px dashed black; margin-top: 10px;">
+                    <tfoot>
+                        <tr>
+                            <th style="font-size: 15px;  padding-top: 10px; padding-bottom: 10px;"><b>Net Salary</b>: <b>₹ {{details.net_pay}}</b></th>
+                        </tr>
+                        <tr>
+                            <th style=" font-size: 15px; padding-top: 10px; padding-bottom: 10px;"><b>Net Salary in words </b>: <b style="text-transform: capitalize;">₹ {{details.net_pay | replace_num_words:''}}/-</b></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <p style="width:100%; margin-top:5px; font-size:13px; margin-left:12px;">This is a computer generated document and hence no signature is needed</p>
+        </div>
+        <!-- <div class="print text-center" id="myDIV"><button class="btn btn-primary hidden-print" onclick="myFunction()"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Print</button></div> -->
+        <!--<div style="text-align: center; position:fixed; bottom:20px;  width:90%;">--->
+    </div>
+</body>
+</html>
+<style>
+    @media print { @page { margin: 0; }
+    body {margin-top: 0.2cm;margin-left: 1.6cm;margin-right: 1.6cm; margin-bottom: 0.2cm;
+ } }
+</style>
+
+<script>
+    function myFunction()
+    {
+        document.getElementById("myDIV").style.display='none';
+        printing();
+        //window.print();
+    }
+    function printing()
+    {
+        document.getElementById("myDIV").style.display='block';
+        window.print();
+
+    }
+</script>

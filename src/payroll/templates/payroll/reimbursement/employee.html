@@ -1,0 +1,713 @@
+{% extends 'payroll/base/base.html' %}
+
+{% block css %}
+
+    <style>
+        td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        }
+
+        .parsley-errors {
+            color: rgb(225, 88, 88);
+            font-size: 0.9em;
+            margin-top: 3px;
+        }
+
+        #menuBtn:active {
+            border: 2px solid #30239f;
+        }
+        #menuBtn:visited {
+            border: 2px solid #30239f;
+        }
+
+        #menuBtn:focus {
+            border: 2px solid #30239f;
+            outline: 1px dotted !important;
+        }
+        .BtnActive {
+        background-color: #187ebe;
+        border: 2px solid #187ebe;
+        color: white;
+        font-weight: 500;
+    }   
+    .prev{
+        float: initial !important;       
+    }
+
+    </style>
+
+    <style>
+        td.details-control {
+            background: url('assets/images/details_open.png') no-repeat center center;
+            cursor: pointer;
+        }
+
+        tr.shown td.details-control {
+            background: url('assets/images/details_close.png') no-repeat center center;
+        }
+
+        .table.table-custom tbody tr {
+            background: none;
+            border-radius: 0;
+        }
+
+        #dept_id,
+        #desi_id {
+            color: #4a4c4e;
+            border-color: #9E9E9E;
+            font-weight: 400;
+            padding: 6px 18px;
+            border-radius: 0.25rem;
+            display: inline-block;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 35px !important;
+
+        }
+
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #9E9E9E !important;
+            padding: 6px 18px !important;
+            border-radius: 0.25rem !important;
+        }
+    </style>
+    <style>
+        .select2-container {
+            max-width: 100% !important;
+        }
+    </style>
+
+    <style>
+        .select2-container .select2-selection--single {
+            height: 34px !important;
+        }
+
+        .light_version .table tr td, .light_version .table tr th {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .light_version .table tr td, .light_version .table tr th {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+    </style>
+
+{% endblock %}
+
+{% block main_content %}
+
+<div class="container-fluid">
+ 
+
+        <div class="block-header">
+            <div class="row clearfix">
+                <div class="col-md-6 col-sm-12">
+                    <h1 class="ico_head"><i class="icon-grid"></i>Reimbursement</h1>
+                </div>
+                <div class="col-md-6 col-sm-12 text-right hidden-xs"></div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12">
+                <div class="card">
+                    
+                    <div class="body shadow border-0 pt-0 pb-2">
+                        <div class="pl-3">
+            
+                            <form name="search_form" id="search_form">
+                                <div class="row">                                                                               
+                                <div class="row">                                                                               
+                                    <div class="col-lg-3 col-md-3 col-sm-6">
+                                        <div class="form-group">
+                                            <div class="multiselect_div">
+                                                <label>Status</label>
+                                                <select class="form-control selectpicker11 w-100 form-control status_list" name="status"  data-live-search="true">                                                                                                                                          
+                                                    <option value="">--ALL--</option>
+                                                    <option value="Approved_Paid">Approved & Paid</option>
+                                                    <option value="Approved">Approved</option>
+                                                    <option value="Pending">Pending</option>
+                                                    <option value="Rejected">Rejected</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-6">
+                                        <div class="form-group">
+                                            <div class="multiselect_div">
+                                                <label>Type</label>
+                                                <select class="form-control selectpicker11 w-100 form-control types_list"  name="type" data-live-search="true">                                                        
+                                                    <option value="">--ALL--</option>
+                                                    <option value="Travel">Travel</option>
+                                                    <option value="Hotel_Accomodation">Hotel & Accomodation</option>
+                                                    <option value="Food">Food</option>
+                                                    <option value="Medical">Medical</option>
+                                                    <option value="Telephone">Telephone</option>
+                                                    <option value="Fuel">Fuel</option>
+                                                    <option value="Imprest">Imprest</option>  
+                                                    <option value="Other">Other</option>  
+                                                                                                      
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                 
+                                    <div class="w-auto ml-2 mt-4 pt-1">
+                                        <button type="submit" class="btn btn-primary empbutton addBtn"><i class="fa fa-search mr-1"></i> Search</button>
+                                    </div>
+                                    <div class="w-auto ml-2 mt-4 pt-1">
+                                        <button onclick="window.location.href=window.location.href" class="btn btn-success addBtn"><i class="fa fa-refresh mr-1"></i> Refresh</button>
+                                    </div>
+                                                                 
+                                </div>
+                            </form>
+                            <div class="w-auto ml-2 mt-4 pt-1">
+                                <button type="button" id="export_button" class="btn btn-primary addBtn"><i class="fa fa-search mr-1"></i>Export</button>
+                            </div>  
+                        </div>
+
+                        <div class="tab-content">
+                            <div class="tab-pane show active">
+                                <div class=" table-responsive">
+                                    <table class="display table table-hover table-custom spacing5 mb-0 no-footer w-100" id="deptTable" aria-describedby="deptTable_info">
+                                        <thead>
+                                            <tr>      
+                                                <th>Employee ID</th>
+                                                <th>Name</th>                                                                                      
+                                                <th>Apply Date</th>
+                                                <th>Expense Date</th>
+                                                <th>Approval Date</th>
+                                                <th>Type</th>
+                                                <th>Reason</th>
+                                                <th>Employer Comment</th>
+                                                <th>Declared Amount </th>
+                                                <th>Approved Amount </th>
+                                                <th>Attachment</th>                                               
+                                                <th>Status</th> 
+                                                <th>Action</th> 
+                                            </tr>
+                                        </thead>
+                                        <tbody id="reimb_table">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-6">
+                                        <div>Showing <span class="currentRecord"><span class="lastRecord"></span> of
+                                                <span class="totalRecord"></span> entries</div>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <div class="btnGroup">
+                                            <button type="button"
+                                                class="btn btn-secondary btn-sm nav-btn prev disabled">Previous</button>
+                                            <button type="button" class="btn btn-sm cpage"></button>
+                                            <button type="button"
+                                                class="btn btn-secondary btn-sm nav-btn nxt disabled">Next</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="getCodeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog_box">
+                <div class="modal-content">
+                    <div class="modal-header_box">
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="javascript:load_close()"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body text-center" id="getCode"></div>
+                    <div class="text-center mb-3">
+                        <button type="button" class="btn btn-primary modal2" data-dismiss="modal" onclick="javascript:load_close()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+           <!-- Add Department Modal -->
+    <div class="modal fade" id="editStatusModal" tabindex="-1" aria-labelledby="editStatusModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-md ">
+            <div class="modal-content pb-3 border-0" >
+                <div class="modal-header bg-my-primary">
+                    <h5 class="modal-title" id="addDepartmentModalLabel">Change status</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row justify-content-center px-4">
+                        <div class="card mutt-card px-3 w-100">
+                            <form id="changeStatus">
+                                <fieldset>
+                                    <div class="form-card">
+                                        <input type="hidden" id="reimb_id" value="">                                        
+                                        <label class="fieldlabels">Declared Amount</label>
+                                        <div class="mb-2">
+                                           <input type="number" id="declared_amount" class="form-control" required readonly></input>
+                                            <small class="cust_err" id="addDept_Name_Err">Error Message</small>
+                                        </div>  
+                                        <label class="fieldlabels">Approved Amount * </label>
+                                        <div class="mb-2">
+                                           <input type="number" id="approved_amount" class="form-control" min="0" oninput="validity.valid||(value='');" required></input>
+                                            <small class="cust_err" id="addDept_Name_Err">Error Message</small>
+                                        </div>    
+                                        <label class="fieldlabels">Status * </label>
+                                        <div class="mb-2">
+                                            <select id="status"  name="status" class="form-control" required>
+                                                <option value="Approved_Paid">Approved & Paid</option>
+                                                <option value="Approved">Approved</option>
+                                                <option value="Pending">Pending</option>
+                                                <option value="Rejected">Rejected</option>
+                                            </select>
+                                            <small class="cust_err" id="addDept_Name_Err">Error Message</small>
+                                        </div>
+                                        <label class="fieldlabels">Reason</label>
+                                        <div class="mb-2">
+                                           <input type="text" id="reason" class="form-control"></input>
+                                            <small class="cust_err" id="addDept_Name_Err">Error Message</small>
+                                        </div>                                       
+                                    </div>
+                     
+                                    <div class="row clearfix pt-3">
+                                        
+                                        <div class="col-6">
+                                            <button type="button" class="btn addBtn  btn-sm btn-block" value="Cancel"  data-dismiss="modal" aria-label="Close">Cancel</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="submit" class="btn btn-primary px-5 btn-sm  btn-block addBtn">Save</button>
+                                        </div>
+                                    </div>
+                                </fieldset>                              
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Add Department Modal -->
+
+</div>
+{% endblock %}
+
+{% block js %}
+
+    
+    <script>
+        $(document).on( "ajaxSend", function() {
+        //   $("#AjaxCallOverlay").fadeIn(300);
+        });
+        let myResponseStatus;
+      </script>
+    
+    
+
+    <script type="text/javascript">
+        
+
+        function getDate(datetimeString){
+            if (!datetimeString){
+                return "N/A";
+            }
+            var dateObj = new Date(datetimeString);
+    
+            var year = dateObj.getFullYear();
+            var month = dateObj.getMonth() + 1; // Months are 0-based
+            var day = dateObj.getDate();
+            
+            var formattedDate = day + '-' + month + '-' + year;
+            return formattedDate;
+    
+        }
+
+        function get_reimbursement(page){
+            $("#reimb_table").html("");
+                        
+
+            var status = $('.status_list option:selected').val()
+            var type = $('.types_list option:selected').val()
+            let apiurl = "/qxbox/api/investment_declaration/employee/reimbursement/?cmp_id={{request.session.cmp_id}}"+"&page="+page
+            if (status && status.length>0){
+                apiurl = apiurl +"&status="+status
+            }
+            if(type && type.length>0){
+                apiurl = apiurl + "&type="+type
+            }
+
+            $('#deptTable').DataTable().clear().destroy()
+
+            $.ajax({
+                type: 'GET',
+                url: apiurl,
+                dataType: 'json',
+                headers: {
+                    "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                },
+                success: function (data,textStatus) {
+                    
+                    let resp = data['result'];
+
+                    if(resp != ""){
+                        myResponseStatus = true;               
+                    }
+                    else {                       
+                        myResponseStatus = false
+                    }
+
+                    var domain = window.location.origin + "/media/";
+                    let href_tag = "N/A"
+
+                    for(var i=0;i<resp['results'].length;i++){
+                        if (resp['results'][i]['supportFile']){
+                            var hrefView = domain + resp['results'][i]['supportFile']                            
+                            href_tag = "<a href='"+hrefView+"' target='_blank'>View</a>"
+
+                        }else{
+                            href_tag = "N/A"
+                        }
+                        let edit_option = ""
+
+                        if (resp['results'][i]['status'] != "Approved_Paid"){
+                            edit_option = `<span class="dis_in" title="" data-toggle="tooltip" data-placement="top" data-original-title="Edit">
+                                        
+                                        <button type="button" class="btn btn-sm btn-default" data-apamt="`+resp['results'][i]['approvedAmount']+`" data-reason="`+resp['results'][i]['employerComment']+`" data-amt="`+resp['results'][i]['amount']+`" data-id="`+resp['results'][i]['id']+`" data-status="`+resp['results'][i]['status']+`" data-toggle="modal" data-target="#editStatusModal"><i class="fa fa-edit"></i></button>
+                                    
+                                </span>   `
+                        }
+                        
+                  
+                        $("#reimb_table").append(
+                            `
+                            <tr>
+                                <td>`+resp['results'][i]['employeeName']+`</td>
+                                <td>`+changeToNA(resp['results'][i]['employeeNumber'])+`</td>
+                                <td>`+getDate(resp['results'][i]['createdAt'])+`</td>
+                                <td>`+getDate(resp['results'][i]['expenseDate'])+`</td>
+                                <td>`+getDate(resp['results'][i]['approvalDate'])+`</td>
+                                <td>`+resp['results'][i]['type'].replace("_", " & ")+` `+changeToBlank(resp['results'][i]['otherType'])+`</td>
+                                <td>`+resp['results'][i]['detail']+`</td>
+                                <td>`+changeToNA(resp['results'][i]['employerComment'])+`</td>
+                                <td>`+resp['results'][i]['amount']+`</td>
+                                <td>`+resp['results'][i]['approvedAmount']+`</td>
+                                <td>`+href_tag+`</td>
+                                <td>`+resp['results'][i]['status'].replace("_", " & ")+`</td>
+                                <td>                                  
+                                    `+edit_option+`                                                                                  
+                                </td>
+                            </tr>
+                            `
+                        )
+                    }
+
+                    $('#deptTable').DataTable(
+                      {
+                          responsive: true,
+                          pageLength : 10,
+                          paginate: false,
+                          ordering:false,
+                            order:[],
+                          info: false,
+                        //   dom: 'Bfrtip',                            
+                            // buttons: [
+                            //     'copy', 'csv', 'excel', 'pdf'
+                            // ]
+                      }  
+                    );
+
+                        if (data['result'].previous) {
+                            $('.prev').removeClass('disabled')
+                            $('.prev').addClass('BtnActive')
+                            $('.prev').attr('data-page', parseInt(data['result'].currentPage) - 1)
+                        } else {
+                            $('.prev').addClass('disabled')
+                        }
+                        if (data['result'].next) {
+                            $('.nxt').removeClass('disabled')
+                            $('.nxt').addClass('BtnActive')
+                            $('.nxt').attr('data-page', parseInt(data['result'].currentPage) + 1)
+                        } else {
+                            $('.nxt').addClass('disabled')
+                        }
+
+                        $('.totalRecord').text(data['result'].count)
+                        $('.lastRecord').text(resp['results'].length)
+                        $(".cpage").text(data['result'].currentPage)
+
+                } 
+            }).done(function() {
+                
+                if(myResponseStatus == true) {
+                    // setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    // },500);
+                } else {
+                    console.log("failed msg")
+                    setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },5000);
+                }
+                
+            }).fail(function (xhr, status, e) { 
+                
+                swal({   
+                    title: "Error",
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+            });           
+        
+        }            
+
+
+
+     
+
+        $('.nav-btn').click(function (e) {
+            e.preventDefault();
+            const nextPage = parseInt($(this).data('page'));
+            if (!isNaN(nextPage)) {
+                get_reimbursement(nextPage);
+            }
+        })
+
+
+        function setDatatble(){
+          
+
+            $('.empbutton').click(function() {
+            $('#employeelist').removeClass('active');
+            });
+
+            oTable = $('#datatable').dataTable({
+                "bJQueryUI": true,
+                "sPaginationType": "full_numbers"
+             });
+
+            $("#selectall").click(function () {
+                var checkAll = $("#selectall").prop('checked');
+                    if (checkAll) {
+                        $(".case").prop("checked", true);
+                    } else {
+                        $(".case").prop("checked", false);
+                    }
+                });
+
+            $(".case").click(function(){
+                if($(".case").length == $(".case:checked").length) {
+                    $("#selectall").prop("checked", true);
+                } else {
+                    $("#selectall").prop("checked", false);
+                }
+
+            });
+        }
+         
+        $(document).ready(async function() {    
+            
+            var page = 1;
+
+            await setDatatble()
+
+            get_reimbursement(page);        
+
+            $("#search_form").submit( async function(e){
+                e.preventDefault();
+                
+                get_reimbursement(page);
+            })
+
+            $('#changeStatus').submit(function(e) {
+                e.preventDefault();
+                var status = $('#status').val();           
+                var approved_amt = $("#approved_amount").val()
+                var reimb_id = $("#reimb_id").val()
+                var dec_amt = parseFloat($("#declared_amount").val())
+                var reason = $("#reason").val();
+                // console.log(parseFloat(approved_amt) , parseFloat($("#declared_amount").val()));
+
+                if(parseFloat(approved_amt) > parseFloat($("#declared_amount").val())){
+                    swal("Approved Amount cannot be greater than Declared Amount");
+                    return;
+                }
+
+                if (status == "Pending" || status == "Rejected"){
+                    approved_amt = 0;
+                }
+            
+                $.ajax({
+                    type: "PUT",
+                    url: "/qxbox/api/investment_declaration/update/reimbursement/"+reimb_id+"/",
+                    data: {"status":status,"approved_amount":approved_amt,"employer_comment":reason},
+                    headers: {
+                        "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                    },
+                    success: function(response) {
+                    
+                        swal({
+                            title: response['msg'],
+                            type: "success",                                                    
+                            })
+                            window.location.replace("/qxbox/payroll/reimbursement/");
+                            return true;
+                        
+                    }
+                    });
+                
+            });
+
+
+        });
+
+
+        $('#editStatusModal').on('show.bs.modal', function(e) {
+
+            //get data-id attribute of the clicked element
+            // var status = $(e.relatedTarget).data('status');
+            // status = status.split(',')
+            // $(e.currentTarget).find("#status").html("")
+            // for(var i=0;i<status.length;i++){
+            //     $(e.currentTarget).find("#status").
+            // }
+            //populate the textbox
+            $(e.currentTarget).find('input[id="reimb_id"]').val($(e.relatedTarget).data('id'));
+            $(e.currentTarget).find('input[id="approved_amount"]').val($(e.relatedTarget).data('apamt'));
+            $(e.currentTarget).find('input[id="declared_amount"]').val($(e.relatedTarget).data('amt'));
+            $(e.currentTarget).find('input[id="reason"]').val($(e.relatedTarget).data('reason'));
+            $(e.currentTarget).find('#status option[value='+$(e.relatedTarget).data('status')+']').attr('selected','selected');
+            // $('#status option[value=Pending]')
+            
+        });
+
+
+        function load_close() {
+            window.location.replace("./employee_list");
+        }
+
+        function jsbox() { // alert('sssssssssss');
+            swal("Please check if the user is active and official mail id is set!");
+        }
+
+  
+        function JSalert(emp_id) {
+            swal({
+                title: "Are you sure you want to delete this!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#007bff",
+                confirmButtonText: "Delete",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: false,
+                closeOnCancel: true
+            },
+            function(isConfirm) {
+                if (isConfirm) {
+                swal("Deleted Successfully!", " ", "success");
+                window.location.replace("./emp/employees/is_deleted/" + emp_id);
+                }
+            });
+        }
+
+    </script>
+
+    <script>
+        $(function() {
+            // initialize after multiselect
+            $('#basic-form').parsley();
+        });
+    </script>
+
+
+<script>
+    $('#export_button').click(function() {
+        var status = $('.status_list option:selected').val()
+            var type = $('.types_list option:selected').val()
+            let apiurl = "/qxbox/api/investment_declaration/employee/reimbursement/?cmp_id={{request.session.cmp_id}}"
+            if (status && status.length>0){
+                apiurl = apiurl +"&status="+status
+            }
+            if(type && type.length>0){
+                apiurl = apiurl + "&type="+type
+            }
+            apiurl = apiurl + "&download=true"
+
+            $.ajax({
+                type: 'GET',
+                url: apiurl,   
+                xhrFields: {
+                    responseType: 'blob' // Set the response type to blob
+                },             
+                headers: {
+                    "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                },
+                success: function (data, status, xhr) {
+                    
+                    const blob = new Blob([data], { type: 'application/ms-excel' })
+                            // url = window.URL.createObjectURL(blob);
+                            // console.log(url);
+                            // window.location.replace(url)
+                            var link = document.createElement('a');
+                            link.href = window.URL.createObjectURL(blob);
+                            link.download = "Reimbursement.xlsx";
+                            link.click();                                        
+                },   
+                error:function(xhr, status, e) {
+                      
+                            swal({   
+                                title: 'Error' + e + xhr +status,
+                                type: "info",
+                                showCancelButton: false,
+                                confirmButtonColor: "#007bff",
+                                confirmButtonText: "Ok",
+                                closeOnConfirm: false,
+                                closeOnCancel: true 
+                            });
+                        }              
+            })
+            .done(function() {
+                
+                if(myResponseStatus == true) {
+                    // setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    // },500);
+                } else {                    
+                    setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);
+                }
+                
+            }).fail(function (xhr, status, e) {                 
+                swal({   
+                    title: "Error",
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+                 setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);                
+            });           
+        
+    
+    })
+    
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>offer letter Content</title>
+    
+</head>
+<body>
+{% if data %}
+    <div class="content">
+        {{ data|safe }}
+    </div>
+{% else %}
+    <p>No data found.</p>
+{% endif %}
+
+{% comment %} <img src="{{ company_logo }}" alt="Company Image" class="logo-img img-fluid" width="200" height="auto"><br><br><br><br> {% endcomment %}
+
+{% comment %} <p><b>To digitally accept the offer letter please click the button below.</b></p>
+<a href={{link}} target="_blank" style="border: 10px solid green; background: green; color: white; font-size: 14px; text-decoration: none;">Click Here</a> {% endcomment %}
+
+</body>
+</html>

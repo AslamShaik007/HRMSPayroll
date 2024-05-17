@@ -1,0 +1,1361 @@
+{% extends 'payroll/base/base.html' %}
+{% load static %}
+
+{% block css %}
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Saving Declaration | Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="HRMS, design by: vitelglobal.com">
+<!-- Font Awesome 4.7 Styles -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
+    type="text/css">
+<!-- Bootstrap 4.5 Styles -->
+<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" -->
+    <!-- integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous"> -->
+<!-- Datatable Styles -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+<!-- Custom CSS -->
+
+<style>
+    #main-content{
+        margin-top: 1.5rem !important;
+    }
+
+    #sortingtable thead tr th,
+    #sortingtable tbody tr td {
+        border-collapse:collapse !important;
+    }
+    
+    #sortingtable thead tr th,
+    #sortingtable tbody tr td    {
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .table.table-custom.spacing5 {
+        border-spacing: initial !important;
+    }
+    .prev{
+        float: initial !important;       
+    }
+
+</style>
+
+{% endblock css %}
+
+{% block main_content %}
+
+<section id="content-wrapper">
+    <div class="row mr-0">
+        <div class="col-lg-12">
+            <div class="container-fluid">
+                <div class="block-header mt-4">
+                    <div class="row clearfix">
+                        <div class="col-md-6 col-sm-12">
+                            <h1 class="ico_head"><i class="fa fa-money" aria-hidden="true"></i> User Submitted Forms</h1>
+                        </div>
+                    </div>
+                </div>
+           
+
+                <div class="row">
+                    <div class="col-12">
+                
+
+                        <div class="body shadow mt-3 mb-5 pt-3 px-3  border_radius_10 bg-white">
+                            <div class="tab-pane" id="l_SavingsDeclarationtypes">
+                                <div class="container-fluid">
+                                    <div class="p-2">
+                                        <div class="col-lg-12 px-0">
+                                            <div class="body">
+
+                                                <div class="row clearfix">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                                        <div class="card pb-3">
+                                                            
+                                                                <div class="table-responsive">
+                                                                    <table class="table table-hover table-custom spacing5 mb-0 ">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td class=" pb-0"
+                                                                                    style="border-bottom:0px solid #eee;">
+
+                                                                                    <div class="d-flex flex-column">
+                                                                                        
+                                                                                        <div class="form-group p-2 mb-0">
+                                                                                            <h6 id="employee_data">
+                                                                                            </h6>
+                                                                                        </div>
+
+                                                                                        <div class="form-group p-2 mb-0">
+                                                                                            <div class="multiselect_div font_weight_700"
+                                                                                                id="sdyear">
+
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group p-2 mb-0">
+                                                                                            <h6 id="empCtc">
+                                                                                            </h6>
+                                                                                        </div>
+                                                                                        <div class="form-group p-2 mb-0">
+                                                                                            <h6 id="savingsAfterCtc">
+                                                                                            </h6>
+                                                                                        </div>
+                                                                                    
+                                                                                        <div class="d-flex flex-row">
+                                                                                            <div class="form-group p-2 mb-0">
+                                                                                                <h6>Income from previous
+                                                                                                    employer:</h6>
+                                                                                            </div>
+                                                                                            <div class="form-group mb-0">
+                                                                                                <input min="0" value="0"
+                                                                                                    type="number"
+                                                                                                    placeholder="Amount"
+                                                                                                    id="inc_from_prev_emp"
+                                                                                                    class="form-control txt1 previous_income"
+                                                                                                    disabled>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="d-flex flex-row">
+                                                                                            <div class="form-group p-2 mb-0">
+                                                                                                <h6>TDS from previous
+                                                                                                    employer:</h6>
+                                                                                            </div>
+                                                                                            <div class="form-group mb-0">
+                                                                                                <input min="0" value="0"
+                                                                                                    type="number"
+                                                                                                    placeholder="Amount"
+                                                                                                    id="tds_from_prev_emp"
+                                                                                                    class="form-control txt1 previous_tds"
+                                                                                                    disabled>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group p-2 mb-0" id="total_cti">
+                                                                                            
+                                                                                        </div>
+
+                                                                                    </div>
+
+
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                    <table class="table table-hover table-custom spacing5 mb-0 no-footer">
+                                                                        
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>S.No.</th>
+                                                                                <th>Forms</th>
+                                                                                <th>Attachments</th>
+                                                                                <th>Declared Amount </th>
+                                                                                <th>Approved Amount </th>
+                                                                                <th>Final Declared Amount </th>
+                                                                                <th>Final Approved Amount </th>
+                                                                                <th>Comments from employee</th>
+                                                                                <th>Comments from employer</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="sd_forms">
+                                                                            
+                                                                        </tbody>
+                                                                    </table>
+                                                                    <div class="form-sec pt-3 pb-3 text-right">
+                                                                       
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{% endblock main_content %}
+
+{% block js %}
+
+<!-- Sidebar Script -->
+<!-- <script>
+    const $button = document.querySelector('#sidebar-toggle');
+    const $wrapper = document.querySelector('#wrapper');
+
+    $button.addEventListener('click', (e) => {
+        e.preventDefault();
+        $wrapper.classList.toggle('toggled');
+    });
+</script> -->
+<!-- /Sidebar Script -->
+
+<script>
+
+
+    function hideSideLogo() {
+        if (document.querySelector("#sideNavLogo").style.display === 'none') {
+            document.querySelector("#topNavLogo").style.display = "none";
+            document.querySelector("#sideNavLogo").style.display = 'block';
+        } else {
+            document.querySelector("#topNavLogo").style.display = "block";
+            document.querySelector("#sideNavLogo").style.display = 'none';
+        }
+    }
+
+    // DataTable Script
+    // $(document).ready(function() {
+    //     $('#deptTable').DataTable({"order": [0, 'asc'],'ordering': true});
+    // });
+
+    // Add and Remove New Desigantion Textboxes 
+
+    // Delete Desigantion Text boxes
+    $(".delSubDeptName").on('click', function (e) {
+        $(this).parent().parent().remove();
+    })
+    $("#addNewDesigantionNameBtn").click(function () {
+        $("#DesigantionContainer").append(`<div class="DesigantionFormField position-relative my-2"><input type="text" class="form-control addNewDesigantionName" name="addNewDesigantionName" placeholder="Designation" /><div class="actionPart position-absolute"><span class="text-danger delSubDeptName mx-1" onclick="$('.delSubDeptName').on('click', function(e) {$(this).parent().parent().remove();})">X</span></div></div>`);
+    });
+</script>
+
+
+<script>
+
+
+async function get_set_form(){
+    var form_choices = [];
+
+    await $.ajax({
+            type: 'GET',
+            url: "/qxbox/{% url 'basic_declaratin_formstype' %}",
+            dataType: 'json',
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem('acc_token')
+            },
+            success: function (data, textStatus) {
+                form_choices = data;
+            },
+            error: function (xhr, status, e) {
+                alert('Error');
+            }
+        })        
+
+    $('#deptTable').DataTable().clear().destroy()
+
+
+     await $.ajax({
+            type: 'GET',
+            url: "/qxbox/{% url 'retrive_investment_declarations' %}",
+            dataType: 'json',
+            data: { "employee__company": '{{request.session.cmp_id}}', "id": '{{id}}' },
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem('acc_token')
+            },
+            success: async function (data, textStatus) {
+
+                let resp = data;
+                var pf = [];
+
+                // SAVED = 10
+                // SUBMIT = 20
+                // RE_SUBMIT = 30
+                // CANCEL = 40
+                // REVOKED = 50
+                // APPROVE = 60
+                // APPROVE_REVOKED = 70
+                // DECLINE = 80
+                // FINAL_APPROVED = 90
+
+                var total_approved_amt = 0
+                var total_declared_amt = 0
+
+                var total_fin_declared_amt = 0
+                var total_fin_approved_amt = 0
+
+                for (var k = 0; k < resp.length; k++) {                    
+
+                    let emp_ctc = resp[k]['employeeData']['ctc']
+                  
+                    $("#total_cti").html(
+                        `
+                            <strong> Total Projected yearly income
+                            (Previous employer income + Current employer income) = </strong> 
+                            `
+                            +(parseInt(emp_ctc) + parseInt(resp[k]['incomeFromPreviousEmployer'])) +
+                            `
+                        `
+                    )
+
+                    if(resp[k]['regimeType']==20){
+                        $('.UserSubmittedFormsTable').hide()
+                        $(".form-sec").hide()
+                    }else{
+                        if(resp[k]['adminResubmitStatus']==90){
+                            $('.form-sec').html(
+                                `<div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-auto me-auto">                                        
+                                            <button type="button" class="btn btn-success addBtn text-uppercase border-0 mr-3" disabled>Final Approved</button>                                            
+                                            
+                                        </div>                                                                           
+                                    </div>
+                                </div>`
+                            )
+                        }
+                        else if(resp[k]['adminResubmitStatus']==60){
+                            $('.form-sec').html(
+                                `<div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-auto me-auto">                                        
+                                            <button type="button" class="btn btn-success addBtn text-uppercase border-0 mr-3" disabled>Approved</button>                                                                                                                            
+                                            
+                                        </div>                                                                           
+                                    </div>
+                                </div>`
+                            )
+                        }
+                        // else if(resp[k]['adminResubmitStatus']==50 && resp[k]['status']!=30){
+                        //     $('.form-sec').html(
+                        //         `<div class="container-fluid">
+                        //             <div class="row">
+                        //                 <div class="col-auto me-auto">                                        
+                        //                     <button type="button" class="btn btn-success addBtn text-uppercase border-0 mr-3" disabled>Revoked</button>                                                                                
+                                            
+                        //                 </div>                                                                           
+                        //             </div>
+                        //         </div>`
+                        //     )
+                        // } 
+                        // <button type="button" class="btn btn-success addBtn text-uppercase revoked_btn border-0 mr-3">Revoke</button>
+                        else if(resp[k]['adminResubmitStatus']==50){
+                            $('.form-sec').html(
+                                `<div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-auto me-auto">
+                                            <button type="button" class="btn btn-success addBtn text-uppercase approve_btn border-0 mr-3">Approve</button>
+                                            
+                                            
+                                            
+                                            <button type="button" class="btn btn-danger addBtn text-uppercase save_btn border-0">Save</button>
+                                            
+                                        </div>                                                                               
+                                    </div>
+                                </div>`
+                            )                            
+                        } 
+                        // <button type="button" class="btn btn-success addBtn text-uppercase revoked_btn border-0 mr-3">Revoke</button>
+
+                        else if(resp[k]['status']==30){
+                            $('.form-sec').html(
+                                `<div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-auto me-auto">
+                                            <button type="button" class="btn btn-success addBtn text-uppercase fin_app_btn border-0 mr-3">Final Approval</button>
+                                            
+                                            
+                                            <button type="button" class="btn btn-danger addBtn text-uppercase save_btn border-0">Save</button>
+                                            
+                                        </div>                                                                               
+                                    </div>
+                                </div>`
+                            )
+                        } 
+                        // <button type="button" class="btn btn-success addBtn text-uppercase revoked_btn border-0 mr-3">Revoke</button>
+                        else if(resp[k]['adminResubmitStatus']==30){
+                            $('.form-sec').html(
+                                `<div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-auto me-auto">                                            
+                                            
+                                        </div>                                                                               
+                                    </div>
+                                </div>`
+                            )
+                        } 
+                        else{
+                            $('.form-sec').html(
+                                `<div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-auto me-auto">
+                                            <button type="button" class="btn btn-success addBtn text-uppercase approve_btn border-0 mr-3">Approve</button>
+                                            
+                                            
+                                            <button type="button" class="btn btn-danger addBtn text-uppercase save_btn border-0">Save</button>
+                                            
+                                        </div>                                                                           
+                                    </div>
+                                </div>` 
+                            )
+                        }                       
+                    }
+
+                    $("#inc_from_prev_emp").val(resp[k]['incomeFromPreviousEmployer'])
+                    $("#tds_from_prev_emp").val(resp[k]['tdsFromPreviousEmployer'])
+
+                    $("#sdyear").text("FY - "+resp[k]['startYear'] + "-" + resp[k]['endYear'])
+
+                    $("#empCtc").text("CTC: " + resp[k]['employeeData']['ctc'])                    
+                    $("#savingsAfterCtc").text("Gross Earnings: " + resp[k]['employeeData']['grossPerYear'])                    
+                    
+                    $("#employee_data").html(
+                        `<p> Employee ID - `+resp[k]['employeeData']['employeeNumber']+`</p>
+                        <p> Employee Name - `+resp[k]['employeeData']['name']+`</p>
+                        <p> Department - `+resp[k]['employeeData']['department']+`</p>
+                        
+                        `
+                    )                    
+
+                    for (var i = 0; i < resp[k]['declarationForms'].length; i++) {
+
+                        let pft = resp[k]['declarationForms'][i]['parentformType'] - 1;                        
+                        let sft = null;
+                        let fids = pft;
+                        let form_type_txt = form_choices[resp[k]['declarationForms'][i]['parentformType'] - 1]['formtype']
+                        
+                        if (resp[k]['declarationForms'][i]?.['subformType']) {
+                            let formlists = form_choices[resp[k]['declarationForms'][i]['parentformType'] - 1]['formChoices']
+                            for (var t = 0; t < formlists.length; t++) {
+                                if (formlists[t]['id'] == resp[k]['declarationForms'][i]['subformType']) {
+                                    form_type_txt = form_type_txt + " </br> <span style='color:red'> " + formlists[t]['formtype'] +"</span>";
+                                }
+                            }
+                            sft = resp[k]['declarationForms'][i]['subformType'];
+                            fids = pft + "_" + sft;
+                        }
+
+                        $("#sd_forms").append(`
+                                    <tr id="forms_`+ fids + `">
+                                        <td>`+ (i + 1) + `</td>
+                                        <td>`+ form_type_txt + `</td>                                 
+                                    </tr>
+                                `)
+                    }
+                    for (var i = 0; i < resp[k]['declarationForms'].length; i++) {
+
+                        let pft = resp[k]['declarationForms'][i]['parentformType'] - 1;
+                        // console.log(pft,form_choices);
+
+                        let sft = null;
+                        let fids = pft;
+                        if (resp[k]['declarationForms'][i]?.['subformType']) {
+                            sft = resp[k]['declarationForms'][i]['subformType']
+                            fids = pft + "_" + sft;
+                        }
+
+                        total_approved_amt = total_approved_amt + parseInt(resp[k]['declarationForms'][i]['declaredAmount'])
+                        total_declared_amt = total_declared_amt + parseInt(resp[k]['declarationForms'][i]['approvedAmount'])
+
+                        total_fin_declared_amt = total_fin_declared_amt + parseInt(resp[k]['declarationForms'][i]['finalDeclaredAmount'])
+                        total_fin_approved_amt = total_fin_approved_amt + parseInt(resp[k]['declarationForms'][i]['finalApprovedAmount'])
+
+                        if(resp[k]['adminResubmitStatus']==90){
+                                
+                                $("#forms_" + fids).append(
+                                    `
+                                        <td id="attach_` + fids + `"> </td>
+                                        <td>`+resp[k]['declarationForms'][i]['declaredAmount']+`</td>
+                                        <td>`+ resp[k]['declarationForms'][i]['approvedAmount'] + `</td>
+                                        <td>`+ changeToBlankwoBracket(resp[k]['declarationForms'][i]['finalDeclaredAmount']) + `</td>
+                                        <td>`+ resp[k]['declarationForms'][i]['finalApprovedAmount'] + `</td>
+                                        <td>`+ changeToNA(resp[k]['declarationForms'][i]['commentsFromEmployee']) + `</td>
+                                        <td>`+ changeToBlankwoBracket(resp[k]['declarationForms'][i]['commentsFromEmployer']) + `</td>
+                                    `
+                                )
+    
+                        }
+                        else if(resp[k]['adminResubmitStatus']==60){
+                                
+                            $("#forms_" + fids).append(
+                                `
+                                    <td id="attach_` + fids + `"> </td>
+                                    <td><input type='number' class="declared_amount" value="`+ resp[k]['declarationForms'][i]['declaredAmount'] + `" readonly></input></td>
+                                    <td><input type='number' class="approved_amount" min="0" oninput="validity.valid||(value='');" value="`+ resp[k]['declarationForms'][i]['approvedAmount'] + `" disabled></input></td>
+                                    <td><input type='number' class="fin_declared_amount" value="`+ changeToBlankwoBracket(resp[k]['declarationForms'][i]['finalDeclaredAmount']) + `" readonly></input></td>
+                                    <td><input class="fin_approved_amount" type='number' min="0" oninput="validity.valid||(value='');" value="`+ resp[k]['declarationForms'][i]['finalApprovedAmount'] + `" disabled></input></td>
+                                    <td>`+ changeToNA(resp[k]['declarationForms'][i]['commentsFromEmployee']) + `</td>
+                                    <td><input type='text' class="cmntsemplr" value="`+ changeToBlankwoBracket(resp[k]['declarationForms'][i]['commentsFromEmployer']) + `" id="employer_comments"  data-sfid="` + sft + `" data-pid="` + (pft + 1) + `" disabled></input></td>
+                                `
+                            )
+
+                        }else if(resp[k]['adminResubmitStatus']==30){
+                            $("#forms_" + fids).append(
+                                `
+                                    <td id="attach_` + fids + `"> </td>
+                                    <td><input type='number' class="declared_amount" value="`+ resp[k]['declarationForms'][i]['declaredAmount'] + `" readonly></input></td>
+                                    <td><input type='number' class="approved_amount" min="0" oninput="validity.valid||(value='');" value="`+ resp[k]['declarationForms'][i]['approvedAmount'] + `" disabled></input></td>
+                                    <td><input type='number' class="fin_declared_amount" value="`+ changeToBlankwoBracket(resp[k]['declarationForms'][i]['finalDeclaredAmount']) + `" readonly></input></td>
+                                    <td><input class="fin_approved_amount" type='number' min="0" oninput="validity.valid||(value='');" value="`+ resp[k]['declarationForms'][i]['finalApprovedAmount'] + `" disabled></input></td>
+                                    <td>`+ changeToNA(resp[k]['declarationForms'][i]['commentsFromEmployee']) + `</td>
+                                    <td><input type='text' class="cmntsemplr" value="`+ changeToBlankwoBracket(resp[k]['declarationForms'][i]['commentsFromEmployer']) + `" id="employer_comments"  data-sfid="` + sft + `" data-pid="` + (pft + 1) + `" disabled></input></td>
+                                `
+                            )
+                        }
+                        else if(resp[k]['status']==30){
+                                
+                                $("#forms_" + fids).append(
+                                    `
+                                        <td id="attach_` + fids + `"> </td>
+                                        <td><input type='number' class="declared_amount" value="`+ resp[k]['declarationForms'][i]['declaredAmount'] + `" readonly></input></td>
+                                        <td><input type='number' class="approved_amount" min="0" oninput="validity.valid||(value='');" value="`+ resp[k]['declarationForms'][i]['approvedAmount'] + `" disabled></input></td>
+                                        <td><input type='number' class="fin_declared_amount" value="`+ changeToBlankwoBracket(resp[k]['declarationForms'][i]['finalDeclaredAmount']) + `" readonly></input></td>
+                                        <td><input class="fin_approved_amount" type='number' min="0" oninput="validity.valid||(value='');" value="`+ resp[k]['declarationForms'][i]['finalApprovedAmount'] + `" ></input></td>
+                                        <td>`+ changeToNA(resp[k]['declarationForms'][i]['commentsFromEmployee']) + `</td>
+                                        <td><input type='text' class="cmntsemplr" value="`+ changeToBlankwoBracket(resp[k]['declarationForms'][i]['commentsFromEmployer']) + `" id="employer_comments"  data-sfid="` + sft + `" data-pid="` + (pft + 1) + `"></input></td>
+                                    `
+                                )
+    
+                            }else{
+
+                                $("#forms_" + fids).append(
+                                `
+                                        <td id="attach_` + fids + `"> </td>
+                                        <td><input type='number' class="declared_amount" value="`+ resp[k]['declarationForms'][i]['declaredAmount'] + `" readonly></input></td>
+                                        <td><input type='number' class="approved_amount" min="0" oninput="validity.valid||(value='');" value="`+ resp[k]['declarationForms'][i]['approvedAmount'] + `"></input></td>
+                                        <td>`+ changeToBlankwoBracket(resp[k]['declarationForms'][i]['finalDeclaredAmount']) + `</td>
+                                        <td><input type='number' min="0" oninput="validity.valid||(value='');" value="`+ resp[k]['declarationForms'][i]['finalApprovedAmount'] + `" disabled></input></td>
+                                        <td>`+ changeToNA(resp[k]['declarationForms'][i]['commentsFromEmployee']) + `</td>
+                                        <td><input type='text' class="cmntsemplr" value="`+ changeToBlankwoBracket(resp[k]['declarationForms'][i]['commentsFromEmployer']) + `" id="employer_comments"  data-sfid="` + sft + `" data-pid="` + (pft + 1) + `"></input></td>
+                                    `
+                                )
+                        }
+
+                        if ((resp[k]['declarationForms'][i]['attachments']['filespath'] != "-") && (resp[k]['declarationForms'][i]['attachments']['filespath'].length > 0)) {
+                            for (var t = 0; t < resp[k]['declarationForms'][i]['attachments']['filespath'].length; t++) {                                
+                                $("#attach_" + fids).append(
+                                    `
+                                        <a style="cursor:pointer" target="_blank" href="/media/`+ resp[k]['declarationForms'][i]['attachments']['filespath'][t]['name'] + `">Attachment-`+(t+1)+`</a></br>
+                                        `
+                                )
+                            }
+                        } else {
+                            $("#attach_" + fids).append("NA")
+                        }
+
+                    }
+
+                }
+
+                if(!total_approved_amt){
+                    total_approved_amt = 0
+                }
+                if(!total_declared_amt){
+                    total_declared_amt = 0
+                }
+                if(!total_fin_approved_amt){
+                    total_fin_approved_amt = 0
+                }
+                if(!total_fin_declared_amt){
+                    total_fin_declared_amt = 0
+                }
+
+                $("#sd_forms").append(`
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>`+ total_approved_amt + `</td>
+                                        <td>`+ total_declared_amt + `</td>                                 
+                                        <td>`+ total_fin_declared_amt + `</td>                                 
+                                        <td>`+ total_fin_approved_amt + `</td>                                 
+                                    </tr>
+                                `)
+
+            }            
+        }).done(function() {
+                
+                if(myResponseStatus == true) {
+                    // setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    // },500);
+                } else {                    
+                    setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);
+                }
+                
+            }).fail(function (xhr, status, e) {                 
+                swal({   
+                    title: "Error",
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+                 setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);                
+            });           
+
+}
+   
+$(document).ready(function () {
+        get_set_form();
+       
+    })
+
+    $(document).on('click', '.approve_btn', function(){     
+        var today = new Date();
+        var dd = today.getDate();
+
+        var mm = today.getMonth() + 1;
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+        today = yyyy + '-' + mm + '-' + dd;
+
+        let details = []
+        var inputs = $(".cmntsemplr");
+        var appamt = $(".approved_amount");
+        var dscamt = $(".declared_amount");
+        var total_approved_amount = 0;
+
+        for (var i = 0; i < inputs.length; i++) {           
+            if ($(inputs[i]).attr('data-sfid')) {
+                if (parseInt($(appamt[i]).val()) > parseInt($(dscamt[i]).val())) {
+                    swal({
+                        title: "Approved amount cannot be more than declared amount",
+                        type: "warning",
+                        confirmButtonColor: "#007bff",
+                        confirmButtonText: "Ok",
+                        closeOnConfirm: true
+                    },
+                        function (isConfirm) {
+                            // window.location.replace("/qxbox/payroll/epf-details/);
+                        });
+                    return;
+                }
+
+                total_approved_amount = total_approved_amount + parseInt($(appamt[i]).val())
+                let s_form = []
+                s_form.push({
+                    "id": parseInt($(inputs[i]).attr('data-sfid')),
+                    "approvedAmount": $(appamt[i]).val(),
+                    "commentsFromEmployer": $(inputs[i]).val(),
+                })
+                details.push({
+                    "p_id": parseInt($(inputs[i]).attr('data-pid')),
+                    "s_form": s_form
+                })
+            } 
+            else {
+
+
+                if (parseInt($(appamt[i]).val()) > parseInt($(dscamt[i]).val())) {
+                    swal({
+                        title: "Approved amount cannot be more than declared amount",
+                        type: "warning",
+                        confirmButtonColor: "#007bff",
+                        confirmButtonText: "Ok",
+                        closeOnConfirm: true
+                    },
+                        function (isConfirm) {
+                            // window.location.replace("/qxbox/{% url 'saving_all_employee_forms' %}");
+                        });
+                    return;
+                }
+
+                total_approved_amount = total_approved_amount + parseInt($(appamt[i]).val())
+
+                details.push({
+                    "p_id": parseInt($(inputs[i]).attr('data-pid')),
+                    "approvedAmount": $(appamt[i]).val(),
+                    "commentsFromEmployer": $(inputs[i]).val(),
+                })
+
+            }
+        }
+
+
+        let fdata = new FormData();        
+        fdata.append('approvalDate', today);
+        fdata.append('adminResubmitStatus', 60);
+        
+        fdata.append('approvedAmount', total_approved_amount);
+        
+        fdata.append('details', JSON.stringify(details));
+
+        if (details.length > 0) {
+            $.ajax({
+                    type: 'PATCH',
+                    url: "/qxbox/{% url 'update_investment_declaration_admin' id=id %}",
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    data: fdata,
+                    headers: {
+                        "Authorization": "Bearer " + localStorage.getItem('acc_token')
+                    },
+                    success: function (data, textStatus) {
+
+                        swal({
+                            title: "Approved",
+                            type: "success",
+                            confirmButtonColor: "#007bff",
+                            confirmButtonText: "Ok",
+                            closeOnConfirm: true
+                        },
+                            function (isConfirm) {
+                                window.location.replace("/qxbox/{% url 'saving_all_employee_forms' %}");
+                            });    
+                    },
+                    error: function (xhr, status, e) {
+                        swal({
+                            title: "Error",
+                            type: "warning",
+                            confirmButtonColor: "#007bff",
+                            confirmButtonText: "Ok",
+                            closeOnConfirm: true
+                        },
+                            function (isConfirm) {
+                                // window.location.replace("/qxbox/payroll/epf-details/);
+                            });
+                    }
+            }) .done(function() {
+                
+                if(myResponseStatus == true) {
+                    // setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    // },500);
+                } else {                    
+                    setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);
+                }
+                
+            }).fail(function (xhr, status, e) {                 
+                swal({   
+                    title: "Error",
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+                 setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);                
+            });           
+        }
+
+    })
+
+
+    $(document).on('click', '.fin_app_btn', function(){     
+        var today = new Date();
+        var dd = today.getDate();
+
+        var mm = today.getMonth() + 1;
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+        today = yyyy + '-' + mm + '-' + dd;
+
+        let details = []
+        var inputs = $(".cmntsemplr");
+        var appamt = $(".fin_approved_amount");
+        var dscamt = $(".fin_declared_amount");
+        var fappamt = $(".fin_approved_amount");
+        var total_approved_amount = 0;
+
+        for (var i = 0; i < inputs.length; i++) {           
+            if ($(inputs[i]).attr('data-sfid')) {
+                if (parseInt($(appamt[i]).val()) > parseInt($(dscamt[i]).val())) {
+                    swal({
+                        title: "Approved amount cannot be more than declared amount",
+                        type: "warning",
+                        confirmButtonColor: "#007bff",
+                        confirmButtonText: "Ok",
+                        closeOnConfirm: true
+                    },
+                        function (isConfirm) {
+                            // window.location.replace("/qxbox/payroll/epf-details/);
+                        });
+                    return;
+                }
+
+                total_approved_amount = total_approved_amount + parseInt($(appamt[i]).val())
+                let s_form = []
+                s_form.push({
+                    "id": parseInt($(inputs[i]).attr('data-sfid')),
+                    "finalApprovedAmount": $(appamt[i]).val(),
+                    "commentsFromEmployer": $(inputs[i]).val(),
+                    "finalApprovedAmount": $(fappamt[i]).val(),
+                })
+                details.push({
+                    "p_id": parseInt($(inputs[i]).attr('data-pid')),
+                    "s_form": s_form
+                })
+            } 
+            else {
+
+
+                if (parseInt($(appamt[i]).val()) > parseInt($(dscamt[i]).val())) {
+                    swal({
+                        title: "Approved amount cannot be more than declared amount",
+                        type: "warning",
+                        confirmButtonColor: "#007bff",
+                        confirmButtonText: "Ok",
+                        closeOnConfirm: true
+                    },
+                        function (isConfirm) {
+                            // window.location.replace("/qxbox/{% url 'saving_all_employee_forms' %}");
+                        });
+                    return;
+                }
+
+                total_approved_amount = total_approved_amount + parseInt($(appamt[i]).val())
+
+                details.push({
+                    "p_id": parseInt($(inputs[i]).attr('data-pid')),
+                    "finalApprovedAmount": $(appamt[i]).val(),
+                    "commentsFromEmployer": $(inputs[i]).val(),
+                })
+
+            }
+        }
+
+
+        let fdata = new FormData();        
+        fdata.append('approvalDate', today);
+        fdata.append('adminResubmitStatus', 90);
+        
+        fdata.append('finalApprovedAmount', total_approved_amount);
+        
+        fdata.append('details', JSON.stringify(details));
+
+        if (details.length > 0) {
+            $.ajax({
+                    type: 'PATCH',
+                    url: "/qxbox/{% url 'update_investment_declaration_admin' id=id %}",
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    data: fdata,
+                    headers: {
+                        "Authorization": "Bearer " + localStorage.getItem('acc_token')
+                    },
+                    success: function (data, textStatus) {
+
+                        swal({
+                            title: "Approved",
+                            type: "success",
+                            confirmButtonColor: "#007bff",
+                            confirmButtonText: "Ok",
+                            closeOnConfirm: true
+                        },
+                            function (isConfirm) {
+                                window.location.replace("/qxbox/{% url 'saving_all_employee_forms' %}");
+                            });    
+                    },
+                    error: function (xhr, status, e) {
+                        swal({
+                            title: "Error",
+                            type: "warning",
+                            confirmButtonColor: "#007bff",
+                            confirmButtonText: "Ok",
+                            closeOnConfirm: true
+                        },
+                            function (isConfirm) {
+                                // window.location.replace("/qxbox/payroll/epf-details/);
+                            });
+                    }
+            }) .done(function() {
+                
+                if(myResponseStatus == true) {
+                    // setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    // },500);
+                } else {                    
+                    setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);
+                }
+                
+            }).fail(function (xhr, status, e) {                 
+                swal({   
+                    title: "Error",
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+                 setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);                
+            });           
+        }
+
+    })
+
+
+
+    $(document).on('click', '.revoked_btn', function(){   
+        
+        let details = []
+        var inputs = $(".cmntsemplr");
+        var appamt = 0;
+        var dscamt = $(".declared_amount");
+        var total_approved_amount = 0;
+
+        for (var i = 0; i < inputs.length; i++) {           
+            if ($(inputs[i]).attr('data-sfid')) {
+                if (parseInt($(appamt[i]).val()) > parseInt($(dscamt[i]).val())) {
+                    swal({
+                        title: "Approved amount cannot be more than declared amount",
+                        type: "warning",
+                        confirmButtonColor: "#007bff",
+                        confirmButtonText: "Ok",
+                        closeOnConfirm: true
+                    },
+                        function (isConfirm) {
+                            // window.location.replace("/qxbox/payroll/epf-details/);
+                        });
+                    return;
+                }
+
+              
+                let s_form = []
+                s_form.push({
+                    "id": parseInt($(inputs[i]).attr('data-sfid')),
+                    "approvedAmount": 0,
+                    "commentsFromEmployer": $(inputs[i]).val(),
+                })
+                details.push({
+                    "p_id": parseInt($(inputs[i]).attr('data-pid')),
+                    "s_form": s_form
+                })
+            } 
+            else {
+
+
+                if (parseInt($(appamt[i]).val()) > parseInt($(dscamt[i]).val())) {
+                    swal({
+                        title: "Approved amount cannot be more than declared amount",
+                        type: "warning",
+                        confirmButtonColor: "#007bff",
+                        confirmButtonText: "Ok",
+                        closeOnConfirm: true
+                    },
+                        function (isConfirm) {
+                            // window.location.replace("/qxbox/{% url 'saving_all_employee_forms' %}");
+                        });
+                    return;
+                }
+             
+                details.push({
+                    "p_id": parseInt($(inputs[i]).attr('data-pid')),
+                    "approvedAmount": 0,
+                    "commentsFromEmployer": $(inputs[i]).val(),
+                })
+
+            }
+        }
+
+
+        let fdata = new FormData();                
+  
+        fdata.append('adminResubmitStatus', 50);
+        fdata.append('status', 20);
+        fdata.append('approvedAmount', 0);
+        
+        fdata.append('details', JSON.stringify(details));
+
+        if (details.length > 0) {
+      
+            $.ajax({
+                type: 'PATCH',
+                url: "/qxbox/{% url 'update_investment_declaration_admin' id=id %}",
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                data: fdata,
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem('acc_token')
+                },
+                success: function (data, textStatus) {
+
+                    swal({
+                        title: "Revoked",
+                        type: "success",
+                        confirmButtonColor: "#007bff",
+                        confirmButtonText: "Ok",
+                        closeOnConfirm: true
+                    },
+                        function (isConfirm) {
+                            window.location.replace("/qxbox/{% url 'saving_all_employee_forms' %}");                       
+                        });
+                },
+                error: function (xhr, status, e) {
+                    swal({
+                        title: "Error",
+                        type: "warning",
+                        confirmButtonColor: "#007bff",
+                        confirmButtonText: "Ok",
+                        closeOnConfirm: true
+                    },
+                        function (isConfirm) {
+                            // window.location.replace("/qxbox/payroll/epf-details/);
+                        });
+                }
+            }) .done(function() {
+                    
+                    if(myResponseStatus == true) {
+                        // setTimeout(function(){
+                            $("#AjaxCallOverlay").fadeOut('slow');
+                        // },500);
+                    } else {                    
+                        setTimeout(function(){
+                            $("#AjaxCallOverlay").fadeOut('slow');
+                        },3000);
+                    }
+                    
+                }).fail(function (xhr, status, e) {                 
+                    swal({   
+                        title: "Error",
+                        type: "info",
+                        showCancelButton: false,
+                        confirmButtonColor: "#007bff",
+                        confirmButtonText: "Ok",
+                        closeOnConfirm: false,
+                        closeOnCancel: true 
+                    });
+                    setTimeout(function(){
+                            $("#AjaxCallOverlay").fadeOut('slow');
+                        },3000);                
+                });           
+        }
+    })
+
+
+    $(document).on('click', '.save_btn', function(){             
+
+        let details = []
+        var inputs = $(".cmntsemplr");
+        var appamt = $(".approved_amount");
+        var dscamt = $(".declared_amount");
+        var fappamt = $(".fin_approved_amount");
+        var total_approved_amount = 0;
+
+        for (var i = 0; i < inputs.length; i++) {           
+            if ($(inputs[i]).attr('data-sfid')) {
+                if (parseInt($(appamt[i]).val()) > parseInt($(dscamt[i]).val())) {
+                    swal({
+                        title: "Approved amount cannot be more than declared amount",
+                        type: "warning",
+                        confirmButtonColor: "#007bff",
+                        confirmButtonText: "Ok",
+                        closeOnConfirm: true
+                    },
+                        function (isConfirm) {
+                            // window.location.replace("/qxbox/payroll/epf-details/);
+                        });
+                    return;
+                }
+
+                total_approved_amount = total_approved_amount + parseInt($(appamt[i]).val())
+                let s_form = []
+                s_form.push({
+                    "id": parseInt($(inputs[i]).attr('data-sfid')),
+                    "approvedAmount": $(appamt[i]).val(),
+                    "commentsFromEmployer": $(inputs[i]).val(),
+                    "finalApprovedAmount": $(fappamt[i]).val(),
+                })
+                details.push({
+                    "p_id": parseInt($(inputs[i]).attr('data-pid')),
+                    "s_form": s_form
+                })
+            } 
+            else {
+
+
+                if (parseInt($(appamt[i]).val()) > parseInt($(dscamt[i]).val())) {
+                    swal({
+                        title: "Approved amount cannot be more than declared amount",
+                        type: "warning",
+                        confirmButtonColor: "#007bff",
+                        confirmButtonText: "Ok",
+                        closeOnConfirm: true
+                    },
+                        function (isConfirm) {
+                            // window.location.replace("/qxbox/{% url 'saving_all_employee_forms' %}");
+                        });
+                    return;
+                }
+
+                total_approved_amount = total_approved_amount + parseInt($(appamt[i]).val())
+
+                details.push({
+                    "p_id": parseInt($(inputs[i]).attr('data-pid')),
+                    "approvedAmount": $(appamt[i]).val(),
+                    "commentsFromEmployer": $(inputs[i]).val(),
+                })
+
+            }
+        }
+
+
+        let fdata = new FormData();                
+  
+        fdata.append('adminResubmitStatus', 10);
+        fdata.append('approvedAmount', total_approved_amount);
+        
+        fdata.append('details', JSON.stringify(details));
+
+        if (details.length > 0) {
+            
+        $.ajax({
+            type: 'PATCH',
+            url: "/qxbox/{% url 'update_investment_declaration_admin' id=id %}",
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            data: fdata,
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem('acc_token')
+            },
+            success: function (data, textStatus) {
+
+                swal({
+                    title: "Saved",
+                    type: "success",
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: true
+                },
+                    function (isConfirm) {
+                        window.location.replace("/qxbox/{% url 'saving_all_employee_forms' %}");                       
+                    });
+            },
+            error: function (xhr, status, e) {
+                swal({
+                    title: "Error",
+                    type: "warning",
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: true
+                },
+                    function (isConfirm) {
+                        // window.location.replace("/qxbox/payroll/epf-details/);
+                    });
+            }
+        }) .done(function() {
+                
+                if(myResponseStatus == true) {
+                    // setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    // },500);
+                } else {                    
+                    setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);
+                }
+                
+            }).fail(function (xhr, status, e) {                 
+                swal({   
+                    title: "Error",
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+                 setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);                
+            });           
+    }
+    })
+
+
+
+    $(".resubmit_btn").click(function () {
+        $.ajax({
+            type: 'PATCH',
+            url: "/qxbox/{% url 'investment_declaratins_status_update' id=id %}",
+            dataType: 'json',
+            data: { "adminResubmitStatus": 30 },
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem('acc_token')
+            },
+            success: function (data, textStatus) {
+
+                swal({
+                    title: "Re-Submit",
+                    type: "success",
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: true
+                },
+                    function (isConfirm) {
+                        window.location.replace("/qxbox/{% url 'saving_all_employee_forms' %}");
+
+                        // window.location.replace("/qxbox/payroll/epf-details/);
+                    });
+
+                // window.location.replace("/qxbox/payroll/saving/declaration/forms/")
+
+
+            },
+            error: function (xhr, status, e) {
+                swal({
+                    title: "Error",
+                    type: "warning",
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: true
+                },
+                    function (isConfirm) {
+                        // window.location.replace("/qxbox/payroll/epf-details/);
+                    });
+            }
+        }) .done(function() {
+                
+                if(myResponseStatus == true) {
+                    // setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    // },500);
+                } else {                    
+                    setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);
+                }
+                
+            }).fail(function (xhr, status, e) {                 
+                swal({   
+                    title: "Error",
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+                 setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);                
+            });           
+    })
+
+    $(".decline_btn").click(function () {
+        $.ajax({
+            type: 'PATCH',
+            url: "/qxbox/{% url 'investment_declaratins_status_update' id=id %}",
+            dataType: 'json',
+            data: { "adminResubmitStatus":80 },
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem('acc_token')
+            },
+            success: function (data, textStatus) {
+
+                swal({
+                    title: "Updated",
+                    type: "success",
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: true
+                },
+                    function (isConfirm) {
+                        window.location.replace("/qxbox/{% url 'saving_all_employee_forms' %}");
+
+                        // window.location.replace("/qxbox/payroll/epf-details/);
+                    });
+
+                // window.location.replace("/qxbox/payroll/saving/declaration/forms/")
+
+
+            },
+            error: function (xhr, status, e) {
+                swal({
+                    title: "Error",
+                    type: "warning",
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: true
+                },
+                    function (isConfirm) {
+                        // window.location.replace("/qxbox/payroll/epf-details/);
+                    });
+            }
+        }) .done(function() {
+                
+                if(myResponseStatus == true) {
+                    // setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    // },500);
+                } else {                    
+                    setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);
+                }
+                
+            }).fail(function (xhr, status, e) {                 
+                swal({   
+                    title: "Error",
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+                 setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);                
+            });           
+    })
+
+
+
+</script>
+
+<script>
+    if(window.location.href.indexOf("/qxbox/payroll/saving/")) {
+        console.log("success")
+        $("#SavingDeclartion").addClass("active")
+    } else {
+        console.log("failed")
+    }
+</script>
+
+<script>
+    $(document).on( "ajaxSend", function() {
+      $("#AjaxCallOverlay").fadeIn(300);
+    });
+    let myResponseStatus = true;
+
+  </script>
+
+
+
+{% endblock js %}

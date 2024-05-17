@@ -1,0 +1,323 @@
+
+{% extends 'payroll/base/base.html' %}
+{% load static %}
+
+{% block css %}
+
+    <style>
+        table.dataTable th,
+        table.dataTable td {
+            white-space: nowrap;
+        }
+        td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        }
+
+        .parsley-errors {
+            color: rgb(225, 88, 88);
+            font-size: 0.9em;
+            margin-top: 3px;
+        }
+    </style>
+    
+    <style>
+        #menuBtn:active {
+            border: 2px solid #30239f;
+        }
+        #menuBtn:visited {
+            border: 2px solid #30239f;
+        }
+
+        #menuBtn:focus {
+            border: 2px solid #30239f;
+            outline: 1px dotted !important;
+        }
+    </style>
+
+    <style type="text/css">
+        .has-search .form-control-feedback {
+            position: absolute;
+            z-index: 2;
+            display: block;
+            width: 2.375rem;
+            height: 2.375rem;
+            line-height: 2.075rem; right:15px;
+            text-align: center;
+            cursor: pointer;
+            color: #aaa;
+        }
+        .table.reports-table {
+        margin: 25px auto;
+    }
+    .zp-table {
+        border-bottom: 1px solid rgba(239,236,236,.42);
+        border-left: none;
+    }
+    .india-reports-table, .table.zp-table.table-responsive.table-hover.reports-table.fixed-scroll-table {
+        table-layout: fixed;
+    }
+    .table-responsive {
+        overflow-x: auto;
+        min-height: .01%;
+    }
+    .zp-table.table thead:first-child>tr:first-child>th {
+        border-top: 1px solid rgba(239,236,236,.42);
+        border-bottom: 1px solid rgba(239,236,236,.42);
+    }
+    .table.form16-table thead>tr>th, .table.reports-table thead>tr>th {
+        padding: 8px 25px;
+    }
+    .zp-table tr td:first-of-type, .zp-table tr th:first-of-type {
+        padding-left: 30px;
+    }
+    .zp-table thead>tr>th {
+        font-weight: 400;
+        background-color: #f8faff;
+        color: #555;
+        font-size: 12px;
+        height: 40px;
+        text-transform: uppercase;
+    }
+    .zp-table td, .zp-table thead>tr>th {
+        border-color: rgba(239,236,236,.42);
+        vertical-align: middle;
+    }
+    </style>
+
+{% endblock %}
+
+{% block main_content %}
+
+        <div class="container-fluid">
+
+            <div class="block-header">
+                <div class="row clearfix">
+                    <div class="col-md-6 col-sm-12">
+                        <h1 class="ico_head"><i class="icon-calculator"></i> <b>Log Report</b></h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card">
+                       
+                        <!-- next -->
+                        <div class="body top_sp shadow border-0 pt-0" id="summary_id">
+                            <div class="tab-content">
+                                <div id="ember168" class="reports-content scrollbox scroll-x scroll-y ember-view text-center">
+
+                                    <button  class="btn btn-success exportdata addBtn" id="exportDataBtn"><i class="fa fa-download"></i> Download Log File</button>
+
+                                    <!-- <table class="table zp-table reports-table table-hover india-reports-table js-basic-example dataTable" style="width: 100%;" id="testTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Date/Time</th>
+                                                <th>Action</th>
+                                                <th>User Type</th>
+                                                <th>IP Address</th>
+                                                <th>Email</th>
+                                                <th>Result</th>                                                                                          
+                                            </tr>	
+                                        </thead>
+                                        <tbody>	
+                                                                            
+                                        
+                                        </tbody>							               
+                                    </table> -->
+                                </div>
+                                <!-- next end -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+    $(document).ready(function() {
+        $(".exportdata").click(function() {   
+            
+            
+                $(document).on( "ajaxSend", function() {
+                $("#AjaxCallOverlay").fadeIn(300);
+                });
+                let myResponseStatus;
+            
+        
+            // var msg = "We are providing the employee details in excel sheet with all the employees listed here for which payroll has to run. Please fill the information as per the sample sheet and then import.";
+            // var btns = "success";
+            // var msg1 = "Yes";
+
+            $.ajax({
+                type: "POST",
+                url: "/qxbox/{% url 'employee_logs' %}",
+                headers: {
+                    "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                },
+                data: {"cmp_id":'{{request.session.cmp_id}}'},                        
+                success: function (response) {
+
+                    if(response != "" || response != null){
+                        myResponseStatus = true;
+                        console.log("success data")
+                        console.log(data);
+                    }
+                    else {
+                        myResponseStatus = false
+                    };
+
+                    const blob = new Blob([response], { type: 'text/csv;charset=utf-8;' }),
+                    url = window.URL.createObjectURL(blob);
+                    // console.log(url);
+                    // window.location.replace(url)
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "User_Activity.log";
+                    link.click();
+                        
+                }
+            }).done(function() {
+                
+                if(myResponseStatus == true) {
+                    // setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    // },500);
+                }else {
+                    console.log("failed msg")
+                    setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },5000);
+                }
+                
+            }).fail(function (xhr, status, e) { 
+                
+                swal({   
+                    title: "Error"+e + xhr +status,
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+            });
+        });
+        
+    });
+    
+    
+</script>
+<script>    
+    $("#show_all_records").on('click',function(){
+        oSettings[0]._iDisplayLength = oSettings[0].fnRecordsTotal();
+        //set display length of dataTables settings to the total records available
+        oTable.draw();  //draw the table
+        ExportToExcel('xlsx');
+        restore();
+    });
+</script>
+
+<script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+ <script>
+    function ExportToExcel(type, fn, dl) {
+        var elt = document.getElementById('testTable');
+        var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+        return dl ?
+            XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+            XLSX.writeFile(wb, fn || ('PT_Report.' + (type || 'xlsx')));
+    }
+    function restore() {
+        //alert('restore');
+        oSettings[0]._iDisplayLength=50;
+        //set it back to 10
+        oTable.draw();//again draw the table
+    }
+</script>
+
+<script type="text/javascript">
+    $(".selectpicker").select2();
+    function resetsearchdata(){	  
+        window.location.href="./payroll/reports/view_pt_summary";
+        $('.department').prop('selectedIndex',0);
+        $('.organization').prop('selectedIndex',0);
+        $('.monthyear').prop('selectedIndex',0);
+        $('#select2-data-2-8hro').prop('selected', true);
+        $("#select2-data-2-8hro option:selected").addAttr("selected");
+    }
+    function load_close() {
+        window.location.replace("/qxbox/payroll/reports/view_pt_summary");
+    }
+</script> 
+
+
+
+<script>
+    var tableToExcelsasa = (function() {
+    var urisasasa = 'data:application/vnd.ms-excel;base64,', template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>'
+    , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+    , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+    return function(table, name) {
+        if (!table.nodeType) table = document.getElementById(table)
+        var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+        window.location.href = urisasasa + base64(format(template, ctx))
+    }
+   })()
+</script> 
+
+<script>
+    if(window.location.href.indexOf("/qxbox/payroll/reports/")) {
+        console.log("success")
+        $("#MainMenu").addClass("active")
+    } else {
+        console.log("failed")
+    }
+</script>
+
+<!-- <script>
+    var seen = {};
+    jQuery('.emp_id').children().each(function() {
+        var txt = jQuery(this).attr('value');
+        if (seen[txt]) {
+            jQuery(this).remove();
+        } else {
+            seen[txt] = true;
+        }
+    });
+
+    seen1={}
+    jQuery('.monthyear').children().each(function() {
+        var txt = jQuery(this).attr('value');
+        if (seen1[txt]) {
+            jQuery(this).remove();
+        } else {
+            seen1[txt] = true;
+        }
+    });
+</script> -->
+
+<!-- <script>
+    $(document).ready(function() {
+        // $(".epfLink").attr("href","/qxbox/payroll/epf-details/"+localStorage.getItem('acc_token'))
+
+        var url = window.location;
+        console.log("chandu", url)
+        var element = $('ul.metismenu li a').filter(function(){
+            console.log(url.href,this.href,url.href.indexOf(this.href)); 
+            return this.href == url || url.href.indexOf(this.href) == 0; 
+        }).parent().next().addClass('active');
+        if (element.is('li')) {
+            element.addClass('active').parent().parent('li').addClass('active');
+        }
+    })
+</script> -->
+
+{% endblock %}

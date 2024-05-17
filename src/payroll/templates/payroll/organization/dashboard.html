@@ -1,0 +1,1194 @@
+{% extends 'payroll/base/base.html' %}
+
+{% block css %}
+
+  <style>
+  td.details-control {
+  background: url(base_url().'assets/images/details_open.png') no-repeat center center;
+  cursor: pointer;
+  }
+  tr.shown td.details-control {
+  background: url(base_url().'assets/images/details_close.png') no-repeat center center;
+  }
+
+  .parsley-errors {
+      color: rgb(225, 88, 88);
+      font-size: 0.9em;
+      margin-top: 3px;
+  }
+  </style>
+
+  <style>
+    #menuBtn:active {
+        border: 2px solid #30239f;
+    }
+    #menuBtn:visited {
+        border: 2px solid #30239f;
+    }
+    
+    #menuBtn:focus {
+        border: 2px solid #30239f;
+        outline: 1px dotted !important;
+    }
+    </style>
+
+{% endblock css %}
+
+
+
+ 
+{% block main_content %} 
+        <!-- Calander -->
+       
+        
+                <div class="container-fluid">
+                    <div class="block-header">
+                        <div class="row clearfix">
+                            <div class="col-md-6 col-sm-12">
+                                <h1 class="ico_head"><i class="icon-grid"></i> Dashboard 
+                                </h1>
+                            </div>
+                            <div class="col-md-6 col-sm-12 text-right hidden-xs"></div>
+                        </div>
+                    </div>
+                    <div class="row clearfix mb-3">
+                        <div class="col-lg-12">
+                            <div class="card pb-0">
+                                <div class="body shadow border-0 pb-0">
+                                    <!-- chandu -->
+                                    <div class="row pb-3">
+                                        <div class="col-lg-3 col-md-6 mb-2">
+                                            <div class="border_radius_10 shadow_all_2 py-2 px-2 d-flex justify-content-between">
+                                                <div class="icon-container font-22 mt-2 mb-2 border_4_orange hrms_text_orange"><i class="fa fa-users" aria-hidden="true"></i></div>
+                                                <div class="text-dark pt-2">
+                                                    <div class="numberCount font-20 font-weight-bold text-center hrms_text_orange total_dept">0</div>
+                                                    <h3 class="font-22 mb-0 hrms_text_orange text-center text-capitalize">Total departments </h3>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3 col-md-6 mb-2">
+                                            <div class="border_radius_10 shadow_all_4 py-2 px-2 d-flex justify-content-between">
+                                                <div class="icon-container font-22 mt-2 mb-2 border_4_blue hrms_text_blue"><i class="fa fa-users" aria-hidden="true"></i></div>
+                                                <div class="text-dark pt-2">
+                                                    <div class="numberCount font-20 font-weight-bold text-center hrms_text_blue total_emp">0</div>
+                                                    <h3 class="font-22 mb-0 hrms_text_blue text-center text-capitalize">Total employees</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3 col-md-6 mb-2">
+                                            <div class="border_radius_10 shadow_all_1 py-2 px-2 d-flex justify-content-between">
+                                                <div class="icon-container font-22 mt-2 mb-2 border_4_green hrms_text_green"><i class="fa fa-money" aria-hidden="true"></i></div>
+                                                <div class="text-dark pt-2">
+                                                    <div class="numberCount font-20 font-weight-bold text-center hrms_text_green total_net_salary">0</div>
+                                                    <h3 class="font-22 mb-0 hrms_text_green text-center text-capitalize">Net Salary</h3>
+                                                    <!-- <h3 class="font-22 mb-0 hrms_text_blue text-center text-capitalize">Gross Salary <br />(Current Month)</h3> -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                       
+                                        
+                                        <div class="col-lg-3 col-md-6 mb-2">
+                                            <div class="border_radius_10 shadow_all_4 py-2 px-2 d-flex justify-content-between">
+                                                <div class="icon-container font-22 mt-2 mb-2 border_4_blue hrms_text_blue"><i class="fa fa-money" aria-hidden="true"></i></div>
+                                                <div class="text-dark pt-2">
+                                                    <div class="numberCount font-20 font-weight-bold text-center hrms_text_blue pay_day"></div>
+                                                    <h3 class="font-22 mb-0 hrms_text_blue text-center text-capitalize">Pay Day</h3>
+                                                    <!-- <h3 class="font-22 mb-0 hrms_text_orange text-center text-capitalize">Net Salary <br /> (Current Month) </h3> -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                        
+
+                                    <div class="row">
+
+                                      <div class="col-lg-4 col-md-4 mb-3">
+                                        <div class="card card-dash">
+                                            <div class="body shadow border-0">
+                                                <h4 class="text-left font-22 payroll-analytics">Employment Payroll Analytics For</h4>
+                                                <canvas id="employementPayrollAnalytics" style="width:785px;max-width:100%;height:290px;" class="chart-div"></canvas>
+                                                
+                                                <button onclick="downloadChartOrBarUd('employementPayrollAnalytics','emp_payroll_analytics');" class="btn btn-primary btn-sm"><i class="fa fa-download"></i></button>
+                                            </div>
+                                        </div>
+                                      </div>
+
+                                      <div class="col-lg-4 col-md-4 mb-3">
+                                          <div class="card card-dash">
+                                              <div class="body shadow border-0">
+                                                  <h4 class="text-left font-22">Employee Count by Salary Range</h4>
+                                                  
+                                                  <canvas id="myChartUdSalaryCountRange" style="width:785px;max-width:100%;height:290px;" class="chart-div"></canvas>
+                                                  <button onclick="downloadChartOrBarUd('myChartUdSalaryCountRange','emp_count_by_salary_range');" class="btn btn-primary btn-sm"><i class="fa fa-download"></i></button>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <style>
+                                        .TooltipCompliancePopup {
+                                          display: none;
+                                          width: 200px;
+                                          /* height : 100px; */
+                                          background-color: #fff;
+                                          /* border: 2px solid red; */
+                                          bottom: 97%;
+                                          box-shadow: 0px 0px 3px #aaa;
+                                          left: 21%;
+                                        }
+
+                                        .TooltipCompliancePopup::before {
+                                          position: absolute;
+                                          top: 100%;
+                                          right:4px;
+                                          content: '';
+                                          border-width: 6px 6px;
+                                          
+                                          border-color: #aaa transparent transparent transparent;
+                                          border-style: solid;
+                                        }
+
+                                        .infoComplianceIcon:hover {
+                                          cursor: pointer;
+                                        }
+
+                                        .infoComplianceIcon:hover+.TooltipCompliancePopup{
+                                          display: block;
+                                        }
+                                      </style>
+                                        
+                                      <div class="col-lg-4 col-md-4 mb-3">
+                                          <div class="card card-dash">
+                                              <div class="body shadow border-0 pb-4">
+                                                <div class="d-flex justify-content-start">
+                                                  <h4 class="text-left font-22">Total Compliance Paid Report</h4>
+                                                  <div class="formField">
+                                                    <div class="infoComplianceIcon blue_text position-relative pl-1 pr-2 py-0">
+                                                      <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                                    </div>
+                                                    <div class="TooltipCompliancePopup position-absolute px-3 py-2 rounded">
+                                                      <div class=" mb-1">
+                                                        <div class="font_weight_600 font_12 "> Sum of monthly TDS, Employer PF and Employer ESI</div>
+                                                      </div>
+                                                      
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                  <!-- <h4 class="text-left font-22">Total Compliance Paid Report</h4> -->
+                                                  
+                                                  <canvas id="myChartUdTotalCompliancePaidReport" style="width:785px;max-width:100%;height:290px;"></canvas>
+                                                  <button onclick="downloadChartOrBarUd('myChartUdTotalCompliancePaidReport','total_compliance_paid_report');" class="btn btn-primary btn-sm"><i class="fa fa-download"></i></button>
+                                              </div>
+                                          </div>
+                                      </div>
+                                        
+                                    </div>
+
+                                    <div class="row">
+
+                                      <div class="col-lg-4 col-md-4 mb-3">
+                                        <div class="card card-dash">
+                                            <div class="body shadow border-0 pb-5">
+                                                <h4 class="text-left font-22">Number of Payslips Generated Per Month</h4>
+                                                <!-- <div id="empCountByDeptLineChart"></div> -->
+                                                <canvas id="myChartUdPayslipGeneratedMonthly" style="width:785px;max-width:100%;height:290px"></canvas>
+                                                <button onclick="downloadChartOrBarUd('myChartUdPayslipGeneratedMonthly','payslip_generated_per_month');" class="btn btn-primary btn-sm"><i class="fa fa-download"></i></button>
+                                            </div>
+                                        </div>
+                                      </div>
+
+                                        <div class="col-lg-4 col-md-4 mb-3">
+                                          <div class="card card-dash">
+                                              <div class="body shadow border-0 pb-5">
+                                                  <h4 class="text-left font-22">Current Active and Inactive Employees</h4>
+                                                  <!--<div id="absenceByMonthLineChart"></div>-->
+                                                  
+                                                  <canvas id="myChartUdActiveInactive" style="width:785px;max-width:100%;height:290px;"></canvas>
+                                                  <button onclick="downloadChartOrBarUd('myChartUdActiveInactive','active_inactive_emp');" class="btn btn-primary btn-sm"><i class="fa fa-download"></i></button>
+                                              </div>
+                                          </div>
+                                        </div>
+
+                                        <style>
+                                          .TooltipVariancePopup {
+                                            display: none;
+                                            width: 200px;
+                                            /* height: 100px; */
+                                            /* overflow: auto; */
+                                            background-color: #fff;
+                                            /* border: 2px solid red; */
+                                            bottom: 97%;
+                                            box-shadow: 0px 0px 3px #aaa;
+                                            left: 8%;
+                                          }
+  
+                                          .TooltipVariancePopup::before {
+                                            position: absolute;
+                                            top: 100%;
+                                            right:4px;
+                                            content: '';
+                                            border-width: 6px 6px;
+                                            
+                                            border-color: #aaa transparent transparent transparent;
+                                            border-style: solid;
+                                          }
+  
+                                          .infoVarianceIcon:hover {
+                                            cursor: pointer;
+                                          }
+  
+                                          .infoVarianceIcon:hover+.TooltipVariancePopup{
+                                            display: block;
+                                          }
+                                        </style>
+
+                                        <div class="col-lg-4 col-md-4 mb-3">
+                                          <div class="card card-dash">
+                                              <div class="body shadow border-0">
+                                              <!-- <div class="body hrms_shadow"> -->
+                                                <div class="d-flex justify-content-start">
+                                                  <h4 class="text-left font-22">Total Variance Report</h4>
+                                                  <div class="formField">
+                                                    <div class="infoVarianceIcon blue_text position-relative pl-1 pr-2 py-0">
+                                                      <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                                    </div>
+                                                    <div class="TooltipVariancePopup position-absolute px-3 py-2 rounded">
+                                                      <div class=" mb-1">
+                                                        <div class="font_weight_600 font_12 ">Salary Disbursed(sum of Employees Net pay)</div>
+                                                        <div class="font_weight_600 font_12 ">Statutory Report (sum of montly TDS, ESI, EPF and Professional Tax)</div>
+                                                                                                             
+                                                      </div>
+                                                      
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                  <!-- <h4 class="text-left font-22">Total Variance Report</h4> -->
+                                                  <canvas id="myChartVarianceReportSalaryDisbursedAndTds" style="width:785px;max-width:100%;height:341px;"></canvas>
+                                                  <button onclick="downloadChartOrBarUd('myChartVarianceReportSalaryDisbursedAndTds','total_variance_report');" class="btn btn-primary btn-sm"><i class="fa fa-download"></i></button>
+                                              </div>
+                                          </div>
+                                        </div>
+
+                                    </div>
+                                    
+                                    
+
+                                    
+                                    <!-- <div class="card row py-3 mb-2"></div> -->
+                                    
+                 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <span class="payroll_analytics_ud" style="display:none;"></span>
+            <span id="emp_by_sal_range" style="display:none;"></span>
+            <span id="emp_month_count" style="display:none;"></span>
+            <span id="emp_sal_count" style="display:none;"></span>
+            <span id="emp_active_inactive_count" style="display:none;"></span>
+            <span id="months_compliance_paid_report_ud" style="display:none;"></span>
+            <span id="counts_compliance_paid_report_ud" style="display:none;"></span>
+
+            <span id="emp_variance_month_data" style="display:none;"></span>
+            <span id="emp_variance_sal_count" style="display:none;"></span>
+            <span id="emp_variance_attribute_name" style="display:none;"></span>
+            <span id="emp_variance_timeline_name" style="display:none;"></span>
+            
+            <span id="emp_variance_month_data_tds" style="display:none;"></span>
+            <span id="emp_variance_sal_count_tds" style="display:none;"></span>
+            <span id="emp_variance_attribute_name_tds" style="display:none;"></span>
+            <span id="emp_variance_timeline_name_tds" style="display:none;"></span>
+
+            <body> <div class="row new_box">
+              <div class="col-lg-6 col-md-6">
+         
+         </div><div class="col-lg-6 col-md-6">
+         <canvas id="myChartatten" ></canvas>
+
+         </div></div>
+
+  {% endblock main_content %}
+
+  {% block js %}
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script> <!--  By Uday Shankar -->
+      
+			 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+			 <!-- amcharts -->
+        <!-- <script src="https://cdn.amcharts.com/lib/5/index.js"></script> -->
+		    
+     
+        <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+        <!-- line chart -->
+        <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+        <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+        <!-- <script src="./assets/js/user_Leave_chart_Script.js"></script> -->
+        <!-- Pie Chart with Legend -->		
+
+
+  
+
+  <script>
+    setTimeout(function() {
+
+      var active_inactive_emp = $('#emp_active_inactive_count').html();
+      var act_ina_split = active_inactive_emp.split(',',2);
+
+      var act_emp = act_ina_split[0];
+      var inact_emp = act_ina_split[1];
+
+      //var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+      var xValues = ["Active", "Inactive"];
+      
+      var yValues = [act_emp,inact_emp];
+
+      var barColors = ["#67b7dc", "#c767dc"];
+      
+      
+      new Chart("myChartUdActiveInactive", {
+        type: "bar",
+        data: {
+          labels: xValues,
+          datasets: [{
+            backgroundColor: barColors,
+            data: yValues,
+          }]
+        },
+        options: {
+          legend: {display: false},
+          title: {
+            display: true,
+            text: "Current Active and Inactive Employees"
+          },
+          scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    userCallback: function(label, index, labels) {
+                        // when the floored value is the same as the value we have a whole number
+                        if (Math.floor(label) === label) {
+                            return label;
+                        }
+   
+                    },
+                },
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Employee Counts'
+                },
+            }],
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Active And Inactive'
+              }
+            }]
+          },
+        }
+      });
+      
+    },2000);
+  </script>     
+
+  
+  <script>
+    setTimeout(function(){
+
+      var empSalRange   = $('#emp_by_sal_range').html();
+      var empSalRange   = empSalRange.split(',',3);
+
+      
+      var xValues = ["<10000", "10000 - 20000", ">20000"];
+      var yValues = [empSalRange[0],empSalRange[1],empSalRange[2]];
+      
+
+      var barColors = [
+        "#6794dc",
+        "#6771dc",
+        "#67b7dc"
+      ];
+      
+      new Chart("myChartUdSalaryCountRange", {
+        type: "pie",
+        data: {
+          labels: xValues,
+          datasets: [{
+            backgroundColor: barColors,
+            data: yValues
+          }]
+        },
+        options: {
+          title: {
+            display: true,
+            text: "Employee Count By Salary Range"
+          }
+        }
+      });
+    },2000);  
+  </script>
+
+  
+   
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+
+<script>
+    console.log("my script is loading")
+
+    $(document).ready(function() {
+        $('#annoucement_sortingtable').DataTable({"order": [0, 'asc'],'ordering': true,scrollY: 500,scrollX: false});
+    });
+
+    document.querySelector("#menuBtn").addEventListener('click', function(evt) {
+        var menuStatus = document.querySelector("#left-sidebar");
+        console.log("button called");
+        if(menuStatus.style.left == "-240px") {
+            document.querySelector("#left-sidebar").style.left = "0px";
+            document.querySelector("#main-content").style.width = "calc(100% - 240px)";
+        } else {
+            document.querySelector("#left-sidebar").style.left = "-240px";
+            document.querySelector("#main-content").style.width = "100%";
+        }
+    })
+
+    $(".selectpicker").select2();
+
+</script>
+
+<!-- Existing Code -->
+<script>
+    "use strict";
+    $('#calendar').fullCalendar({
+      defaultView: 'month',
+      header: {
+        left: 'title', // you can add today btn
+        center: '',
+        right: ' prev, next', // "agendaWeek, listWeek," you can add agendaDay btn
+      },
+      contentHeight: 'auto',
+      defaultDate: '2023-03-01', //'2022-04-01',
+      editable: false,
+      droppable: false, // this allows things to be dropped onto the calendar
+      eventLimit: false, // allow "more" link when too many events
+  
+      events: [{
+                                                              title: 'Memorial Day',
+                          start: '2022-05-30',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'US Independence Day',
+                          start: '2022-07-04',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'Labor Day',
+                          start: '2022-09-05',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'ThanksGiving Day',
+                          start: '2022-11-24',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'Christmas Day',
+                          start: '2022-12-25',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'New Year',
+                          start: '2022-12-30',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'New Year Eve',
+                          start: '2023-01-01',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'Ramzan Eid',
+                          start: '2022-05-02',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'Bakri Eid',
+                          start: '2022-07-10',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'Dusshera',
+                          start: '2022-10-05',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'Diwali',
+                          start: '2022-10-24',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'Good Friday',
+                          start: '2022-04-15',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'Easter Day ',
+                          start: '2022-04-17',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'Good Friday - Optional Leave',
+                          start: '2023-04-07',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'RamzanEid - Optional Leave',
+                          start: '2023-04-21',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'Memorial Day',
+                          start: '2023-05-29',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'US Independence Day',
+                          start: '2023-07-04',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'Bakri Eid- Optional Leave',
+                          start: '2023-06-28',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'Labor Day',
+                          start: '2023-09-04',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'Dusshera.',
+                          start: '2023-10-24',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'Diwali',
+                          start: '2023-11-12',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'Thanks Giving Day',
+                          start: '2023-11-23',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'Christmas Day',
+                          start: '2023-12-25',
+                          className: 'bg-green',
+                                                  },{
+                                                              title: 'New Year',
+                          start: '2024-01-01',
+                          className: 'bg-green',
+                                                  },]  });
+  </script>
+<!-- /Existing Code -->
+<script>
+    var owl = $('.owl-carousel');
+owl.owlCarousel({
+    items:4,
+    loop:true,
+    margin:10,
+    autoplay:true,
+    autoplayTimeout:5000,
+    autoplayHoverPause:true
+});
+$('.play').on('click',function(){
+    owl.trigger('play.owl.autoplay',[5000])
+})
+$('.stop').on('click',function(){
+    owl.trigger('stop.owl.autoplay')
+})
+
+</script>
+
+
+ <!-- Number of studs generated per month script start -->
+
+
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+
+ 
+
+  <script>
+    setTimeout(function() {
+
+      var emp_month_count = $('#emp_month_count').html().split(',');
+      var emp_sal_count = $('#emp_sal_count').html().split(',');
+
+      var xValues = emp_month_count;
+      
+      var yValues = emp_sal_count;
+
+      var barColors = ["#67b7dc", "#6794dc","#6771dc","#8067dc","#a367dc","#c767dc"];
+      
+      
+      new Chart("myChartUdPayslipGeneratedMonthly", {
+        type: "bar",
+        data: {
+          labels: xValues,
+          datasets: [{
+            backgroundColor: barColors,
+            data: yValues
+          }]
+        },
+        options: {
+          legend: {display: false},
+          title: {
+            display: true,
+            text: "Number of Payslips Generated Per Month"
+          },
+          scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    userCallback: function(label, index, labels) {
+                        // when the floored value is the same as the value we have a whole number
+                        if (Math.floor(label) === label) {
+                            return label;
+                        }
+   
+                    }
+                },
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Total Payslip Count'
+                },
+            }],
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Months'
+              }
+            }]
+        },
+        }
+      });
+      
+    },2000);
+  </script>
+
+
+ <!-- Number of studs generated per month script end-->
+
+
+
+
+<script>
+  setTimeout(function() {
+    
+    var months_compliance_paid_report_ud      =  $('#months_compliance_paid_report_ud').html().split(',');
+    var counts_compliance_paid_report_ud      =  $('#counts_compliance_paid_report_ud').html().split(',');
+
+    var xValues = months_compliance_paid_report_ud;
+    var yValues = counts_compliance_paid_report_ud;
+    
+    var barColors = ["#6771dc", "#6794dc","#67b7dc","#8067dc","#a367dc","#c767dc"];
+
+    new Chart("myChartUdTotalCompliancePaidReport", {
+      type: "bar",
+      data: {
+        labels: xValues,
+        datasets: [{
+          backgroundColor: barColors,
+          data: yValues
+        }]
+      },
+      options: {
+        legend: {display: false},
+        title: {
+          display: true,
+          text: "Total Compliance Paid Report"
+        },
+        scales: {
+          yAxes: [{
+              ticks: {
+                  beginAtZero: true,
+                  userCallback: function(label, index, labels) {
+                      // when the floored value is the same as the value we have a whole number
+                      if (Math.floor(label) === label) {
+                          return label;
+                      }
+ 
+                  },
+              },
+              scaleLabel: {
+                display: true,
+                labelString: 'Total Compliance Paid'
+              },
+          }],
+          xAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: 'Months'
+            }
+          }]
+        },
+      }
+    });
+  },2000);
+
+</script>
+
+
+
+
+
+<!-- Active and Inactive Employee per month script start  -->
+    
+    
+    
+    
+
+
+<!-- Active and Inactive Employee per month script end  -->
+
+
+
+    
+<script>
+    setTimeout(function() {
+
+      analyticData = 0,0;
+      var analyticData = $('.payroll_analytics_ud').html();
+      analyticDataSplit = analyticData.split(",", 2);
+
+      var xValues = ["Payroll Run", "Payroll Remaining"];
+      var yValues = [analyticDataSplit[0], analyticDataSplit[1]];      
+      
+      var barColors = [
+        "#67b7dc",
+        "#6794dc"
+      ];
+
+      new Chart("employementPayrollAnalytics", {
+        type: "pie",
+        data: {
+          labels: xValues,
+          datasets: [{
+            backgroundColor: barColors,
+            data: yValues
+          }]
+        },
+        options: {
+          legend: {display: true},
+          title: {
+            display: true,
+            text: "Employment Payroll Analytics"
+          }
+        }
+      });
+
+    },2000);
+</script>
+
+
+
+
+
+<script>
+  setTimeout(function() {
+    
+    // This is for Salary Disbursed
+    var emp_variance_month_data           =  $('#emp_variance_month_data').html().split(',');
+    var emp_variance_sal_count            =  $('#emp_variance_sal_count').html().split(',');
+    var emp_variance_attribute_name       =  $('#emp_variance_attribute_name').html();
+    var emp_variance_timeline_name        =  $('#emp_variance_timeline_name').html();
+
+    // This is for TDS/PF/PT/ESI
+    var emp_variance_month_data_tds       =  $('#emp_variance_month_data_tds').html().split(',');
+    var emp_variance_sal_count_tds        =  $('#emp_variance_sal_count_tds').html().split(',');
+    var emp_variance_attribute_name_tds   =  $('#emp_variance_attribute_name_tds').html();
+    var emp_variance_timeline_name_tds    =  $('#emp_variance_timeline_name_tds').html();
+
+    const xValues = emp_variance_month_data;
+
+    new Chart("myChartVarianceReportSalaryDisbursedAndTds", {
+      type: "line",
+      data: {
+        labels: xValues,
+        datasets: [{        
+          data: emp_variance_sal_count, // This is for Salary disbursed
+          borderColor: "#c767dc",
+          fill: false,
+          label: emp_variance_attribute_name,
+        }, { 
+          data: [20,8,90], // This is for TDS/PF/PT/ESI
+          data: emp_variance_sal_count_tds, // This is for TDS/PF/PT/ESI
+          borderColor: "#67b7dc",
+          fill: false,
+          label: emp_variance_attribute_name_tds,
+        }]
+      },
+      options: {
+        legend: {display: true},
+        title: {
+            display: true,
+            text: "Total Variance Report (Last 3 months)"
+        },
+        
+      scales: {
+        yAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: 'Total'
+          },
+          ticks: {
+            beginAtZero: true,
+            userCallback: function(label, index, labels) {
+                // when the floored value is the same as the value we have a whole number
+                if (Math.floor(label) === label) {
+                    return label;
+                }
+
+            },
+        }
+        }],
+        xAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: 'Months'
+          }
+        }]
+      }
+      }
+    });
+
+    
+  },2000);
+
+</script>
+
+
+
+
+
+
+
+
+
+
+<script>
+$(function() {
+	// initialize after multiselect
+	$('#basic-form').parsley();
+});
+
+</script>
+
+
+
+
+  <script>
+    $(document).on( "ajaxSend", function() {
+      // $("#AjaxCallOverlay").fadeIn(300);
+    });
+    let myResponseStatus;
+    myResponseStatus = false;
+  </script>
+
+
+  <script type="text/javascript">
+      
+    $(document).ready(function () {
+
+        localStorage.setItem('acc_token','{{token}}')
+
+        // This is for getting total employee count 
+        $.ajax({
+          type: "GET",
+          url: "/qxbox/api/payroll/get-emp-count/?company_id={{company_id}}",
+          dataType: 'json',
+          headers: {
+              "Authorization": "Bearer "+localStorage.getItem('acc_token')
+          },
+          data: {
+              "csrfmiddlewaretoken": '{{ csrf_token }}'
+          },
+          success: function(response) {            
+
+            $(".total_emp").html(response);
+          }
+        });
+        
+      // This is for getting total department count      
+        $.ajax({
+          type: "GET",
+          url: "/qxbox/{% url 'get_all_dep_count' %}?company_id={{company_id}}",
+          dataType: 'json',
+          headers: {
+              "Authorization": "Bearer "+localStorage.getItem('acc_token')
+          },
+          data: {
+              "csrfmiddlewaretoken": '{{ csrf_token }}'
+          },
+          success: function(response) {            
+
+            $(".total_dept").html(response);
+          }
+        });
+      
+        // This is for getting total net salary count      
+        $.ajax({
+          type: "GET",
+          url: "/qxbox/{% url 'get_net_salary_count' %}?company_id={{company_id}}",
+          dataType: 'json',
+          headers: {
+              "Authorization": "Bearer "+localStorage.getItem('acc_token')
+          },
+          data: {
+              "csrfmiddlewaretoken": '{{ csrf_token }}'
+          },
+          success: function(response) {
+
+            if(response.ctc_Sum){
+              $(".total_net_salary").html(response.ctc_Sum);
+            }   
+
+          }
+        });
+        
+        // This is for getting pay day      
+        $.ajax({
+          type: "GET",
+          url: "/qxbox/{% url 'get_pay_day' %}?company_id={{company_id}}",
+          dataType: 'json',
+          headers: {
+              "Authorization": "Bearer "+localStorage.getItem('acc_token')
+          },
+          data: {
+              "csrfmiddlewaretoken": '{{ csrf_token }}'
+          },
+          success: function(response) {            
+
+            $(".pay_day").html(response);
+          }
+        });
+        
+        
+        // This is for getting Employment Payroll Analytics   
+        $.ajax({
+          type: "GET",
+          url: "/qxbox/{% url 'get_emp_payroll_analytics' %}?company_id={{company_id}}",
+          dataType: 'json',
+          headers: {
+              "Authorization": "Bearer "+localStorage.getItem('acc_token')
+          },
+          data: {
+              "csrfmiddlewaretoken": '{{ csrf_token }}'
+          },
+          success: function(response) {
+
+            $(".payroll_analytics_ud").html(response.processed+","+response.notProcessed);
+            // var myDiv = document.getElementById("payroll_analytics");
+            // var newText = document.createTextNode(response.monthYear);
+            // myDiv.appendChild(newText);
+
+            const headingElement = document.querySelector('.payroll-analytics');
+            const additionalText = response.monthYear;
+            headingElement.textContent += " "+additionalText;
+
+
+          }
+        });
+        
+        // This is for getting Employee Count by Salary Range   
+        $.ajax({
+          type: "GET",
+          url: "/qxbox/{% url 'get_emp_count_by_salary_range' %}?company_id={{company_id}}",
+          dataType: 'json',
+          headers: {
+              "Authorization": "Bearer "+localStorage.getItem('acc_token')
+          },
+          data: {
+              "csrfmiddlewaretoken": '{{ csrf_token }}'
+          },
+          success: function(response) {
+
+            console.log("Hello Uday Emp count by sal range: "+response.LessThan10k+","+response.ud10kTo20k+","+response.MoreThan20k);  
+            $("#emp_by_sal_range").html(response.LessThan10k+","+response.ud10kTo20k+","+response.MoreThan20k);
+          }
+        });
+        
+        
+        // This is for getting Employee Count by Salary Range   
+        $.ajax({
+          type: "GET",
+          url: "/qxbox/{% url 'get_no_of_payslip_per_month' %}?company_id={{company_id}}",
+          dataType: 'json',
+          headers: {
+              "Authorization": "Bearer "+localStorage.getItem('acc_token')
+          },
+          data: {
+              "csrfmiddlewaretoken": '{{ csrf_token }}'
+          },
+          success: function(response) {
+           
+            var result = response;
+            var month_data = [];
+            var payslip_count_data = [];
+            $.each(result, function(month_year, payslip_count) {
+              if(month_year != '' && payslip_count != ''){
+                //display the month_yearey and value pair
+                //alert(month_year + ' is ' + payslip_count);
+                getting_only_month = month_year.split(' ',2);
+                //alert(getting_only_month[0] + ' is ' + payslip_count);
+                month_data.push(getting_only_month[0]);
+                payslip_count_data.push(payslip_count);
+                //$("#emp_month_count").append(getting_only_month[0]+",");
+                //$("#emp_month_count").append(payslip_count);
+              }
+              
+            });
+            console.log("Uday Number of payslips generated per months: "+month_data.toString()+" : "+payslip_count_data.toString())
+            $('#emp_month_count').html(month_data.toString());
+            $('#emp_sal_count').html(payslip_count_data.toString());
+
+          }
+        });
+
+        // This is for getting Active and Inactive Employee   
+        $.ajax({
+          type: "GET",
+          url: "/qxbox/{% url 'get_active_inactive_employee' %}?company_id={{company_id}}",
+          dataType: 'json',
+          headers: {
+              "Authorization": "Bearer "+localStorage.getItem('acc_token')
+          },
+          data: {
+              "csrfmiddlewaretoken": '{{ csrf_token }}'
+          },
+          success: function(response) {
+
+            console.log("Hello Uday Emp Active and Inactive: "+response.activeEmp+","+response.inactiveEmp);  
+            $("#emp_active_inactive_count").html(response.activeEmp+","+response.inactiveEmp);
+          }
+        });
+        
+        // This is for Total Compliance Paid Report   
+        $.ajax({
+          type: "GET",
+          url: "/qxbox/{% url 'get_compliance_paid_report' %}?company_id={{company_id}}",
+          dataType: 'json',
+          headers: {
+              "Authorization": "Bearer "+localStorage.getItem('acc_token')
+          },
+          data: {
+              "csrfmiddlewaretoken": '{{ csrf_token }}'
+          },
+          success: function(response) {
+          
+            console.log("Hello Uday Total Compliance Paid Report: "+response.monthsAllStr+","+response.countAllStr);  
+
+            $('#months_compliance_paid_report_ud').html(response.monthsAllStr);
+            $('#counts_compliance_paid_report_ud').html(response.countAllStr);
+          }
+        });
+        
+        // This is for Total Variance Report Of Salary Disbursed and Last 3 months  
+        $.ajax({
+          type: "GET",
+          url: "/qxbox/{% url 'get_variance_report' %}?company_id={{company_id}}&attribute=salary disbursed&timeline=Last 3 months",
+          dataType: 'json',
+          headers: {
+              "Authorization": "Bearer "+localStorage.getItem('acc_token')
+          },
+          data: {
+              "csrfmiddlewaretoken": '{{ csrf_token }}'
+          },
+          success: function(response) {
+          
+            var result = response;
+            console.log(result.salaryInst);
+            var month_data = [];
+            var payslip_count_data = [];
+
+            $.each(result.salaryInst, function(key , value){
+
+              dateUd = new Date(value['monthYear']);
+              monthYear = moment(dateUd).format('MMMM Y');
+
+              if(value['total'] == null || value['total'] == ''){
+                value['total'] = 0;
+              }
+              month_data.push(monthYear);
+              payslip_count_data.push(value['total']);
+
+            });
+                       
+            $('#emp_variance_month_data').html(month_data.toString());
+            $('#emp_variance_sal_count').html(payslip_count_data.toString());
+            $('#emp_variance_attribute_name').html(response.attribute);
+            $('#emp_variance_timeline_name').html(response.timeline);
+            
+          }
+
+        });
+        
+        
+        // This is for Total Variance Report Of TDS/PF/PT/ESI and Last 3 months  
+        $.ajax({
+          type: "GET",
+          url: "/qxbox/{% url 'get_variance_report' %}?company_id={{company_id}}&attribute=TDS/PF/PT/ESI&timeline=Last 3 months",
+          dataType: 'json',
+          headers: {
+              "Authorization": "Bearer "+localStorage.getItem('acc_token')
+          },
+          data: {
+              "csrfmiddlewaretoken": '{{ csrf_token }}'
+          },
+          success: function(response) {
+
+            myResponseStatus = true; // This is for loader
+          
+            var result = response;
+            console.log(result.salaryInst);
+            var month_data = [];
+            var payslip_count_data = [];
+
+            $.each(result.salaryInst, function(key , value){
+
+              dateUd = new Date(value['monthYear']);
+              monthYear = moment(dateUd).format('MMMM Y');
+
+              if(value['total'] == null || value['total'] == ''){
+                value['total'] = 0;
+              }
+              month_data.push(monthYear);
+              payslip_count_data.push(value['total']);
+
+            });
+                        
+            $('#emp_variance_month_data_tds').html(month_data.toString());
+            $('#emp_variance_sal_count_tds').html(payslip_count_data.toString());
+            $('#emp_variance_attribute_name_tds').html(response.attribute.toUpperCase());
+            $('#emp_variance_timeline_name_tds').html(response.timeline);
+            
+          }    
+        }).done(function() {          
+          if(myResponseStatus == true) {
+              setTimeout(function(){
+                  $("#AjaxCallOverlay").fadeOut('slow');
+              },2000);
+          } else {
+              console.log("failed msg")
+              setTimeout(function(){
+                  $("#AjaxCallOverlay").fadeOut('slow');
+              },2000);
+          }
+          
+      });    
+
+    });
+  </script>
+
+<script type="text/javascript">
+  function downloadChartOrBarUd(idOfChartOrBar,nameOfChart){
+    
+    const imageLink = document. createElement('a');
+    //const canvas = document.getElementById('myChart') ;
+    const canvas = document.getElementById(idOfChartOrBar) ;
+    //imageLink. download = 'canvas123.png';
+    imageLink. download = nameOfChart+'.png';
+    imageLink.href = canvas.toDataURL('image/png', 1)
+    //window.open (imageLink);
+    //document.write('<img src='l i+imageLink+'"/>');
+    // console.log('imageLink.href');
+    imageLink.click();
+  }
+</script>
+
+  
+
+{% endblock js %}

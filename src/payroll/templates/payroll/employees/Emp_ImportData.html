@@ -1,0 +1,290 @@
+
+{% extends 'payroll/base/base.html' %}
+{% load static %}
+
+{% block css %}
+
+    <style>
+        td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        }
+
+        .parsley-errors {
+            color: rgb(225, 88, 88);
+            font-size: 0.9em;
+            margin-top: 3px;
+        }
+    </style>
+
+    <style>
+      #menuBtn:active {
+          border: 2px solid #30239f;
+      }
+      #menuBtn:visited {
+          border: 2px solid #30239f;
+      }
+
+      #menuBtn:focus {
+          border: 2px solid #30239f;
+          outline: 1px dotted !important;
+      }
+  </style>
+
+  {% endblock %}
+
+  {% block main_content %}
+
+    <div class="container-fluid">
+        
+        {% include 'payroll/base/emp-block-header.html' with t2=True %}    
+
+				<div class="block-header">
+					<div class="row clearfix">
+						<div class="col-md-6 col-sm-12">
+							<h1 class="ico_head"><i class="icon-grid"></i>Employee / <small id="leavesCurrentActiveTabTitle">Import Employee</small></h1>
+						</div>
+        				<div class="col-md-6 col-sm-12 text-right hidden-xs">
+							<a href="/qxbox{% url 'profile_add_employee' %}" class="btn btn-success addBtn"> Add Employee</a>
+        				</div>
+					</div>
+				</div>
+
+				<div class="row clearfix">
+					<div class="col-lg-8">
+						<div class="card">
+							<div class="body shadow">
+								<h5 class="text-center">Import Employee Data </h5>
+								<div class="text-center"> <a href="/qxbox/{% static 'assets/Sample-sheet.xlsx' %}" target="_blank">( Download sample excel sheet )</a></div>
+
+								<div class="header">
+									<ul class="nav nav-tabs2">
+										<li class="nav-item">
+											<a class="nav-link show active cursor collapsed" data-toggle="collapse" data-target="#demo" aria-expanded="false"><i class="fa fa-upload mr-1"></i> Import Data</a>
+										</li>
+									</ul>
+								</div>
+
+								<div id="demo" class="mb-2 collapse">
+									<div class="card mb-0">
+										<div class="body body shadow p-4">
+											<div class="row">
+												<div class="col-lg-12 ">
+													<div class="form-group">
+														<form id="import_form" novalidate="" enctype="multipart/form-data" class="form-horizontal">
+															<div class="row clearfix">
+																<div class="col-md-3">
+																	<div class="form-group">
+																		<label for="organ_id">Company Name <span class="asterisk"> * </span></label>																																									
+																		<p class="comp-name"></p>		
+																		<input type="hidden" name="company" value="{{request.session.cmp_id}}" />
+																	</div>
+																</div>
+															</div>
+															<div class="row clearfix">
+																<div class="col-md-6">
+																	<div class="form-group">
+																		<label for="file">Select Excel File <span class="asterisk"> * </span></label>
+																		<input type="file" name="file" id="file" required accept=".xls,.xlsx" />
+																	</div>
+																</div>
+																<div class="col-md-6">
+																	<div class="form-group" style="margin-top: 21px;">
+																		<label for="file"> &nbsp;&nbsp;</label>
+																		<input type="submit" name="import" value="Import" class="btn btn-info" />
+																	</div>
+																	<a href="" id="error_Excel" download style="display: none;">Download Errors</a>
+																</div>
+															</div>
+														</form>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+						</div>
+					</div>
+				</div>				
+			</div>
+		</div>
+	</div>
+	
+{% endblock %}
+
+{% block js %}
+
+<script>
+  $(document).ready(function() {
+
+    // $("#import_form").validate({
+    //   rules: {
+    //     organ_id: "required",
+    //     bussiness_unit: "required",
+    //     dept_id: "required",
+    //   },
+    //   messages: {
+    //     organ_id: {
+    //       required: "Please select a Company Name.",
+    //     },
+    //     bussiness_unit: {
+    //       required: "Please select a Business Unit.",
+    //     },
+    //     dept_id: {
+    //       required: "Please select a Department Name.",
+    //     },
+    //   },
+    // });
+
+    load_data();
+
+    function load_data() { //alert('ddddddd');
+      $.ajax({
+        url: "./emp/empexcels/index",
+        method: "POST",
+        success: function(data) {
+          // $('#customer_data').html(data);
+          return true;
+        }
+      })
+    }
+
+    // $('#organ_id').change(function() {
+    //   var company_name = $(this).val();
+    //   //alert(company_name);           
+    //   $.ajax({
+    //     type: 'POST',
+    //     url: "./emp/empexcels/getbusiness",
+    //     method: "POST",
+    //     data: {
+    //       company_name: company_name
+    //     },
+    //     dataType: 'json',
+    //     success: function(response) {
+    //       $('#bussiness_unit').find('option').not(':first').remove();
+    //       $.each(response, function(index, response) {
+    //         $('#emp_code').val(response['company_prefix'] + '-' + response['emp_start_code']);
+    //         $('#bussiness_unit').append('<option value="' + response['bussiness_unit'] + '">' + response['bussiness_unit'] + '-' + response['company_name'] + '</option>');
+    //       });
+    //     }
+    //   });
+    // });
+
+    // $('#dept_id').change(function() {
+    //   var deptid = $(this).val();
+    //   $.ajax({
+    //     url: "./emp/empexcels/get_desiglist/",
+    //     type: "POST",
+    //     data: {
+    //       dept_id: deptid
+    //     },
+    //     dataType: 'json',
+    //     success: function(response) {
+    //       $('#designation_id').find('option').not(':first').remove();
+    //       $.each(response, function(index, response) {
+    //         $('#designation_id').append('<option value="' + response['designation_id'] + '">' + response['designation_name'] + '</option>');
+    //       });
+    //     }
+    //   });
+    // });
+
+    // $('#address_id').change(function() {
+    //   var location_id = $(this).val();
+    //   $.ajax({
+    //     url: "./emp/empexcels/getbranch/",
+    //     method: 'post',
+    //     data: {
+    //       location_id: location_id
+    //     },
+    //     dataType: 'json',
+    //     success: function(response) {
+    //       $('#branch_id').find('option').not(':first').remove();
+    //       $.each(response, function(index, response) {
+    //         $('#branch_id').append('<option value="' + response['branch_id'] + '">' + response['branch_name'] + '</option>');
+    //       });
+    //     }
+    //   });
+    // });
+
+    $('#import_form').on('submit', function(event) {
+      event.preventDefault();
+      // var organ_id = $.trim($('#organ_id').val());
+      // var bussiness_unit = $.trim($('#bussiness_unit').val());
+      // var emp_code = $.trim($('#emp_code').val());
+      // var dept_id = $.trim($('#dept_id').val());
+      //&& bussiness_unit != '' && emp_code != '' 
+      
+      // $(".spinner-border").show();
+      // console.log("hihi");
+      $("#error_Excel").hide()
+
+        $.ajax({
+          type: "POST",
+          url: "/qxbox/{% url 'Employee_Bulk_Import' %}",
+          data: new FormData(this),
+          processData: false,
+          contentType: false,
+          cache: false,
+          async: false,
+		      headers: {
+                "Authorization": "Bearer "+localStorage.getItem('acc_token')
+            },
+          success: function(data) {
+            
+        // $(".spinner-border").hide()
+        
+            if(data['recordsFailed']>0){
+              $("#error_Excel").show()
+              $("#error_Excel").attr("href",'/media/'+data['excelFile']);
+              swal({
+                title: String(data['recordsFailed']) + " records failed. Download the 'error sheet', and view last column 'errors'",
+                type: "error",
+                showCancelButton: false,
+                confirmButtonColor: "#007bff",
+                confirmButtonText: "Ok",
+                closeOnConfirm: true,
+                closeOnCancel: false
+              },
+              function(isConfirm) {
+                if (isConfirm) {				
+                  // window.location.replace("/qxbox/payroll/active-employees");
+                }
+              });
+              
+            }
+            else{
+              swal({
+                title: "imported",
+                type: "success",
+                showCancelButton: false,
+                confirmButtonColor: "#007bff",
+                confirmButtonText: "Ok",
+                closeOnConfirm: false,
+                closeOnCancel: false
+              },
+              function(isConfirm) {
+                if (isConfirm) {				
+                  window.location.replace("/qxbox/payroll/active-employees");
+                }
+              });
+            }            
+          },
+            error:function(xhr, status, e) {
+          // $(".spinner-border").hide()
+
+                alert('Error');
+            }
+        })
+      
+    });
+  });
+
+ 
+</script> 
+<!-- Javascript -->
+
+
+{% endblock %}

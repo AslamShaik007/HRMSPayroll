@@ -1,0 +1,328 @@
+{% load custom_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>EMPLOYEE PAYSLIP</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" media="print" href="https://fonts.gstatic.com" >
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+
+    <style>
+        table,
+        thead,
+        tbody,
+        tr,
+        th,
+        td {
+            border-collapse: collapse;
+        }
+
+        @media print {
+            .table{width:100%;}
+            .p-pic{margin-right:15px;}
+            .p-pic img {
+                width: 60px;
+                height: auto;
+                border-radius: 90px;
+            }
+        }
+        .PayslipBg {
+            background-color: #172355;
+            color: white;
+        }
+    </style>
+
+    <style media="print" type="text/css">
+        .PayslipBg {
+            background-color: #172355 !important;
+            -webkit-print-color-adjust: exact;
+            color: white;
+        }
+    </style>    
+</head>
+<body>
+    <!-- <button onclick="generatePaySlip()">Generate Pay Slip</button> -->
+
+    <div style="padding: 20px; font-family: Roboto, sans-serif;">
+        <table style="width: 100%;">
+            <tr>
+                <td style="width: 150px;">
+                    {% if details.employee.company.company_image %}
+                        <img src="/qxbox{{details.employee.company.company_image.url}}" alt="Logo" style="width: 100%;" />
+                    {% endif %}
+                </td>
+                <td style=" padding-left: 20px;text-align: right;">
+                    <p style="font-weight: bolder; font-size: 1.1em; padding: 0;margin:0;">{{details.employee.company.company_name}}</p>                                     
+                    <p style="font-weight: bolder; font-size: 0.8em; padding: 0;margin:0;">CIN: 
+                        {% for book in details.employee.company.statutorydetails_set.all %}
+                            {{book.cin_number }}
+                        {% endfor %}
+                    </p>
+                    <p style="font-weight: bolder; font-size: 0.8em; padding: 0;margin:0;">{{details.employee.company.registered_adress_line1}}</p>
+                    <p style="font-weight: bolder; font-size: 0.8em; padding: 0;margin:0;">{{details.employee.company.registered_adress_line2}}</p>
+                    <p style="font-weight: bolder; font-size: 0.8em; padding: 0;margin:0;">{{details.employee.company.registered_city}}, {{details.employee.company.registered_state}}, {{details.employee.company.registered_country}}  - {{details.employee.company.registered_pincode}} </p>
+                    <!-- <p style="font-weight: bolder; font-size: 0.8em; padding: 0;margin:0;"></p> -->
+                    <p style="font-weight: bolder; font-size: 0.8em; padding: 0;margin:0;">Email: {{details.employee.company.payslip_hr_email}} Phone: {{details.employee.company.payslip_hr_phone}}</p>
+                </td>
+            </tr>
+        </table>
+
+        <table style="width: 100%; border-collapse:collapse;">
+            <tr>
+                <th>
+                    <p class="PayslipBg" style="text-align: center; border: 1px solid black; font-size: 1.1em; font-size:32px; font-weight:600; color: #fff; margin-top: 15px; margin-bottom: 15px;">Payslip for the Month of <span> {{details.month_year|date:'M-Y'}} </span></p>
+                    <p style="text-align: center; margin: 5px;">(Pay Cycle: {{pay_day_start|date:"d-M-Y"}} to {{pay_day_end|date:"d-M-Y"}})</p>
+
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    <div style="display:flex; align-items: center; width:100%; margin-bottom:5px;">
+                        <div class="p-pic" style="margin-right: 10px;">
+                            {% if details.employee.employee_image %}
+                                <img src="/qxbox{{details.employee.employee_image.url}}" style="width: 60px; height: 60px; border-radius: 90px;" alt="">
+                            {% endif %}
+                         </div>
+                        <div class="p-nam">
+                            <label style="margin:0; font-size: 0.7rem; text-align: left;">Employee Name</label>
+                            <h5 style="text-transform: capitalize; font-size: 1.2em; margin: 0;">{{details.employee.first_name}} {{details.employee.middle_name}} {{details.employee.last_name}}</h5>                            
+                        </div>
+                    </div>
+                </th>
+            </tr>
+        </table>
+
+        <table style="width: 100%; border-collapse:collapse;">
+            <tr>
+                <td style="width: 50%; border: 1px solid black;padding-left: 6px;">
+                    <table style="width: 100%; font-size: 0.8em;">
+                        <tr>
+                            <td>Employee Id:</td>
+                            <td style="font-weight: bolder;">{{details.employee.work_details.employee_number}}</td>
+                        </tr>
+                        <tr>
+                            <td>Date of Joining:</td>
+                            <td style="font-weight: bolder;">{{details.employee.date_of_join}}</td>
+                        </tr>                                                                 
+                        <tr>
+                            <td>Department:</td>
+                            <td style="font-weight: bolder;">{{details.employee.work_details.department.name}}</td>
+                        </tr>
+                        <tr>
+                            <td>Designation:</td>
+                            <td style="font-weight: bolder;">{{details.employee.work_details.designation.name}}</td>
+                        </tr>
+                        <tr>
+                            <td>Location:</td>
+                            <td style="font-weight: bolder;">{{details.employee.work_details.work_location}}</td>
+                        </tr>
+                        <tr>
+                            <td>Date of Birth:</td>
+                            <td style="font-weight: bolder;">{{details.employee.date_of_birth}}</td>
+                        </tr>
+                        <tr>
+                            <td>Gender:</td>
+                            <td style="font-weight: bolder;">{{details.employee.gender}}</td>
+                        </tr>
+                        <tr>
+                            <td>Annual CTC:</td>
+                            <td style="font-weight: bolder;"><span>₹</span> <span class="currVal">{{details.yearly_ctc|format_with_commas}}</span></td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="width: 50%; border: 1px solid black;padding-left: 6px;">
+                    <table style="width: 100%; font-size: 0.8em;">
+                        <tr>
+                            <td>EPF:</td>
+                            <td style="font-weight: bolder;">{{details.employee.emp_compliance_detail.pf_num}}</td>
+                        </tr>
+                        <tr>
+                            <td>ESI:</td>
+                            <td style="font-weight: bolder;">{{details.employee.emp_compliance_detail.esi_num | null_as_na}}</td>
+                        </tr>
+                        <tr>
+                            <td>UAN:</td>
+                            <td style="font-weight: bolder;">{{details.employee.emp_compliance_detail.uan_num}}</td>
+                        </tr>
+                        <tr>
+                            <td>PAN:</td>
+                            <td style="font-weight: bolder;">                                
+                                {% for doc in details.employee.employee_document_ids.all %}{% if doc.document_type|slugify == 'pan-card' %}{{doc.document_number}}{% endif %}{% endfor %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Bank Name:</td>
+                            <td style="font-weight: bolder;">{{details.employee.salary_details.bank_name}}</td>
+                        </tr>                                     
+                        <tr>
+                            <td>Bank Account No:</td>                            
+                            <td style="font-weight: bolder;">{{details.employee.salary_details.account_number}}</td>
+                        </tr>
+                        <tr>
+                            <td>Total Working Days:</td>
+                            <td style="font-weight: bolder;">{{details.paid_days}}</td>
+                        </tr>
+                        <tr>
+                            <td>LOP Days:</td>
+                            <td style="font-weight: bolder;">{{details.lop}}</td>
+                        </tr>
+                      
+                    </table>
+                </td>
+            </tr>
+                 
+
+            <tr>
+                <td style="width: 50%; border: 1px solid black;">
+                    <div>
+                    <table style="width: 100%; font-size: 0.7em; ">
+                        <thead>
+                            <tr>
+                                <th style="text-align: left; border-right: 1px solid black;  border-bottom: 1px solid black;  padding-bottom: 6px; padding-top: 6px;padding-left: 6px;">Particulars</th>
+                                <th style="text-align: right; border-left: 1px solid black;  border-bottom: 1px solid black;  padding-bottom: 6px; padding-top: 6px;padding-right: 3px;">Gross Salary ₹</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="width: 70%; text-align: left; border-right: 1px solid black;padding-left: 6px;">Basic</td>
+                                <td style="text-align: right; border-left: 1px solid black;padding-right: 3px;"><span class="currVal">{{details.s_basic | format_with_commas}}</span></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 70%; text-align: left; border-right: 1px solid black;padding-left: 6px;">House Rent Allowance</td>
+                                <td style="text-align: right; border-left: 1px solid black;padding-right: 3px;"><span class="currVal">{{details.s_hra | format_with_commas}}</span></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 70%; text-align: left; border-right: 1px solid black;padding-left: 6px;">Conveyance Allowance</td>
+                                <td style="text-align: right; border-left: 1px solid black;padding-right: 3px;"><span class="currVal">{{details.s_conv | format_with_commas}}</span></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 70%; text-align: left; border-right: 1px solid black;padding-left: 6px;">Special Allowance</td>
+                                <td style="text-align: right; border-left: 1px solid black;padding-right: 3px;"><span class="currVal">{{details.s_special_allow | format_with_commas}}</span></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 70%; text-align: left; border-right: 1px solid black;padding-left: 6px;">Incentive</td>
+                                <td style="text-align: right; border-left: 1px solid black;padding-right: 3px;"><span class="currVal">{% if details.monthly_incentive %} {{details.monthly_incentive | format_with_commas}} {% else %}0.00 {% endif %}</span></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 70%; text-align: left; border-right: 1px solid black;padding-left: 6px;">Arrears</td>
+                                <td style="text-align: right; border-left: 1px solid black;padding-right: 3px;">{% if details.arrears %} {{details.arrears | format_with_commas}} {% else %}0.00 {% endif %}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 70%; text-align: left; border-right: 1px solid black; visibility: hidden;">Empty</td>
+                                <td style="text-align: right; border-left: 1px solid black; visibility: hidden;">Empty</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th style="text-align: left; border-right: 1px solid black;  border-top: 1px solid black;padding-left: 6px;">Total</th>
+                                <th style="text-align: right; border-left: 1px solid black;  border-top: 1px solid black;padding-right: 3px;"><span>₹</span> <span class="currVal">{{details.total_earnings | format_with_commas}}</span></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </td>
+
+            <td style="width: 50%; border: 1px solid black; padding: 0;">
+                <div>
+                <table style="width: 100%; font-size: 0.7em;">
+                    <thead>
+                        <tr>
+                            <th style="text-align: right; border-right: 1px solid black;  border-bottom: 1px solid black; padding-bottom: 6px; padding-top: 6px;padding-right: 3px;">Earnings Salary ₹</th>
+                            <th style="text-align: left; border-right: 1px solid black;  border-bottom: 1px solid black; padding-bottom: 6px; padding-top: 6px;padding-left: 6px;">Deductions ₹</th>
+                            <th style="text-align: right; border-left: 1px solid black;  border-bottom: 1px solid black; padding-bottom: 6px; padding-top: 6px;padding-right: 3px;">Amount ₹</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align: right; border-right: 1px solid black;padding-right: 3px;"><span class="currVal">{{details.e_basic | format_with_commas}}</span></td>
+                            <td style="text-align: left; border-right: 1px solid black;padding-left: 6px;">Employee Provident Fund</td>
+                            <td style="text-align: right; border-left: 1px solid black;padding-right: 3px;"><span class="currVal">{{details.employee_pf | format_with_commas}}</span></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right; border-right: 1px solid black;padding-right: 3px;"><span class="currVal">{{details.e_hra | format_with_commas}}</span></td>
+                            <td style="text-align: left; border-right: 1px solid black;padding-left: 6px;">Employee State Insurance</td>
+                            <td style="text-align: right; border-left: 1px solid black;padding-right: 3px;"><span class="currVal">{{details.employee_esi|floatformat:"2"|format_with_commas}}</span></td>
+                        <tr>
+                            <td style="text-align: right; border-right: 1px solid black;padding-right: 3px;"><span class="currVal">{{details.e_conv | format_with_commas}}</span></td>
+                            <td style="text-align: left; border-right: 1px solid black;padding-left: 6px;">Professional Tax</td>
+                            <td style="text-align: right; border-left: 1px solid black;padding-right: 3px;"><span class="currVal">{{details.profession_tax|floatformat:"2" | format_with_commas}}</span></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right; border-right: 1px solid black;padding-right: 3px;"><span class="currVal">{{details.e_special_allow|format_with_commas}}</span></td>
+                            <td style="text-align: left; border-right: 1px solid black;padding-left: 6px;">Income Tax TDS</td>
+                            <td style="text-align: right; border-left: 1px solid black;padding-right: 3px;"><span class="currVal">{{details.monthly_tds|floatformat:"2"|format_with_commas}}</span></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right; border-right: 1px solid black;padding-right: 3px;">0.00</td>
+                            <td style="text-align: left; border-right: 1px solid black;padding-left: 6px;">Salary Advance Deduction</td>
+                            <td style="text-align: right; border-left: 1px solid black;padding-right: 3px;">0.00</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right; border-right: 1px solid black;padding-right: 3px;">0.00</td>
+                            <td style="text-align: left; border-right: 1px solid black;padding-left: 6px;">Employee Loan</td>
+                            <td style="text-align: right; border-left: 1px solid black;padding-right: 3px;">0.00</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right; border-right: 1px solid black;padding-right: 3px;"></td>
+                            <td style="text-align: left; border-right: 1px solid black;padding-left: 6px;">Other</td>
+                            <td style="text-align: right; border-left: 1px solid black;padding-right: 3px;">0.00</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th style="text-align: right; border-right: 1px solid black;  border-top: 1px solid black;padding-right: 3px;"><span>₹</span> <span class="currVal">{{details.earned_gross | format_with_commas}}</span></th>
+                            <th style="text-align: left; border-right: 1px solid black;  border-top: 1px solid black;padding-left: 6px;">Total Deductions</th>
+                            <th style="text-align: right; border-left: 1px solid black;  border-top: 1px solid black;padding-right: 3px;"><span>₹</span> <span class="currVal">{{details.total_deduction|floatformat:"2" | format_with_commas}}</span></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            </td>
+            </tr>
+        </table>
+
+        
+        <table style="width: 100%; border-collapse:collapse;">
+            <tr>
+                <th>
+                    <p style="text-align: left; margin: 5px; padding-top: 20px; padding-bottom: 20px;">Net Salary: <span>₹</span> <span class="currVal">{{details.net_pay | format_with_commas}}</span></p>
+                    <p style="text-align: left; margin: 5px;text-transform: capitalize;">Net Salary in words: Rupees {{details.net_pay | replace_num_words:''}} only</p>
+                    <p style="text-align: left; margin: 5px; font-size: 0.65em; font-weight: 400;">If any discrepancies are noticed in your payslip, please bring to the notice of '{{details.employee.company.payslip_hr_email}}' within 7 working days.</p>
+                </th>
+            </tr>
+        </table>
+
+        <div style=" position: absolute; bottom: 0;width: 96%;">
+            <p style="text-align: center; margin: 5px; font-size: 0.65em;">This is a computer generated document and hence no signature is needed</p>
+        </div>
+       
+    </div>
+</body>
+
+<!-- <script>
+    window.onload = (event) => {  
+
+        var elements = document.getElementsByClassName('currVal');
+
+        // Iterate through the elements and apply toLocaleString to each
+        for (var i = 0; i < elements.length; i++) {
+            var element = elements[i];
+            
+            // Check if the element has a numeric value
+            if (!isNaN(element.textContent.trim())) {
+                // Convert the text content to a number and format it using toLocaleString
+                var formattedValue = parseFloat(element.textContent.trim()).toLocaleString('en-IN');
+                
+                // Update the element with the formatted value
+                element.textContent = formattedValue;
+            }
+        }
+    }
+</script> -->
+
+
+
+</html>

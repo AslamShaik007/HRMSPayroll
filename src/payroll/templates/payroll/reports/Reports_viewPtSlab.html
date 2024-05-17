@@ -1,0 +1,541 @@
+
+{% extends 'payroll/base/base.html' %}
+{% load static %}
+
+{% block css %}
+
+    <style>
+        td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        }
+
+        .parsley-errors {
+            color: rgb(225, 88, 88);
+            font-size: 0.9em;
+            margin-top: 3px;
+        }
+    </style>
+    <style>
+        #menuBtn:active {
+            border: 2px solid #30239f;
+        }
+        #menuBtn:visited {
+            border: 2px solid #30239f;
+        }
+
+        #menuBtn:focus {
+            border: 2px solid #30239f;
+            outline: 1px dotted !important;
+        }
+    </style>
+
+    <style type="text/css">
+        .has-search .form-control-feedback {
+            position: absolute;
+            z-index: 2;
+            display: block;
+            width: 2.375rem;
+            height: 2.375rem;
+            line-height: 2.075rem; right:15px;
+            text-align: center;
+            cursor: pointer;
+            color: #aaa;
+        }
+    </style>
+<style>
+    td.details-control {
+        background: url('./assets/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+
+    tr.shown td.details-control {
+        background: url('./assets/images/details_open.png') no-repeat center center;
+    }
+
+    .parsley-errors {
+        color: rgb(225, 88, 88);
+        font-size: 0.9em;
+        margin-top: 3px;
+    }
+
+    #main-content {
+        margin-top: 1.5rem !important;
+    }
+
+    .BtnActive {
+        background-color: #187ebe;
+        border: 2px solid #187ebe;
+        color: white;
+        font-weight: 500;
+    }   
+    .prev{
+        float: initial !important;       
+    }
+</style>
+{% endblock css %}
+
+{% block main_content %}
+
+            <div class="container-fluid">
+                {% include 'payroll/base/report-block-header.html' with t2=True %}
+
+                <div class="block-header">
+                    <div class="row clearfix">
+                        <div class="col-md-6 col-sm-12">
+                            <h1 class="ico_head"><i class="fa fa-bar-chart" aria-hidden="true"></i> <b>Statutory Reports - </b>PT Slab Reports</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            
+
+                                <div class="body shadow mb-3 border-0">
+                                    <div class="tab-content">
+
+                                        {% include 'payroll/base/report-statutory-block-header.html' with u4=True %}
+
+                                        <form id="search_form">
+                                            <div class="row pt-4">
+                                                <!-- <div class="col-lg-3 col-md-3 col-sm-6">
+                                                    <div class="form-group">
+                                                        <div class="multiselect_div">
+                                                            <select id="dept_id" class="form-control selectpicker w-100" data-live-search="true">
+                                                                <option value="">--All Department -- </option>                                             
+                                                               
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-sm-6">
+                                                    <div class="form-group">
+                                                        <div class="multiselect_div">
+                                                            <select class="form-control selectpicker w-100" id="employee_id" data-live-search="true">                                            
+                                                                <option value="">All Employee</option>
+                                                                                                          
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div> -->
+                                                <div class="col-lg-3 col-md-3 col-sm-6">
+                                                    <div class="form-group">
+                                                        <div class="multiselect_div">
+                                                            <select id="month_and_year" class="form-control selectpicker w-100" data-live-search="true">
+                                                                <option value="">--All Month and Year -- </option>                                                                                                   
+                                                                
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                
+                                                <div class="w-auto ml-2">
+                                                    <button type="submit"
+                                                        class="btn btn-primary empbutton addBtn" ><i
+                                                            class="fa fa-search mr-1"></i> Search</button>
+                                                </div>
+                                                <!-- <div class="w-auto ml-2">
+                                                    <button onclick="window.location.href=window.location.href" class="btn btn-success addBtn"><i
+                                                            class="fa fa-refresh mr-1"></i> Refresh</button>
+                                                </div>-->
+
+                                                <div class="w-auto ml-2">
+                                                    <button id="download_records" class="btn btn btn-info"
+                                                        title=""><i class="fa fa-download"></i> Download</a>
+                                                </div> 
+                                            </div>
+                                        </form>
+                                </div>
+                            </div>
+                            <!-- next -->
+                            <div class="body top_sp border-0 pt-2 shadow" id="summary_id">
+                                <div class="tab-content ">
+                                    <div class="tab-pane show active" id="e_employees">
+                                        <!-- <select class="form-control form-control NofEntriesShowSel" id="NofEntriesSel" name="NofEntriesSel" data-live-search="true">
+
+                                            <option value="10" selected>10</option>
+                                        
+                                            <option value="25" >25</option>
+                                        
+                                            <option value="50" >50</option>
+                                        
+                                            <option value="100" >100</option>
+                                        
+                                            <option value="10000" >All</option>
+                                        
+                                        </select> -->
+                                        <div class="table-responsive">
+            
+                                            <table class="display table table-hover table-custom spacing5 mb-0" id="sortingtable">
+                                            <thead>
+                                                <tr >
+                                                    <th>S. No</th>                                                    
+                                                    <th>Gross Salary</th>
+                                                    <th>No. of employees</th>                                                    
+                                                    <th>Slab</th>                                                    
+                                                    <th>Total</th>
+                                                </tr>
+            							    </thead>
+                                            <tbody>	
+            								           								   
+                                            </tbody>                                            
+                                        </table>
+                                    </div>
+                                    <!-- next end -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+{% endblock main_content %}
+
+    
+{% block js %}        
+        
+<script type="text/javascript">
+    $(".selectpicker").select2();
+
+
+    function set_filters(filtersData){
+        var dt = []
+        var empid = []
+        var depId = []
+        filtersData.forEach(function(item) {
+
+            if(!depId.includes(item['deptId'])){
+                depId.push(item['deptId'])
+                $('#dept_id').append("<option value='"+item['deptId']+"' >"+item['deptName']+"</option>")
+            }
+            if(!empid.includes(item['empId'])){
+                empid.push(item['empId'])
+                $('#employee_id').append("<option value='"+item['empId']+"' >"+item['empName']+"</option>")                    
+            }
+                if(!dt.includes(item['monthYear'])){
+                    dt.push(item['monthYear'])
+                    $('#month_and_year').append("<option value='"+item['monthYear']+"' >"+changeDateFormatToMonthYear(item['monthYear'])+"</option>")                    
+                }
+            });
+    
+    }
+
+
+        function setTable(results){            
+             
+            var rescounter = 0;
+            results.forEach(function(item) {
+                rescounter ++;
+                $('#sortingtable tbody').append(
+                    `
+                    <tr class="text-left">
+                        <td>`+rescounter+`</td>                                                    
+                        <td>`+item.minGross+` - `+item.maxGross+`</td>
+                        <td>`+item.totalEmployees+`</td>                                                    
+                        <td>`+item.professionalTax+`</td>                                                    
+                        <td>`+item.totalProfessionalTax+`</td>
+                    </tr>    
+                    `
+                )
+            });
+        
+        }
+
+
+        function get_employees_list(page,page_size,department,employees,month_year,is_filter,apiurl){        
+            let apiUrl = "/qxbox/{% url 'get-pt-slab' %}" 
+            if (apiurl){
+                apiUrl = apiurl
+            }else{
+                apiUrl = apiUrl + "?company_id="+ '{{request.session.cmp_id}}'            
+                apiUrl = apiUrl + '&page='+ page
+                apiUrl = apiUrl + '&page_size='+ page_size
+            }             
+            if (department.length>0){
+                apiUrl = apiUrl + '&dept_id='+department
+            }            
+            if(employees.length>0){
+                apiUrl = apiUrl + '&emp_id='+employees            
+            }
+            if(month_year.length>0){
+                apiUrl = apiUrl + '&month_year='+month_year            
+            }
+
+            $.ajax({
+                type: 'GET',
+                url: apiUrl,
+                headers: {
+                                "Authorization": "Bearer "+localStorage.getItem('acc_token'),                            
+                            },                
+                contentType: "application/json",
+                dataType:"json",            
+                success: function (response) {
+                    $('#sortingtable tbody').html('')
+
+
+                    let filtersData = response['result']['filtersData'];
+                    let paginatedData = response['result']['paginatedData'];
+                    let results = paginatedData['results'];
+                    
+                    if(is_filter){
+                        set_filters(filtersData);
+                    }
+                    
+                    // var oTable = $('#sortingtable').DataTable().destroy();
+                    $('#sortingtable').DataTable().clear().destroy()
+
+
+                    setTable(results[0]);
+
+                    
+
+                    $('#sortingtable').DataTable(
+                        {
+                            destroy: true,
+                            responsive: true,
+                            pageLength: 10,
+                            paginate: false,
+                            info: false,
+                            order: [],
+                            // dom: 'Bfrtip',
+                            // buttons: [
+                            //     'copy', 'csv', 'excel', 'pdf'
+                            // ]
+                        }
+                    );
+
+                    if (paginatedData.previous) {
+                        $('.prev').removeClass('disabled')
+                        $('.prev').addClass('BtnActive')
+                        $('.prev').data('url', (paginatedData.previous).replace('api','qxbox/api').replace('http:','https:'))
+                    } else {
+                        $('.prev').addClass('disabled')
+                    }
+                    if (paginatedData.next) {
+                        $('.nxt').removeClass('disabled')
+                        $('.nxt').addClass('BtnActive')
+                        $('.nxt').data('url', (paginatedData.next).replace('api','qxbox/api').replace('http:','https:'))
+                    } else {
+                        $('.nxt').addClass('disabled')
+                    }
+
+                    $('.lastRecord').text(results.length)
+                    $('.totalRecord').text(paginatedData.count)
+                    $(".cpage").text(paginatedData.currentPage)
+
+
+                }
+            }).done(function() {
+                
+                if(myResponseStatus == true) {
+                    // setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    // },500);
+                } else {                    
+                    setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);
+                }
+                
+            }).fail(function (xhr, status, e) {                 
+                swal({   
+                    title: "Error",
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+                 setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);                
+            }); 
+
+        }
+
+
+        function download_employees_list(department,employees,month_year){        
+        
+        let apiUrl = "/qxbox/{% url 'get-pt-slab' %}"     
+        apiUrl = apiUrl + "?company_id="+ '{{request.session.cmp_id}}'                                
+        
+        if (department.length>0){
+            apiUrl = apiUrl + '&dept_id='+department
+        }            
+        if(employees.length>0){
+            apiUrl = apiUrl + '&emp_id='+employees            
+        }
+        if(month_year.length>0){
+            apiUrl = apiUrl + '&month_year='+month_year            
+        }
+        apiUrl = apiUrl + '&download=true'
+
+        $.ajax({
+            type: 'GET',
+            url: apiUrl,
+            xhrFields: {
+                            responseType: 'blob' // Set the response type to blob
+                        }, 
+            headers: {
+                            "Authorization": "Bearer "+localStorage.getItem('acc_token'),                            
+                        },                                        
+            success: function (data, status, xhr) {
+                const blob = new Blob([data], { type: 'application/ms-excel' })
+                            var link = document.createElement('a');
+                            link.href = window.URL.createObjectURL(blob);
+                            link.download = "PT_Slab_Report.xlsx";
+                            link.click();
+
+            }
+        }).done(function() {
+                
+                if(myResponseStatus == true) {
+                    // setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    // },500);
+                } else {                    
+                    setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);
+                }
+                
+            }).fail(function (xhr, status, e) {                 
+                swal({   
+                    title: "Error",
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+                setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);                
+            }); 
+
+    }
+
+
+        $(document).ready(function() {
+            
+            get_employees_list(1,10,[],[],[],true,false)                     
+
+        });
+    
+    
+    function load_close() {
+        window.location.replace("./payroll/reports/employeesalarystatement");
+    }
+</script>
+
+
+<script>
+
+    var page_size = 10;
+
+    $('#NofEntriesSel').on('change', function() {
+        page_size = this.value 
+
+        let dept_id = [] 
+        if ($("#dept_id").val()){
+            dept_id.push($("#dept_id").val());
+        }
+        let emp_ids = []                    
+        if($('#employee_id').val()){
+            emp_ids.push($('#employee_id').val())
+        }
+        let month_and_year = []
+        if($("#month_and_year").val()){
+            month_and_year.push($("#month_and_year").val());
+        }
+
+        get_employees_list(1,page_size,dept_id,emp_ids,month_and_year,false,false)
+    });
+
+    $("#search_form").on('submit',function(e){
+        e.preventDefault()
+
+        let dept_id = [] 
+        if ($("#dept_id").val()){
+            dept_id.push($("#dept_id").val());
+        }
+        let emp_ids = []                        
+        if($('#employee_id').val()){
+            emp_ids.push($('#employee_id').val())
+        }
+        let month_and_year = []
+        if($("#month_and_year").val()){
+            month_and_year.push($("#month_and_year").val());
+        }
+
+        get_employees_list(1,page_size,dept_id,emp_ids,month_and_year,false,false)
+
+    })
+</script>
+
+
+<script>
+
+    
+        $('body').on('click','#download_records' ,function (e) {
+            e.preventDefault();
+            let apiurl = $(this).data('url');    
+            let dept_id = [] 
+            if ($("#dept_id").val()){
+                dept_id.push($("#dept_id").val());
+            }
+            let emp_ids = []                       
+            if($('#employee_id').val()){
+                emp_ids.push($('#employee_id').val())
+            }
+            let month_and_year = []
+            if($("#month_and_year").val()){
+                month_and_year.push($("#month_and_year").val());
+            }           
+            download_employees_list(dept_id,emp_ids,month_and_year)        
+        })
+
+    $('body').on('click','.nav-btn' ,function (e) {
+        e.preventDefault();
+        let apiurl = $(this).data('url');    
+        let dept_id = [] 
+        if ($("#dept_id").val()){
+            dept_id.push($("#dept_id").val());
+        }
+        let emp_ids = []                       
+        if($('#employee_id').val()){
+            emp_ids.push($('#employee_id').val())
+        }
+        let month_and_year = []
+        if($("#month_and_year").val()){
+            month_and_year.push($("#month_and_year").val());
+        }                         
+        get_employees_list(1,page_size,dept_id,emp_ids,month_and_year,false,apiurl)        
+    })
+
+    if(window.location.href.indexOf("/qxbox/payroll/reports/")) {
+        console.log("success")
+        $("#MainMenu").addClass("active")
+    } else {
+        console.log("failed")
+    }
+</script>
+
+
+<script>
+    $(document).on( "ajaxSend", function() {
+      $("#AjaxCallOverlay").fadeIn(300);
+    });
+    let myResponseStatus = true;
+
+  </script>
+
+
+{% endblock js %}

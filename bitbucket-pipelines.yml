@@ -1,0 +1,13 @@
+pipelines:
+  branches:
+    '**':
+      - step:
+          name: Deploy
+          script:
+            - apt-get update && apt-get install -y sshpass
+            - echo "SCRIPT START"
+            - ip a
+            - whoami
+            - sshpass -p 'w6$3PQe#kLk4Za@c' ssh vitel@38.143.106.215
+            - cd /var/www/html/
+            - echo "In server"

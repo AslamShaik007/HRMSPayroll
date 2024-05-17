@@ -1,0 +1,457 @@
+
+{% extends 'payroll/base/base.html' %}
+{% load static %}
+
+{% block css %}
+
+    <style>
+        table.dataTable th,
+        table.dataTable td {
+            white-space: nowrap;
+        }
+        td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        }
+
+        .parsley-errors {
+            color: rgb(225, 88, 88);
+            font-size: 0.9em;
+            margin-top: 3px;
+        }
+    </style>
+    
+    <style>
+        #menuBtn:active {
+            border: 2px solid #30239f;
+        }
+        #menuBtn:visited {
+            border: 2px solid #30239f;
+        }
+
+        #menuBtn:focus {
+            border: 2px solid #30239f;
+            outline: 1px dotted !important;
+        }
+    </style>
+
+    <style type="text/css">
+        .has-search .form-control-feedback {
+            position: absolute;
+            z-index: 2;
+            display: block;
+            width: 2.375rem;
+            height: 2.375rem;
+            line-height: 2.075rem; right:15px;
+            text-align: center;
+            cursor: pointer;
+            color: #aaa;
+        }
+        .table.reports-table {
+        margin: 25px auto;
+    }
+    .zp-table {
+        border-bottom: 1px solid rgba(239,236,236,.42);
+        border-left: none;
+    }
+    .india-reports-table, .table.zp-table.table-responsive.table-hover.reports-table.fixed-scroll-table {
+        table-layout: fixed;
+    }
+    .table-responsive {
+        overflow-x: auto;
+        min-height: .01%;
+    }
+    .zp-table.table thead:first-child>tr:first-child>th {
+        border-top: 1px solid rgba(239,236,236,.42);
+        border-bottom: 1px solid rgba(239,236,236,.42);
+    }
+    .table.form16-table thead>tr>th, .table.reports-table thead>tr>th {
+        padding: 8px 25px;
+    }
+    .zp-table tr td:first-of-type, .zp-table tr th:first-of-type {
+        padding-left: 30px;
+    }
+    .zp-table thead>tr>th {
+        font-weight: 400;
+        background-color: #f8faff;
+        color: #555;
+        font-size: 12px;
+        height: 40px;
+        text-transform: uppercase;
+    }
+    .zp-table td, .zp-table thead>tr>th {
+        border-color: rgba(239,236,236,.42);
+        vertical-align: middle;
+    }
+    </style>
+
+    <style>
+        .AuditReportTable thead tr th {
+            font-size: 1rem !important;
+            font-weight: 500;
+            font-family: 'Mukta', sans-serif !important;
+            text-transform: capitalize;
+        }
+    </style>
+
+{% endblock %}
+
+{% block main_content %}
+
+        <div class="container-fluid">
+
+            <div class="block-header">
+                <div class="row clearfix">
+                    <div class="col-md-6 col-sm-12">
+                        <h1 class="ico_head"><i class="fa fa-bar-chart" aria-hidden="true"></i> <b>Salary Report</b></h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card">
+
+                        <div class="body shadow pt-0 mb-3 border-0">
+                            <div class="tab-content">
+                
+                                <form id="search_form">
+                                    <div class="row">                                                                               
+                                        <div class="col-lg-3 col-md-5 col-sm-6">
+                                            <div class="form-group">
+                                                <div class="multiselect_div">
+                                                    <label class="formFieldLabel font-16">Year</label>
+                                                    <select class="form-control selectpicker w-100 form-control emp_id"  id="of_date" data-live-search="true">                                                        
+                                                        <option value="" selected>All</option>
+                                                     
+                                                        
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="w-auto ml-2">
+                                            <button type="submit"
+                                                class="btn btn-primary empbutton addBtn" ><i
+                                                    class="fa fa-search mr-1"></i> Search</button>
+                                        </div>
+                                        <div class="w-auto ml-2">
+                                            <button onclick="window.location.href=window.location.href" class="btn btn-success addBtn"><i
+                                                    class="fa fa-refresh mr-1"></i> Refresh</button>
+                                        </div>  
+                                        <div class="w-auto ml-2">
+                                            <button id="download_records" class="btn btn btn-info addBtn"
+                                                title=""><i class="fa fa-download"></i> Download</a>
+                                        </div>   
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- next -->
+                        <div class="body top_sp shadow border-0 pt-2" id="summary_id">
+                            <div class="tab-content">
+                                <div class="table-responsive">
+    
+                                    <table class="display table table-hover table-custom spacing5 mb-0" id="sortingtable">
+    
+                                        <thead>
+                                            <tr>
+                                                <th>S. NO</th>
+                                                <th>Year</th>
+                                                <th>Salary paid</th>                                                                                            
+                                            </tr>	
+                                        </thead>
+                                        <tbody>	                                                                     
+                                        
+                                        </tbody>							               
+                                    </table>
+                                </div>
+                                <!-- next end -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+ 
+
+<script>
+
+    $(".selectpicker").select2();
+    
+        function set_filters(filtersData){       
+            var depId = []
+            
+            filtersData.forEach(function(item) {            
+
+                $('#of_date').append("<option value='"+item+"' >"+item+"</option>")                                  
+                    
+            });
+        
+        }
+    
+    
+            function setTable(results){            
+                 
+                var rescounter = 0;
+                results.forEach(function(item) {
+                    rescounter ++;
+                    var date    = new Date(item.year)
+                    $('#sortingtable tbody').append(
+                        `
+                        <tr>   
+    
+                            <td>`+rescounter+`</td>
+                            <td>`+date.getFullYear()+`</td>
+                            <td>`+item.total+`</td>
+                            
+                        </tr> 
+                        `
+                    )
+                });
+            
+            }
+    
+    
+    
+        function get_employees_list(page,page_size,year,is_filter,apiurl){        
+    
+            let apiUrl = "/qxbox/{% url 'salary-info-report' %}" 
+            
+            if (apiurl){
+                apiUrl = apiurl
+            }else{
+                apiUrl = apiUrl + "?company_id="+ '{{request.session.cmp_id}}' 
+                apiUrl = apiUrl + '&page='+ page
+                apiUrl = apiUrl + '&page_size='+ page_size           
+            }
+            
+            if(year){
+                    apiUrl = apiUrl + '&year='+year            
+            }
+    
+            $.ajax({
+                type: 'GET',
+                url: apiUrl,
+                headers: {
+                                "Authorization": "Bearer "+localStorage.getItem('acc_token'),                            
+                            },                
+                contentType: "application/json",
+                dataType:"json",            
+                success: function (response) {
+                    $('#sortingtable tbody').html('')
+    
+    
+                        let filtersData = response['result']['filtersData'];
+                        let paginatedData = response['result']['paginatedData'];
+                        let results = paginatedData['results'];
+                        
+                        if(is_filter){
+                            set_filters(filtersData);
+                        }
+                        
+                        // var oTable = $('#sortingtable').DataTable().destroy();
+                        $('#sortingtable').DataTable().clear().destroy()
+    
+    
+                        setTable(results);
+                        $('#sortingtable').DataTable(
+                            {
+                                destroy: true,
+                                responsive: true,
+                                pageLength: 10,
+                                paginate: false,
+                                info: false,
+                                order: [],
+                                // dom: 'Bfrtip',
+                                // buttons: [
+                                //     'copy', 'csv', 'excel', 'pdf'
+                                // ]
+                            }
+                        );
+    
+                        if (paginatedData.previous) {
+                            $('.prev').removeClass('disabled')
+                            $('.prev').addClass('BtnActive')
+                            $('.prev').data('url', (paginatedData.previous).replace('api','qxbox/api').replace('http:','https:'))
+                        } else {
+                            $('.prev').addClass('disabled')
+                        }
+                        if (paginatedData.next) {
+                            $('.nxt').removeClass('disabled')
+                            $('.nxt').addClass('BtnActive')
+                            $('.nxt').data('url', (paginatedData.next).replace('api','qxbox/api').replace('http:','https:'))
+                        } else {
+                            $('.nxt').addClass('disabled')
+                        }
+    
+                        $('.lastRecord').text(results.length)
+                        $('.totalRecord').text(paginatedData.count)
+                        $(".cpage").text(paginatedData.currentPage)
+    
+                }
+            }).done(function() {
+                
+                if(myResponseStatus == true) {
+                    // setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    // },500);
+                } else {                    
+                    setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);
+                }
+                
+            }).fail(function (xhr, status, e) {                 
+                swal({   
+                    title: "Error",
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+                setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);                
+            }); 
+    
+        }
+    
+    
+        function download_employees_list(year){        
+            
+            let apiUrl = "/qxbox/{% url 'salary-info-report' %}" 
+    
+            apiUrl = apiUrl + "?company_id="+ '{{request.session.cmp_id}}'                                
+                              
+            if(year){
+                    apiUrl = apiUrl + '&year='+year            
+            }
+            apiUrl = apiUrl + '&download=true'
+    
+            $.ajax({
+                type: 'GET',
+                url: apiUrl,
+                xhrFields: {
+                                responseType: 'blob' // Set the response type to blob
+                            }, 
+                headers: {
+                                "Authorization": "Bearer "+localStorage.getItem('acc_token'),                            
+                            },                                        
+                success: function (data, status, xhr) {
+                    const blob = new Blob([data], { type: 'application/ms-excel' })
+                                var link = document.createElement('a');
+                                link.href = window.URL.createObjectURL(blob);
+                                link.download = "Salary_Report.xlsx";
+                                link.click();
+    
+                }
+            }).done(function() {
+                    
+                    if(myResponseStatus == true) {
+                        // setTimeout(function(){
+                            $("#AjaxCallOverlay").fadeOut('slow');
+                        // },500);
+                    } else {                    
+                        setTimeout(function(){
+                            $("#AjaxCallOverlay").fadeOut('slow');
+                        },3000);
+                    }
+                    
+                }).fail(function (xhr, status, e) {                 
+                    swal({   
+                        title: "Error",
+                        type: "info",
+                        showCancelButton: false,
+                        confirmButtonColor: "#007bff",
+                        confirmButtonText: "Ok",
+                        closeOnConfirm: false,
+                        closeOnCancel: true 
+                    });
+                    setTimeout(function(){
+                            $("#AjaxCallOverlay").fadeOut('slow');
+                        },3000);                
+                }); 
+    
+        }
+    
+    </script>
+    
+    <script>
+        $(document).ready(function() {
+            get_employees_list(1,10,2023,true,false);
+        })
+    </script>
+    
+    <script>
+    
+        var page_size = 10;
+    
+        $('#NofEntriesSel').on('change', function() {
+            page_size = this.value                               
+            let year = $('#of_date').val() 
+         
+    
+            get_employees_list(1,page_size,year,false,false)
+        });
+    
+        $("#search_form").on('submit',function(e){
+            e.preventDefault()
+            
+            let year = $('#of_date').val() 
+    
+            get_employees_list(1,page_size,year,false,false)
+    
+        })
+    
+    
+        $('body').on('click','#download_records' ,function (e) {
+                e.preventDefault();
+                           
+                let year = $('#of_date').val() 
+
+                download_employees_list(year)        
+            })
+            
+    
+        $('body').on('click','.nav-btn' ,function (e) {
+            e.preventDefault();
+            let apiurl = $(this).data('url');    
+            
+            let year = $('#of_date').val() 
+                   
+            get_employees_list(1,page_size,year,false,apiurl)        
+        })
+    
+    </script>
+    
+
+
+<script>
+    if(window.location.href.indexOf("/qxbox/payroll/reports/")) {
+            console.log("success")
+            $("#MainMenu").addClass("active")
+        } else {
+            console.log("failed")
+        }
+</script>
+
+<script>
+    $(document).on( "ajaxSend", function() {
+      $("#AjaxCallOverlay").fadeIn(300);
+    });
+    let myResponseStatus = true;
+
+  </script>
+
+
+{% endblock %}

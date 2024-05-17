@@ -1,0 +1,2370 @@
+{% extends 'payroll/base/base.html' %}
+{% load static %}
+
+{% block css %}
+
+  <link rel="stylesheet" href="/qxbox/{% static 'assets/css/common.css' %}">
+  <link rel="stylesheet" href="/qxbox/{% static 'assets/css/stylenew.css' %}">
+  <link rel="stylesheet" href="/qxbox/{% static 'assets/css/emp.css' %}">
+
+    <style>
+        td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        }
+
+        .parsley-errors {
+            color: rgb(225, 88, 88);
+            font-size: 0.9em;
+            margin-top: 3px;
+        }
+    </style>
+
+    <style>
+      #menuBtn:active {
+          border: 2px solid #30239f;
+      }
+      #menuBtn:visited {
+          border: 2px solid #30239f;
+      }
+
+      #menuBtn:focus {
+          border: 2px solid #30239f;
+          outline: 1px dotted !important;
+      }
+    </style>
+    <style>
+        .light_version .btn.btn-default {
+            background-color: #ded3cd !important;
+            border-radius: 25px;
+        }
+
+        .btn-success:not(:disabled):not(.disabled):active, .btn-success:not(:disabled):not(.disabled).active, .show > .btn-success.dropdown-toggle {
+            /* background: linear-gradient(to right, #0e527d, #1a87cb) !important; */
+            background-image: linear-gradient( 73.1deg, rgba(34,126,34,1) 8%, rgba(99,162,17,1) 86.9% );
+        }
+    </style>
+
+    <style>
+
+      input::file-selector-button {
+        width: 0;
+        opacity: 0;
+        
+      }
+        .pdfimage {
+          background-image: url('./assets/images/thumbnail.png');
+          background-size: contain;
+          background-repeat: no-repeat;
+          min-width: 100px;
+          min-height: 100px;
+        }
+    
+        .preview1 {
+          max-width: 100px;
+          height: 100px;
+        }
+    
+        .preview11 {
+          max-width: 100px;
+          height: 100px;
+        }
+    
+        .preview12 {
+          max-width: 100px;
+          height: 100px;
+        }
+    
+        .btn_upload {
+          cursor: pointer;
+          display: inline-block;
+          overflow: hidden;
+          position: relative;
+          color: #fff;
+          background-color: #2a72d4;
+          border: 1px solid #166b8a;
+          padding: 5px 10px;
+        }
+    
+        .btn_upload:hover,
+        .btn_upload:focus {
+          background-color: #7ca9e6;
+        }
+    
+        .yes {
+          margin-bottom: 10px !important;
+        }
+    
+        .btn_upload input {
+          cursor: pointer;
+          height: 100%;
+          position: absolute;
+          filter: alpha(opacity=1);
+          -moz-opacity: 0;
+          opacity: 0;
+        }
+    
+        .it {
+          height: 100px;
+          margin-left: 10px;
+        }
+    
+        .btn-rmv1,
+        .btn-rmv11,
+        .btn-rmv12,
+        .btn-rmv2,
+        .btn-rmv3,
+        .btn-rmv4,
+        .btn-rmv5 {
+          display: none;
+          position: absolute;
+        }
+    
+        .rmv {
+          cursor: pointer;
+          color: #fff;
+          border-radius: 30px;
+          border: 1px solid #fff;
+          display: inline-block;
+          background: rgba(255, 0, 0, 1);
+          margin: -5px -10px;
+        }
+    
+        .rmv:hover {
+          background: rgba(255, 0, 0, 0.5);
+        }
+    
+        .f800 {
+          width: 80%;
+        }
+    
+        .chfi .custom-file-input {
+          width: 80%;
+        }
+    
+        #add-att {
+          position: absolute;
+          z-index: 999;
+          right: 0;
+        }
+    
+        #maindiv {
+          width: 960px;
+          margin: 10px auto;
+          padding: 10px;
+    
+        }
+    
+        #formdiv {
+          width: 500px;
+          float: left;
+          text-align: center
+        }
+    
+        #file {
+          color: green;
+          padding: 5px;
+          border: 1px dashed #123456;
+          background-color: #f9ffe5
+        }
+    
+    
+        /* #img {
+          width: 35px;
+          border: none;
+          height: 35px;
+          margin-left: -20px;
+          margin-bottom: 91px;
+        } */
+    
+    
+        #img {
+          width: 25px;
+          border: none;
+          height: 20px;
+          margin-left: -8px;
+          margin-bottom: 10px;
+          float:left;
+          margin-top:-12px;
+        }
+    
+        .abcd {
+          text-align: center;
+        }
+      .prvimg{
+        float: left !important;
+          margin-left: 213px !important;
+          width: 50px !important;
+          height: 50px !important;
+          margin-top: 0px !important;
+      }
+        .abcd img {
+          height: 100px;
+          width: 100px;
+          padding: 5px;
+          border: 1px solid #e8debd;
+          float: left;
+        }
+    
+        b {
+          color: red
+        }
+    
+        .fileinput-button {
+          position: relative;
+          overflow: hidden;
+        }
+    
+        .fileinput-button input {
+          position: absolute;
+          top: 0;
+          right: 0;
+          margin: 0;
+          opacity: 0;
+          -ms-filter: "alpha(opacity=0)";
+          font-size: 200px;
+          direction: ltr;
+          cursor: pointer;
+        }
+    
+        .thumb {
+          height: auto;
+          width: 100px;
+          border: 1px solid #000;
+        }
+    
+        ul.thumb-Images li {
+          width: 120px;
+          float: left;
+          display: inline-block;
+          vertical-align: top;
+          height: auto;
+        }
+    
+        .img-wrap {
+          position: relative;
+          display: inline-block;
+          font-size: 0;
+        }
+    
+        .img-wrap .close {
+          position: absolute;
+          top: -10px;
+          right: -10px;
+          z-index: 100;
+          background-color: #d0e5f5;
+          padding: 5px 2px 2px;
+          color: #000;
+          font-weight: 500;
+          cursor: pointer;
+          opacity: 0.5;
+          font-size: 23px;
+          line-height: 10px;
+          border-radius: 50%;
+          width: 20px;
+          height: 20px;
+          text-align: center;
+        }
+    
+        .img-wrap:hover .close {
+          opacity: 1;
+          background-color: #ff0000;
+        }
+    
+        .FileNameCaptionStyle {
+          font-size: 12px;
+        }
+    
+        .avatar-upload {
+          position: relative;
+          max-width: 150px;
+          margin-right: 50px;
+          margin-left: 25px;
+        }
+    
+        .avatar-upload .avatar-edit {
+          position: absolute;
+          right: 12px;
+          z-index: 1;
+          top: 10px;
+          text-align: right;
+        }
+    
+        .avatar-upload .avatar-edit input {
+          display: none;
+        }
+    
+        .avatar-upload .avatar-edit .elabe {
+          display: inline-block;
+          width: 34px;
+          height: 34px;
+          margin-bottom: 0;
+          border-radius: 100%;
+          background: #FFFFFF;
+          border: 1px solid transparent;
+          box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
+          cursor: pointer;
+          font-weight: normal;
+          transition: all 0.2s ease-in-out;
+        }
+    
+        .avatar-upload .avatar-edit .elabe:hover {
+          background: #f1f1f1;
+          border-color: #d6d6d6;
+        }
+    
+        .avatar-upload .avatar-edit .elabe:after {
+          content: "\f040";
+          font-family: 'FontAwesome';
+          color: #757575;
+          position: absolute;
+          top: 7px;
+          left: 0;
+          right: 10px;
+          text-align: right;
+          margin: auto;
+        }
+    
+        .avatar-upload .avatar-preview {
+          width: 192px;
+          height: 192px;
+          position: relative;
+          border: 6px solid #F8F8F8;
+          box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+        }
+    
+        .avatar-upload .avatar-preview>div {
+          width: 100%;
+          height: 100%;
+          background-size: 100%;
+          background-repeat: no-repeat;
+          background-position: center;
+        }
+    
+        .avatar-edit .parsley-errors-list {
+          position: relative !important;
+        }
+    
+        #userfile-error,
+        #pannumberphoto-error,
+        #anumberphoto-error {
+          width: 100%;
+          position: inherit;
+        min-width: 500px;
+        margin-top: 65px;
+        margin-left: -78%;
+        }
+    
+        .newtitlecls {
+          width: 50%;
+          float: left;
+          display: inline !important;
+        }
+    
+        .docread {
+          width: 64px;
+          height: 43px;
+          background-color: #ef4036;
+          text-align: center;
+          align-content: center;
+          margin-left: 213px;
+          margin-bottom: -27px;
+          color: #fff;
+          float:left;
+          border: 2px solid #001a33;
+          text-transform: uppercase;
+        }
+    
+    
+        .errordemo{
+            background-color: #F2DEDE !important;
+        border: 1px solid #EED3D7 !important;
+        color: #B94A48;
+        }
+     
+    </style> 
+
+{% endblock %}
+
+  {% block main_content %}
+
+    <div class="container-fluid">
+        
+        {% include 'payroll/base/emp-block-header.html' with t2=True %}    
+  
+
+                <div class="block-header">
+                    <div class="row clearfix">
+                        <div class="col-md-6 col-sm-12">         
+                            <h1 class="ico_head"><i class="icon-grid"></i>Employee /<small id="leavesCurrentActiveTabTitle">New Employee</small></h1>
+                        </div>
+                        <div class="col-md-6 col-sm-12 text-right hidden-xs">
+                            <button type="button" onclick="window.location.href = '{% url 'manage_employees_view' %}';" class="backBtn addBtn rounded py-1 px-2"><i class="fa fa-arrow-left mr-1" aria-hidden="true"></i> Back to Employee</button>
+                        </div>       
+                    </div>
+                </div>
+
+                
+                <div class="row clearfix">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="card">
+                            <!-- <div class="header ">
+                                <div class="stepwizard">
+                                    <div class="stepwizard-row setup-panel row" id="manageEmployeeNavTab">
+                                        <div class="stepwizard-step col-3 col-xs-3 nav-item px-0 ml-3 position-relative text-center">
+                                            <a href="#step-1" type="button" class="btn btn-success nav-link active show py-2 step1 border-0" style="font-size: 17px !important; font-weight: 900 !important;">Personal Details</a>
+                                        </div>
+                                        <div class="stepwizard-step col-3 col-xs-3 position-relative text-center">
+                                            <a href="#step-2" type="button" class="btn btn-default nav-link active show py-2 step2 border-0" style="font-size: 17px !important; font-weight: 900 !important;">Employment Details</a>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div> -->
+                            <div class="body shadow">
+                                
+                                <div class="container--">
+                                    <form id="basic-form" novalidate="" enctype="multipart/form-data" class="form-horizontal add-form" method="POST" name="FmCategory">
+                                        <div class="panel panel-primary setup-content" id="step-1">
+                                            <div class="panel-heading">
+                                                <h5 class="panel-title mb-20">Personal Details</h5>
+                                            </div>
+                                            <div class="panel-body">
+                                                <fieldset>
+                                                    <div class="row clearfix"> 
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="Emp_first_name">First Name <span class="asterisk"> * </span></label>
+                                                                <input id="Emp_first_name" type="text" name="Emp_first_name" class="form-control errorbox" minlength="0" maxlength="20" value="" required />
+                                                                <span id="error" style='color:#E15858; font-size:0.9em;'></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                          <div class="form-group">
+                                                              <label for="Emp_Middle__name">Middle Name</label>
+                                                              <input id="Emp_Middle__name" type="text" name="Emp_Middle__name" class="form-control" minlength="0" maxlength="20" value="" />
+                                                              <span id="error1" style='color:#E15858; font-size:0.9em;'></span>
+                                                          </div>
+                                                      </div>
+                                                      <div class="col-md-3">
+                                                          <div class="form-group">
+                                                              <label for="Emp_Last_name">Last Name <span class="asterisk"> * </span></label>
+                                                              <input id="Emp_Last_name" type="text" name="Emp_Last_name" class="form-control errorbox" minlength="0" maxlength="20" value="" required />
+                                                              <span id="error2" style='color:#E15858; font-size:0.9em;'></span>
+                                                          </div>
+                                                      </div>
+                                                        <div class="col-md-3">
+                                                          <div class="form-group">
+                                                              <label for="Emp_code">Employee Code <span class="asterisk"> * </span></label>
+                                                              <input id="Emp_code" type="text" name="Emp_code" class="form-control errorbox" minlength="0" maxlength="20" value="" required />
+                                                              <span id="error" style='color:#E15858; font-size:0.9em;'></span>
+                                                          </div>
+                                                      </div>
+
+
+
+                                                        
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="Dob">Date of Birth<span class="asterisk"> *</span></label>
+                                                                <input type="text" id="Dob"  value="" name="Dob" class="form-control errorbox" placeholder="dd-mm-yyyy" required />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="Gender">Gender<span class="asterisk"> *</span></label>
+                                                                <select id="Gender" name="Gender" class="form-control errorbox" required>                                                                    
+                                                                    <option value="MALE" >MALE</option>
+                                                                    <option value="FEMALE" >FEMALE</option>
+                                                                    <option value="TRANSGENDER" >TRANSGENDER</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="nationality">Nationality</label>
+                                                                <input id="nationality" type="text" name="nationality" class="form-control errorbox" value=""  />
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-3" >
+                                                          <div class="form-group">
+                                                            <label for="Personal_email">Personal Email id<span class="asterisk"> * </span></label>
+                                                            <input id="Personal_email"  type="email" name="Personal_email" style="text-transform:lowercase" value="" class="form-control" required />
+                                                          </div>
+                                                          <span id="errorpernonal"></span>
+                                                        </div>
+
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="userfile">Upload Photograph</label>                                                             
+                                                                <span class="">
+                                                                  <div class="input-group mb-3"> 
+                                                                      <div class="custom-file rounded" style="border:1px solid #9E9E9E !important;">
+                                                                          <input type="file" id="employee_image" name="employee_image" value="" title=""  class="custom-file-input input-img" style="margin:0px 0px 0px 0px; min-width: 78%;" />
+                                                                          <label class="custom-file-label input-img border-0" for="employee_image"  style="color: white;"></label>
+                                                                      </div>
+                                                                  </div>
+                                                              </span>  
+                                                                <p class="pancheck2" style="position:relative;" >
+                                                                    <!-- <img id="ImgPreview" src="" class="preview1 mt-2 <?//= (!empty($photo1['photo'])) ? 'pdfimage' : ''; ?>" /> -->
+                                                                    <input type="button" id="removeImage1" value="x" class="btn-rmv1 " style="display:none"/>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="Emp_mother_name">Mother's Name</label>
+                                                                <input id="Emp_mother_name" type="text" name="Emp_mother_name" class="form-control" value="" />
+                                                                <span id="error3" style='color:#E15858; font-size:0.9em;'></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="Emp_father_name">Father's Name</label>
+                                                                <input id="Emp_father_name" type="text" name="Emp_father_name" class="form-control errorbox" value="" />
+                                                                <span id="error4" style='color:#E15858; font-size:0.9em;'></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="mstatus">Marital Status</label>
+                                                                <select id="mstatus" name="Marital_status" class="form-control errorbox" value="" required>                                                                    
+                                                                    <option value="Married" >Married</option>
+                                                                    <option value="Widowed" >Widowed</option>
+                                                                    <option value="Separated" >Separated</option>
+                                                                    <option value="Divorced" >Divorced</option>
+                                                                    <option value="Single" >Single</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>                                                       
+                                                        <div class="col-md-3 mdate" id="Married">
+                                                            <div class="form-group">
+                                                                <label for="Married_date">Married Date</label>
+                                                                <input type="text" data-provide="datepicker" name="Married_date" id="Married_date" value="" data-date-autoclose="true" class="form-control Married_datecss" placeholder="dd-mm-yyyy" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3" id="spousename">
+                                                            <div class="form-group">
+                                                                <label for="Emp_spouse_name">Spouse Name</label>
+                                                                <input id="Emp_spouse_name" type="text" name="Emp_spouse_name" class="form-control" value="" />
+                                                                <span id="error_spouse_name" style='color:#E15858; font-size:0.9em;'></span>
+                                                            </div>
+                                                        </div>                                                      
+                                                     
+                                                        <div class="col-md-3">
+                                                          <div class="form-group">
+                                                              <label for="pnumber">PAN Number<span class="asterisk"> * </span></label>
+                                                              <input id="pnumber" type="text" style="text-transform: uppercase;" maxlength="10" name="Pan_number" class="form-control errorbox" value="" required oninput="this.value = this.value.toUpperCase();" />
+                                                              <span id="errorpan" style='color:#E15858; font-size:0.9em;'></span>
+                                                          </div>
+                                                      </div>
+                                                      
+                                                        <div class="col-md-3">
+                                                            <div class="yes form-group">
+                                                                <label for="pannumberphoto">Upload Pan Card</label>
+                                                                <span class="">
+                                                                    <div class="input-group mb-3"> 
+                                                                        <div class="custom-file rounded" style="border:1px solid #9E9E9E !important;">
+                                                                            <input type="file" id="pannumberphoto" name="pannumberphoto" value="" title="" onchange="Filevalidation()" class="custom-file-input input-img" style="margin:0px 0px 0px 0px; min-width: 78%;" accept=".jpeg, .jfif, .jpg, .png, .gif, .doc, .pdf"  />
+                                                                            <label class="custom-file-label input-img border-0" for="pannumberphoto"  style="color: white;"></label>
+                                                                        </div>
+                                                                    </div>
+                                                                </span>                                                              
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group" >
+                                                                <label for="Aadhaar_Number">Aadhaar<span class="asterisk"> * </span></label>
+                                                                <input id="Aadhaar_Number" type="number" min='0' name="Aadhaar_Number" class="form-control errorbox" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==12) return false;" maxlength="12" minlength="12" value="" required />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="yes form-group">
+                                                                <label for="anumberphoto">Upload Aadhaar card</label>
+                                                                <span class="">
+                                                                    <div class="input-group mb-3"> 
+                                                                        <div class="custom-file rounded" style="border:1px solid #9E9E9E !important;">
+                                                                            <input type="file" id="anumberphoto" name="anumberphoto" value="" title="" class="custom-file-input input-img" style="margin:0px 0px 0px 0px; min-width: 78%;" accept=".jpeg, .jfif, .jpg, .png, .gif, .doc, .pdf" />
+                                                                            <label class="custom-file-label border-0" for="anumberphoto"  style="color: white;"></label>
+                                                                        </div>
+                                                                    </div>
+                                                                </span>
+                                                                <p class="pancheck1 m-0" style="position:relative;">
+                                                                    <input type="button" id="removeImage12" value="x" class="mt-2 btn-rmv12"  style="display:none;"/>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3" >
+                                                            <div class="form-group">
+                                                                <label for="Mobile_no">Mobile no.<span class="asterisk"> * </span></label>
+                                                                <input id="Mobile_no"  name="Mobile_no" min='0' value="" type="number" minlength="10" maxlength="10" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==10) return false;" class="form-control" required />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="alternate_mobile_no_">Alternate Mobile no.</label>
+                                                                <input id="alternate_mobile_no_" min='0' type="number" pattern="/^-?\d+\.?\d*$/" minlength="10" maxlength="10" onKeyPress="if(this.value.length==10) return false;" value="" name="alternate_mobile_no_" class="form-control" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3" >
+                                                            <div class="form-group">
+                                                                <label for="mobile_no">Emergency contact no.</label>
+                                                                <input id="Emergency_contact_no"  name="Emergency_contact_no" value="" min='0' type="number" minlength="10" maxlength="10" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==10) return false;" class="form-control" />
+                                                            </div>
+                                                        </div>                                                                               
+                                                    </div>
+                                                </fieldset>
+                                                <br>       
+                                                <div class="panel-body">                   
+                                                    <fieldset>
+                                                        <div class="panel-heading">
+                                                            <h5 class="mb-20">Bank Details</h5>
+                                                        </div> 
+
+                                                        <div class="row clearfix">          
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label for="pnumber">Bank Name <span class="asterisk"> * </span></label>
+                                                                    <input  type="text"   id="bank_name" name="bank_name" class="form-control" value=""  autocomplete="off" maxlength="50" required=""  data-parsley-required-message="Please Enter Valid Bank Name (i.e. SBI)."/>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label for="pnumber">Bank Account number <span class="asterisk"> * </span></label>
+                                                                    <input maxlength="16" minlength="9"  type="number" name="account_number" id="account_number" class="form-control" value="" required="" onkeypress="return event.charCode != 32" pattern="/^-?\d+\.?\d*$/" data-parsley-required-message="Please Enter Valid Bank Account(i.e. 234567890)" />
+                                                                    <span id="errors_bank"  style="color: #E15858 !important;font-size: 0.8em !important;font-weight: 500 !important;"></span>
+                                                                </div>
+                                                            </div> 
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label for="pnumber">IFSC Code <span class="asterisk"> * </span></label>
+                                                                    <input  type="text"  name="ifsc_code" id="ifsc_code" class="form-control " value="" onkeypress="return event.charCode != 32" required=""  data-parsley-required-message="Please Enter Valid IFSC Code (i.e. SBIN0001361)." />
+                                                                    <span id="errors_ifsc_code"  style="color: #E15858 !important;font-size: 0.8em !important;font-weight: 500 !important;"></span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                              <div class="form-group">
+                                                                <label for="pnumber">Branch <span class="asterisk"> * </span></label>
+                                                                <input  type="text"  name="branch_name" id="branch_name" class="form-control " value="" required=""  maxlength="50"/>
+                                                              </div>
+                                                            </div>  
+                                                      <div class="col-md-3">
+                                                        <div class="form-group">
+                                                          <label for="pnumber">PF Account Number</label>
+                                                          <input type="text"  name="pf_no"  id="pf_no" class="form-control " value="" style="text-transform: uppercase;" maxlength="22" />
+                                                        </div>
+                                                      </div> 
+                                                      <div class="col-md-3">
+                                                        <div class="form-group">
+                                                          <label for="pnumber">UAN Number</label>
+                                                          <input  type="text" name="uan_no" id="uan_no" class="form-control " value="" onkeypress="return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57" maxlength="12" />
+                                                        </div>
+                                                      </div> 
+                                                      <div class="col-md-3">
+                                                        <div class="form-group">
+                                                          <label for="pnumber">ESI Number</label>
+                                                          <input  type="text"  name="emp_esi_no" id="emp_esi_no" class="form-control" value="" autocomplete="off"   maxlength="17" />
+                                                        </div>
+                                                      </div> 
+                                                <div class="col-md-3">
+                                                  <div class="form-group">
+                                                    <label for="pnumber">Nominee Name </label>
+                                                    <input  type="text"  name="nominee_name" id="nominee_name" class="form-control" value="" maxlength="50" />
+                                                  </div>
+                                                </div> 
+                                                <div class="col-md-3">
+                                                  <div class="form-group">
+                                                    <label for="pnumber">Nominee Relationship </label>
+                                                    <input  type="text"  name="nominee_relationship" id="nominee_relationship" class="form-control" value="" maxlength="50"/>
+                                                  </div>
+                                                </div>   
+                                                <div class="col-md-3">
+                                                  <div class="form-group">
+                                                    <label for="pnumber">Nominee Date of Birth </label>
+                                                    <input id="nominee_dob" type="text"  name="nominee_dob" class="form-control" value="" data-date-format="dd-mm-yyyy" data-provide="datepicker"  />
+                                                  </div>
+                                                </div>   
+                       									</div>         
+													</fieldset>
+                      							</div>
+                    							<br>     
+                    							<div class="panel-body">                   
+                      								<fieldset>
+														<!-- commenting the address as at present no need-->
+                              <div class="panel-heading">
+															<h5 class="mb-20">Contact Details</h5>
+														</div>
+                          <div class="row clearfix">
+														<div class="col-md-6">
+															<div class="form-group">
+																<h6>
+																	<input id="address_type_id" type="checkbox" name="address_type_id" value="1" checked required />
+																	Permanent Address<span class="asterisk"> * </span>
+																</h6>
+															</div>
+														</div>
+														<div class="col-md-6">
+															<div class="form-group">
+																<h6>
+																	<input id="address_type_id1" name="address_type_id1" value="2" type="checkbox"  />
+																Current Address
+																</h6>
+															</div>
+														</div>
+														<div class="col-md-3">
+															<div class="form-group">
+																<label for="per_street">Address 1<span class="asterisk"> * </span></label>
+																<input id="per_street" value="" name="per_street" type="text" class="form-control" required />
+															</div>
+														</div>
+														<div class="col-md-3">
+															<div class="form-group">
+																<label for="per_street1">Address 2<span class="asterisk"> * </span></label>
+																<input id="per_street1" name="per_street1" value="" type="text" class="form-control" required />
+															</div>
+														</div>
+														<div class="col-md-3">
+															<div class="form-group">
+																<label for="curr_street">Address 1</label>
+																<input id="curr_street" name="curr_street" value="" type="text" class="form-control" />
+															</div>
+														</div>
+														<div class="col-md-3">
+															<div class="form-group">
+																<label for="curr_street1">Address 2</label>
+																<input id="curr_street1" name="curr_street1" value="" type="text" class="form-control" />
+															</div>
+														</div>
+														<div class="col-md-6">
+															<div class="form-group ">
+																<label for="per_pincode">Pincode<span class="asterisk"> * </span></label>
+																<input id="per_pincode" name="per_pincode" oninput="resetPincode()" pattern="/^-?\d+\.?\d*$/" onkeypress="if(this.value.length==6) return false;" min='0' type="number" value="" class="form-control" required  style="width: 48%;"/>
+															</div>
+															<span style="font-size:13px;">Note:Please enter the area pincode in order to populate the City and State</span>
+														</div>
+														<div class="col-md-6">
+															<div class="form-group">
+																<label for="curr_pincode">Pincode</label>
+																<input id="curr_pincode" name="curr_pincode" oninput="resetPincode1()" pattern="/^-?\d+\.?\d*$/" onkeypress="if(this.value.length==6) return false;" value="" min='0' type="number" class="form-control" style="width: 48%;"/>
+															</div>
+															<span style=" font-size:13px;">Note:Please enter the area pincode in order to populate the City and State</span>
+														</div>
+														
+														<div class="col-md-3">
+															<div class="form-group">
+																<label for="single-selection">State </label>
+																<div class="multiselect_div">
+																	<input id="state_id" name="per_state" value="" readonly class="form-control">
+																</div>
+															</div>
+														</div>
+														
+														<div class="col-md-3">
+															<div class="form-group">
+																<label for="single-selection">City</label>
+																<div class="multiselect_div">
+																	<input id="city_id" name="per_city" value="" readonly class="form-control">
+																</div>
+															</div>
+														</div>
+														
+														<div class="col-md-3">
+															<div class="form-group">
+																<label for="single-selection">State</label>
+																<div class="multiselect_div">
+																	<input id="state_id1" name="curr_state" value="" readonly class="form-control">
+																</div>
+															</div>
+														</div>
+														
+														<div class="col-md-3">
+															<div class="form-group">
+																<label for="single-selection">City</label>
+																<div class="multiselect_div">
+																	<input id="city_id1" name="curr_city" value="" readonly class="form-control">
+																</div>
+															</div>
+														</div>
+                        							</div>
+                      							</fieldset>
+                      							<script type="text/javascript"></script>
+												<input type="hidden" name="address_id" value="">
+												<div class="row text-right">
+													<div class="col-md-12">
+														<!-- <a href="#step-2" type="button" class="btn btn-default prevBtn ml-1">Previous</a> --->
+														<!-- <button class="btn btn-primary addBtn nextBtn" id="Next1" type="button">Next</button> -->
+													</div>
+												</div>
+											</div>                      
+										</div>
+									</div>
+									<div class="panel panel-primary setup-content" id="step-2">
+										<div class="panel-heading">
+											<h5 class="mb-20">Employment Details</h5>
+										</div>
+                    					<div class="panel-body">
+                      						<fieldset>
+												<div class="row clearfix">
+													<div class="col-md-3" >
+														<div class="form-group">
+															<label for="organ_id">Company Name </label>
+															<input id="organ_id" name="organ_id" value="1"  class="form-control" type="hidden" />
+															<input id="organ_idd" name="organ_idd" value=""  class="form-control" readonly />
+						                            	</div>
+                          							</div>
+						               				<input id="emp_code" style="text-transform: uppercase;" type="hidden" name="emp_code" value="101" required class="form-control" readonly  />
+
+													<!-- <div class="col-md-3" >
+														<div class="form-group">
+															<label for="bussiness_unit">Business Unit<span class="asterisk"> * </span></label> -->
+															<select id="bussiness_unit" name="bussiness_unit" class="form-control" style="display:none;">
+																<!-- <option value="">-- Select Business Unit --</option> -->
+															</select>
+														<!-- </div>
+													</div> -->
+
+                             <div class="col-md-3">
+                                                      <div class="form-group">
+                                                          <label for="Department">Department </label>
+                                                          <input id="Department" type="text" name="Department" class="form-control errorbox" minlength="0" maxlength="20" value="" />
+                                                          <span id="error" style='color:#E15858; font-size:0.9em;'></span>
+                                                      </div>
+                                                  </div>
+
+                                                  <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label for="Designation">Designation </label>
+                                                        <input id="Designation" type="text" name="Designation" class="form-control errorbox" minlength="0" maxlength="20" value="" />
+                                                        <span id="error" style='color:#E15858; font-size:0.9em;'></span>
+                                                    </div>
+                                                  </div>
+
+                                                  <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label for="Sub_Department">Sub Department </label>
+                                                        <input id="Sub_Department" type="text" name="Sub_Department" class="form-control errorbox" minlength="0" maxlength="20" value="" />
+                                                        <span id="error" style='color:#E15858; font-size:0.9em;'></span>
+                                                    </div>
+                                                </div>
+                          							<!-- <div class="col-md-3" >
+                            							<div class="form-group">
+															<label for="dept_id">Department Name<span class="asterisk"> * </span></label>
+															<select id="dept_id" name="dept_id" class="form-control" value="" required>
+																<option value="">-- Select Department Name --</option>
+																<option value="1" >Development Team</option>
+																<option value="2" >Digital team</option>
+																<option value="3" >HR Team</option>
+															</select>
+														</div>
+													</div>
+													<div class="col-md-3" >
+														<div class="form-group">
+															<label for="designation_id">Designation Name<span class="asterisk"> * </span></label>
+															<select id="designation_id" name="designation_id" class="form-control errorbox" required>
+																<option value="">-- Select Designation Name --</option>
+                                                                <option value="1" >PHP Developers</option>
+																<option value="2" >Testers</option>
+																<option value="3" >Sr HR</option>
+																<option value="5" >Jr Associate</option>
+															</select>
+														</div>
+													</div> -->
+
+                          <!-- PRESENTLY NO REPORTING MANAGER-->
+													<!-- <div class="col-md-3" >
+														<div class="form-group">
+															<label for="manager_id">Reporting Manager</label> -->
+															<!--<span class="asterisk"> * </span>--->
+															<!-- <select id="manager_id" name="manager_id" class="form-control">
+																<option value="">-- Select Manager --</option> -->
+																<!--<option value="1">Super Admin</option>-->
+																<!-- <option value="2" >admintest 1 admin1 admin2 (-0000)</option>
+																<option value="13" >Anshika  Srivastav (PSS-0102)</option>
+																<option value="14" >Mahesh k k (PSS-0102)</option>
+															</select>
+														</div>
+													</div> -->
+                          
+													<!-- <div class="col-md-3" <?//= (count(@$admincheck) == 0) ? 'style="pointer-events: none;"' : ''; ?>>
+														<div class="form-group">
+															<label for="address_id">Location <span class="asterisk"> * </span></label>
+															<select id="address_id" name="address_id" class="form-control" >
+																<option value="">-- Select Location --</option>
+																<option value="<?//= $location['location_id']; ?>" <?//= @($address_id == $location['location_id']) ? 'selected' : $disabled; ?>><?//= $location['location_name']; ?></option>
+															</select>
+														</div>
+													</div> -->
+
+													<!-- <div class="col-md-3" <?//= (count(@$admincheck) == 0) ? 'style="pointer-events: none;"' : ''; ?>>
+														<div class="form-group">
+															<label for="branch_id">Branch Name
+																<?//= $branch_id; ?><span class="asterisk"> * </span>
+															</label>
+															<select id="branch_id" name="branch_id" class="form-control" >
+																<option value="">-- Select Branch --</option>
+																<option value="<?//= $branch['branch_id']; ?>" >  <?//= @$branch['branch_name']; ?>  </option>
+															</select>
+														</div>
+													</div> -->
+													<!-- <div class="col-md-3">
+														<div class="form-group">                          
+														<label> Shift Timings </label>  
+															<select id="shift_id" name="shifttime" value="" class="form-control">
+																<option value = ""> select shift time  </option>  
+																<option value = "09:00-06:00" > 09:00AM TO 06:00PM</option> 
+																<option value = "11:00-08:00" > 11:00AM TO 08:00PM</option>  
+																<option value = "12:00-09:00" > 12:00PM TO 09:00PM</option>  
+																<option value = "14:00-23:00" > 02:00PM TO 11:00PM</option>  
+																<option value = "15:00-24:00" > 03:00PM TO 12:00AM</option> 
+																<option value = "18:30-03:30" > 06:30PM TO 03:30AM</option>
+																<option value = "19:30-04:30" > 07:30PM TO 04:30AM</option> 
+																<option value = "21:00-06:00" > 09:00PM TO 06:00AM</option> 
+															</select>                          
+														</div>
+													</div> -->
+													
+                          
+                          <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="Official_Email">Official Email id<span class="asterisk"> * </span></label>
+                                <input id="Official_Email" type="email" style="text-transform:lowercase" name="Official_Email" value="" class="form-control" required />
+                            </div>
+                            <span id="errorpernonal"></span>
+                        </div>
+
+                          <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="ctc">CTC <span class="asterisk"> * </span></label>
+                                <input id="ctc" type="number" name="ctc" class="form-control errorbox" minlength="0" maxlength="20" value="" required />
+                                <span id="error" style='color:#E15858; font-size:0.9em;'></span>
+                            </div>
+                        </div>
+
+                     
+
+                    <div class="col-md-3">
+                      <div class="form-group">
+                          <label for="Regime_type">Regime Type </label>                                                      
+                          <select id="Regime_type" name="Regime_type" class="form-control errorbox">                                                          
+                              <option value="new" >New</option>
+                              <option value="old" >Old</option>
+                          </select>
+                          <span id="error" style='color:#E15858; font-size:0.9em;'></span>
+                      </div>
+                  </div>
+
+
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                      <label for="approved_amount">Savings Approved Amount </label>
+                      <input id="approved_amount" type="number" name="approved_amount" class="form-control errorbox" minlength="0" maxlength="20" value="" />
+                      <span id="error" style='color:#E15858; font-size:0.9em;'></span>
+                  </div>
+              </div>
+
+										
+													<div class="col-md-3" >
+														<div class="form-group">
+															<label for="Joining_date">Date of Joining<span class="asterisk"> * </span></label>
+															<input type="text"  data-provide="datepicker" id="Joining_date" value="" name="Joining_date" class="form-control" placeholder="dd-mm-yyyy" required />
+														</div>
+													</div>
+												</div>
+
+                  
+
+                  
+                  
+
+                      						</fieldset>
+                      						<br>
+
+
+
+
+                      						<fieldset>
+												<div class="panel-body">
+													<div class="panel-heading">
+														<h5 class="mb-20">Attachments</h5>
+													</div>  
+													<div class="row clearfix">
+														<div class="col-md-3">
+															<input id="document_type" name="document_type" value="5" type="hidden" />                            
+														</div>
+                          								<div class="col-md-12" id="attachmentdoc">
+														
+                            							<div>                             
+															<ul>
+																<li> Allowed only files with extension (jpg, png, gif, doc, pdf). </li>
+																<li>Maximum number of allowed files 10 with 1MB for each.</li>
+															</ul>
+															<!--To give the control a modern look, I have applied a stylesheet in the parent span.-->
+															<div id="filediv" class=" btn  mb-3 col-md-12" style="width:100%">
+																<input type="text" id="filetitle" name="filetitle[]" class="newtitlecls form-control" placeholder="Title" />
+																<input name="files[]" type="file" id="files" style="margin-left: -8%;cursor: pointer;" />
+																<!-- </span>  -->
+																<br />
+															</div>
+															<div id="add_more" class="upload addBtn border-0 rounded" style="color: #fff; background-color: #007bff;  border-color: #007bff; font-size: 14px; font-weight: 300; border: 1px solid transparent; padding: 0.375rem 0.75rem;font-size: 1rem;line-height: 1.5; width: 135px; margin-bottom: 30px;"><i class="fa fa-plus mr-1" aria-hidden="true"></i>Add More Files</div>
+															<div class="clearfix"></div>
+															<output id="Filelist"></output>
+														</div>
+													</div>
+												</div> 
+                      	
+
+											</fieldset>  
+											<div class="row text-right">
+												<div class="col-md-12">													
+													<button class="btn btn-primary addBtn pull-right" id="button1" type="submit"><i class="fa fa-floppy-o mr-1" aria-hidden="true"></i> Save</button>
+												</div>
+											</div>                      
+										</div>
+									</div>  
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+
+{% endblock %}
+
+  {% block js %}
+
+  <!-- <script src="/qxbox/{% static 'assets/js/emp.js' %}"></script> -->
+
+  <script>
+     var company_name =document.querySelector('input[name="organ_idd"]');
+    company_name.value = localStorage['cname']
+
+    $(document).ready(function() {
+      var dataset = "";
+      var datasaveed = "";
+      if (dataset != '') {
+        swal({
+            title: dataset,
+            type: "success",
+            confirmButtonColor: "#007bff",
+            confirmButtonText: "Ok",
+            closeOnConfirm: true
+          },
+          function(isConfirm) {
+            if (datasaveed == 'Added Successfully' || dataset == 'Edited Successfully') {
+              window.location.replace("./employee_list");
+            }
+            return true;
+          }
+        );
+        //if(dataset=='Added Sucessfully'){window.location.replace("<?//= site_url('emp/employees/list'); ?>");}                                                
+      }
+
+      $('#dept_id').change(function() {
+        var deptid = $(this).val();
+        $.ajax({
+          url: "./emp/employees/get_desiglist/",
+          type: "POST",
+          data: {
+            dept_id: deptid
+          },
+          dataType: 'json',
+          success: function(response) {
+            $('#designation_id').find('option').not(':first').remove();
+            $.each(response, function(index, response) {
+              $('#designation_id').append('<option value="' + response['designation_id'] + '">' + response['designation_name'] + '</option>');
+            });
+          }
+        });
+      });
+
+      $('#address_id').change(function() {
+        var location_id = $(this).val();
+        var organ_id = $('#organ_id').val();
+        $.ajax({
+          url: "./emp/employees/getbranch/",
+          method: 'post',
+          data: {
+            location_id: location_id, organ_id: organ_id
+          },
+          dataType: 'json',
+          success: function(response) {
+
+    if(response && response !=0) {
+            $('#branch_id').find('option').not(':first').remove();
+            $.each(response, function(index, response) {
+              $('#branch_id').append('<option value="' + response['branch_id'] + '">' + response['branch_name'] + '</option>');
+            });
+    }else {
+              $('#branch_id').find('option').not(':first').remove();             
+            }
+
+          }
+        });
+      });
+
+
+      $('#state_id').change(function() {
+        var state_name = $(this).val();
+        $.ajax({
+          url: "",
+          type: "POST",
+          data: {
+            statename: state_name
+          },
+          dataType: 'json',
+          success: function(response) {
+            $('#city_id').find('option').not(':first').remove();
+            $('#city_id1').find('option').not(':first').remove();
+            $.each(response, function(index, response) {
+              $('#city_id').append('<option value="' + response['city_name'] + '">' + response['city_name'] + '</option>');
+              $('#city_id1').append('<option value="' + response['city_name'] + '">' + response['city_name'] + '</option>');
+            });
+          }
+        });
+      });
+
+      $('#state_id1').change(function() {
+        var state_name = $(this).val();
+        $.ajax({
+          url: "",
+          type: "POST",
+          data: {
+            statename: state_name
+          },
+          dataType: 'json',
+          success: function(response) {
+            $('#city_id1').find('option').not(':first').remove();
+            $.each(response, function(index, response) {
+              $('#city_id1').append('<option value="' + response['city_name'] + '">' + response['city_name'] + '</option>');
+            });
+          }
+        });
+      });
+    });
+
+    $('#organ_id').change(function() {
+      var company_name = $(this).val();
+      $.ajax({
+        url: "./emp/employees/getbusiness/",
+        method: 'post',
+        data: {
+          company_name: company_name
+        },
+        dataType: 'json',
+        success: function(response) {
+                    
+          $('#bussiness_unit').find('option').not(':first').remove();
+          $.each(response, function(index, response) {
+          var empfinalcode=response['company_prefix']+ "-"+response['emp_start_code'];
+          //  $('#emp_code').val(response['company_prefix']);
+          $('#emp_code').val(empfinalcode);
+            
+            $('#emp_start_code').val(response['emp_start_code']);
+            $('#bussiness_unit').append('<option value="' + response['bussiness_unit'] + '">' + response['bussiness_unit'] + '-' + response['company_name'] + '</option>');
+          });
+        }
+      });
+    });
+
+    $('#emp_code').keypress(function(e) {
+      var regex = new RegExp("^[a-zA-Z ]+$");
+      var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+      if (regex.test(strigChar)) {
+        return true;
+      }
+      return false
+    });
+
+    $('#last_working_day').keypress(function(e) {
+      var regex = new RegExp("^[a-zA-Z0-9 ]+$");
+      var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+      if (regex.test(strigChar)) {
+        return true;
+      }
+      return false
+    });
+
+    $('#Emp_first_name').keypress(function(e) {
+      var regex = new RegExp("^[a-zA-Z ]+$");
+      var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+      if (regex.test(strigChar)) {
+        return true;
+      }
+      return false
+    });
+
+    $('#Emp_Middle__name').keypress(function(e) {
+      var regex = new RegExp("^[a-zA-Z ]+$");
+      var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+      if (regex.test(strigChar)) {
+        return true;
+      }
+      return false
+    });
+
+    $(document).ready(function() {
+      $('#Emp_Last_name').keypress(function(e) {
+        var regex = new RegExp("^[a-zA-Z ]+$");
+        var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+        if (regex.test(strigChar)) {
+          return true;
+        }
+        return false
+      });
+
+      $('#Emp_mother_name').keypress(function(e) {
+        var regex = new RegExp("^[a-zA-Z ]+$");
+        var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+        if (regex.test(strigChar)) {
+          return true;
+        }
+        return false
+      });
+
+      $('#Emp_spouse_name').keypress(function(e) {
+        var regex = new RegExp("^[a-zA-Z ]+$");
+        var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+        if (regex.test(strigChar)) {
+          return true;
+        }
+        return false
+      });
+
+      $("#Official_Email").change(function() {
+        var email = $(this).val();
+        //var regex = /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/;
+        var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        
+        if (email.match(regex)) {
+          //swal(" Valid PAN number");
+          erroremail.innerHTML = "";
+        } else {
+          $("#Official_Email").val("");
+          erroremail.innerHTML = "<span style='color:#E15858; font-size:0.9em;float:right;'>" + "Invalid Email!</span>"
+          //swal("Invalid PAN number");                
+        }
+      });
+
+      $("#Personal_email").change(function() {
+        var Personal_email = $(this).val();
+        var regex = /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/;
+        if (Personal_email.match(regex)) {
+          //swal(" Valid PAN number");
+          errorpernonal.innerHTML = "";
+        } else {
+          $("#Personal_email").val("");
+          errorpernonal.innerHTML = "<span style='color:#E15858; font-size:0.9em;float:right;'>" + "Invalid Email!</span>"
+          //swal("Invalid PAN number");                
+        }
+      });
+      $('#Emp_father_name').keypress(function(e) {
+        var regex = new RegExp("^[a-zA-Z ]+$");
+        var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+        if (regex.test(strigChar)) {
+          return true;
+        }
+        return false
+      });
+
+      
+      $("#pnumber").change(function() {
+            var pannumber = $(this).val();
+            var regex = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
+            if (pannumber.match(regex) && (pannumber[3]=="P" || pannumber[3]=="p")) {
+                errorpan.innerHTML = "";
+                //swal(" Valid PAN number");
+            } else {
+                //errorpan.innerHTML = "<span style='color:#E15858; font-size:0.9em;float:right;'>" + "Invalid PAN number!</span>"
+                swal("Please Input valid PAN i.e. (HJHPH7845U)");
+                return false;
+            }
+            });
+
+
+      $('#Dob').datepicker({
+        format: "dd-mm-yyyy",
+        endDate: '-18y'
+      });
+
+      $('#spouse_bday').datepicker({
+        endDate: '-18y'
+      });
+
+      $('#address_type_id1').click(function() {
+        var check = $('#address_type_id1').prop('checked');
+        if (check) {
+          $('#curr_street').val($('#per_street').val());
+          $('#curr_street1').val($('#per_street1').val());
+          $('#curr_pincode').val($('#per_pincode').val());
+
+          var present_state = document.getElementById('state_id').value;
+          $("#state_id1").val(present_state).attr("selected", "selected");
+          var city = document.getElementById('city_id').value;
+          $("#city_id1").val(city).attr("selected", "selected");
+        } else {
+          $('#curr_street').val('');
+          $('#curr_street1').val('');
+          $('#curr_pincode').val('');
+          $("#state_id1").val('').attr("selected", "selected");
+          $("#city_id1").val('').attr("selected", "selected");
+        }
+      });
+
+      $('#nationality').keypress(function(e) {
+        var regex = new RegExp("^[a-zA-Z ]+$");
+        var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+        if (regex.test(strigChar)) {
+          return true;
+        }
+        return false
+      });
+    });
+
+    $(document).ready(function() {
+      $("#Official_Email").blur(function() {
+        var oficeid = $("#Official_Email").val();
+        var emp_id = 0;
+
+        $.ajax({
+          type: "POST",
+          url: './' + 'emp/employees/find_officemail/',
+          data: {
+            oficeid: oficeid,
+            emp_id: emp_id
+          },
+          success: function(response) {
+            if (response != 0 && response != 'null') {            
+              swal('This Personal Email-id already exists, try again!');
+            }else if(response == 'null'){
+              swal('please enter valid Personal Email-id!');
+            }
+
+          }
+        });
+      });
+    });
+
+    $(document).ready(function() {
+      $("#Personal_email").blur(function() {
+        var Personal_email = $("#Personal_email").val();
+        var emp_id = 0;
+        $.ajax({
+          type: "POST",
+          url: './' + 'emp/employees/find_pernonalmail/',
+          data: {
+            Personal_email: Personal_email,
+            emp_id: emp_id
+          },
+          success: function(response) {
+            if (response != 0 && response != 'null') {
+              // swal(response);
+              swal('This Official Email-id already exists, try again!');
+            }else if(response == 'null'){
+              swal('please enter valid Official Email-id!');
+            }
+          }
+        });
+      });
+    });
+
+    $(document).ready(function() {
+      $("#pnumber").blur(function() {
+        var pnumber = $("#pnumber").val();
+        var emp_id = 0;
+        $.ajax({
+          type: "POST",
+          url: './' + 'emp/employees/find_pnumber/',
+          data: {
+            pnumber: pnumber,
+            emp_id: emp_id
+          },
+          success: function(response) {
+            if (response != 0) {
+              swal('This PAN Number already exists, try again!');
+            }
+          }
+        });
+      });
+    });
+
+    $(document).ready(function() {
+      $("#Aadhaar_Number").blur(function() {
+        var Aadhaar_Number = $("#Aadhaar_Number").val();
+        var emp_id = 0;
+        if(Aadhaar_Number!=''){
+        $.ajax({
+          type: "POST",
+          url: './' + 'emp/employees/find_anumber/',
+          data: {
+            Aadhaar_Number: Aadhaar_Number,
+            emp_id: emp_id
+          },
+          success: function(response) {
+            if (response != 0) {
+              swal('This aadhaar number already exists, try again! ');
+            }
+          }
+        });
+      }else{
+        swal('please enter valid 12 digit aadhaar number!');
+        return false;
+      }
+      });
+    });
+  </script>
+
+  <script>
+    function lettersOnly() {
+      var charCode = event.keyCode;
+      if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || charCode == 8)
+        return true;
+      else
+        return false;
+    }
+  </script>
+
+  <script>
+    $(document).ready(function() {
+      //  To add new input file field dynamically, on click of "Add More Files" button below function will be executed.
+      $('.deletedocuments').on('click', function() {
+        var id = $(this).attr('id');
+        var status = 'delete';
+        $.ajax({
+          type: 'POST',
+          url: './' + 'emp/employees/deletedocuments',
+          data: {
+            id: id
+          },
+          success: function(response) {
+            if (response == 'success') {
+              //alert($("#img-wrapcount img").length);
+              if ($("#img-wrapcount img").length == 0) {
+                //  $("#document_type").removeAttr('selected');
+                $("#document_type").find('option:selected').removeAttr('selected');             
+              }            
+              return true;
+            } else {
+              swal('Error!', 'Please try again..)', 'error');
+            }
+          }
+        });
+      });
+    });
+  </script>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('#Joining_date').datepicker({
+        format: "dd-mm-yyyy",
+        startDate: new Date(new Date().getFullYear() - 17, 0, 1),
+        //endDate: new Date(new Date().getFullYear() + 1, 3, 0)
+        endDate: new Date(new Date().setMonth(new Date().getMonth() + 3))
+      });
+
+      $('#last_working_day').datepicker({
+          format: "yyyy-mm-dd",
+          startDate: new Date($('#Joining_date').val()),
+          //startDate: new Date(new Date().getMonth() - 6, 0, 1),
+          endDate: new Date(new Date().setMonth(new Date().getMonth() + 6))
+      });
+
+      $('#Married_date').datepicker({
+          format: "dd-mm-yyyy",
+          startDate: new Date('1950-01-01'),
+          endDate: new Date()
+      });
+    
+      var mstatuscheck = $('#mstatus').val();
+
+      if (mstatuscheck == '' || mstatuscheck == 'Single') {
+        // $('#Married_date').val("");
+        // $('#Emp_spouse_name').val("");
+        // $('#spouse_bday').val("");
+        $("#Married").hide();
+        $("#spousename").hide();
+        $("#spousebirthday").hide();
+   
+      }
+
+      $('#mstatus').change(function() {
+        var mstatus = $('#mstatus').val();
+        if (mstatus == 'Single' || mstatus == '') {
+          // $('#Married_date').val("");
+          // $('#Emp_spouse_name').val("");
+          // $('#spouse_bday').val("");
+          $("#Married").hide();
+          $("#spousename").hide();
+          $("#spousebirthday").hide();
+      
+        }
+
+        if (mstatus == 'Married') {
+          $("#Married").show();
+          $("#spousename").show();
+          
+        }else if(mstatus == 'Widowed' || mstatus == 'Separated' || mstatus == 'Divorced'){
+          $("#Married").show();
+          $("#spousename").show();         
+        }
+
+
+      });
+
+      $('#isactive').change(function() {  
+        var isactive = $('#isactive').val();
+
+        if (isactive == 0 ) {          
+            $("#last_working_day").attr('required', false);
+            $("#comments").attr('required', false);
+            $("#reason").attr('required', false); 
+          // By Uday End 
+          // $('#last_working_day').val(); 
+        }else if (isactive == 1 || isactive == "") {  
+            $("#commentsh").show();     
+            $("#reasonhide").show();
+            $("#lastworkingday").show();
+            $("#last_working_day").attr('required', false);
+            $("#comments").attr('required', false);
+            $("#reason").attr('required', false);
+          // By Uday End 
+        }
+      });
+    });
+       
+
+    function resetPincode() {
+      document.getElementById('city_id').value = '';
+      document.getElementById('state_id').value = '';
+    }
+ 
+
+
+  $(document).ready(function() {
+      $("#account_number").change(function() {
+        var inputVal = $(this).val();
+        var regg = /^\d{9,16}$/;
+        if (regg.test(inputVal)) {
+          errors_bank.innerHTML = "";
+        } else {
+          //$("#account_number").val("");		
+          //$("#account_number-error").hide();
+          return false;					
+        }
+      });
+
+      $("#account_number").blur(function() { 
+        var account_number = $("#account_number").val();
+        var emp_id = 0;
+        var regg = /^\d{9,16}$/;
+
+        if(account_number!='' && regg.test(account_number)){      
+          $.ajax({
+          type: "POST",
+          url: './' + 'emp/employees/find_ac_number/',
+          data: {
+            account_number: account_number,
+            emp_id: emp_id
+          },
+          success: function(response) {
+            if (response != 0) {
+              swal('This Bank Account Number already exists, try again!');
+            }
+          }
+        });
+      }else{      
+        //account_number-error.innerHTML = "Please Enter Valid Bank Account(i.e. 234567890)";      
+        //$("#account_number-error").remove();     
+        swal('Please Enter Valid Bank Account(i.e. 234567890)');
+        //$("#account_number").focus();
+        return false;
+      }
+      });
+
+      $("#ifsc_code").blur(function() {
+        var inputvalues = $(this).val(); 
+        var reg = /[A-Z|a-z]{4}[0][a-zA-Z0-9]{6}$/;
+        if (inputvalues.match(reg)) {
+          error.innerHTML = "";
+        } else {
+          //errors_ifsc_code.innerHTML ="Please Enter Valid IFSC Code (i.e. SBIN0001361).";
+          swal('Please Enter Valid IFSC Code (i.e. SBIN0001361).');  
+        }
+      });
+
+      
+      $("#pf_no").blur(function() {		 
+        var inputVal = $(this).val();      
+        var regg = /^[A-Z]{5}\d{17}$/gm;	
+          if (regg.test(inputVal)) {	
+            var pf_no = $("#pf_no").val();
+            var emp_id = 0;
+            $.ajax({
+              type: "POST",
+              url: "./emp/employees/find_pfumber/",
+              data: { pf_no: pf_no,	emp_id: emp_id },
+              success: function(response) {
+                if (response != 0) {								
+                  swal('This PF Number already exists, try again!');
+                }
+              }
+            });
+          } else {
+            //$("#pf_no").val("");
+            swal('please enter valid PF Account Number!');
+              return false;				
+          }		
+      });
+
+
+  $("#uan_no").blur(function() {		 
+        var inputVal = $(this).val();      
+        var regg = /^\d{12}$/;	
+          if (regg.test(inputVal)) {	
+            var uan_no = $("#uan_no").val();
+            var emp_id = 0;
+            $.ajax({
+              type: "POST",
+              url: "./emp/employees/find_unnumber/",
+              data: { uan_no: uan_no,	emp_id: emp_id },
+              success: function(response) {
+                if (response != 0) {								
+                  swal('This UAN Number already exists, try again!');
+                }
+              }
+            });
+          } else {
+            //$("#uan_no").val("");
+            swal('please enter valid UAN Number!');
+              return false;				
+          }		
+      });
+
+    // $("#emp_esi_no").blur(function() {		 
+    // 		var inputVal = $(this).val();      
+    // 		var regg = /^([1-9])([0-9]){16}?$/;
+    // 			if (regg.test(inputVal)) {	
+    // 				var emp_esi_no = $("#emp_esi_no").val();
+    // 				 var emp_id = 0;
+    // 				$.ajax({
+    // 					type: "POST",
+    // 					url: "<?//=site_url('emp/employees/find_esino/'); ?>",
+    // 					data: { emp_esi_no: emp_esi_no,	emp_id: emp_id },
+    // 					success: function(response) {
+    // 						if (response != 0) {								
+    // 							swal('This ESI Number already exists, try again!');
+    // 						}
+    // 					}
+    // 				});
+    // 			} else {
+    //          $("#pf_no").val("");
+    //          swal('please enter valid ESI Number!');
+    //           return false;				
+    // 			}		
+    // 	});
+
+    });
+
+    
+
+      
+    function resetPincode1() {
+      document.getElementById('city_id1').value = '';
+      document.getElementById('state_id1').value = '';
+    }
+  </script>
+<script>
+  function readURL(input, imgControlName) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        $(imgControlName).attr('src', e.target.result);
+      }
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  $("#userfile").change(function() {
+    // add your logic to decide which image control you'll use
+    var imgControlName = "#ImgPreview";
+    readURL(this, imgControlName);
+    $('.preview1').addClass('it');
+    $('.btn-rmv1').addClass('rmv');
+  });
+
+  $("#removeImage1").click(function(e) {
+    //alert("cross button clicked");
+    $('.btn-rmv1').removeClass('rmv');
+    e.preventDefault();
+    $("#userfile").val("");
+    $("#ImgPreview").attr("src", "");
+    $('.preview1').removeClass('it');
+    $('#ImgPreview').removeClass('pdfimage');
+  });
+
+  $("#pannumberphoto").change(function() {
+    // add your logic to decide which image control you'll use
+    var imgControlName = "#ImgPreview1";
+    readURL(this, imgControlName);
+    $('.preview11').addClass('it');
+    $('.btn-rmv11').addClass('rmv');
+  });
+
+  $("#removeImage11").click(function(e) {
+    //alert("cross button clicked");
+    $('.btn-rmv11').removeClass('rmv');
+    e.preventDefault();
+    $("#pannumberphoto").val("");
+    $("#ImgPreview1").attr("src", "");
+    $('.preview11').removeClass('it');
+    $('#ImgPreview1').removeClass('pdfimage');
+  });
+
+  $("#anumberphoto").change(function() {
+    // add your logic to decide which image control you'll use
+    var imgControlName = "#ImgPreview2";
+    readURL(this, imgControlName);
+    $('.preview12').addClass('it');
+    $('.btn-rmv12').addClass('rmv');
+  });
+  $("#removeImage12").click(function(e) {
+    //alert("cross button clicked");
+    $('.btn-rmv12').removeClass('rmv');
+    e.preventDefault();
+    $("#anumberphoto").val("");
+    $("#ImgPreview2").attr("src", "");
+    $('.preview12').removeClass('it');
+    $('#ImgPreview2').removeClass('pdfimage');
+  });
+</script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+	
+		$("#bank_name").change(function() {
+			var inputvalues = $(this).val();
+			var reg = /^[a-zA-Z ]*$/;
+			if (inputvalues.match(reg)) {
+				error_bank.innerHTML = "";
+			} else {
+				$("#bank_name").val("");
+				$('#error_bank').show();
+				setTimeout(function() {
+					$('#error_bank').hide().fadeOut('slow');
+				}, 3000);
+			}
+		});
+
+		$("#branch_name").change(function() {
+			var inputvalues = $(this).val();
+			var reg = /^[a-zA-Z ]*$/;
+			if (inputvalues.match(reg)) {
+				error_branch.innerHTML = "";
+			} else {
+
+				//$("#branch_name").val("");
+			  //	$('#error_branch').show();
+				// setTimeout(function() {
+				// 	$('#error_branch').hide().fadeOut('slow');
+				// }, 3000);
+			}
+		});
+
+		$("#nominee_name").change(function() {
+			var inputvalues = $(this).val();
+			var reg = /^[a-zA-Z ]*$/;
+			if (inputvalues.match(reg)) {
+				error_nominee_name.innerHTML = "";
+			} else {
+				$("#nominee_name").val("");
+				$('#error_nominee_name').show();
+				setTimeout(function() {
+					$('#error_nominee_name').hide().fadeOut('slow');
+				}, 3000);
+			}
+		});
+
+		$("#nominee_relationship").change(function() {
+			var inputvalues = $(this).val();
+			var reg = /^[a-zA-Z ]*$/;
+			if (inputvalues.match(reg)) {
+				error_nominee_relationship.innerHTML = "";
+			} else {
+				$("#nominee_relationship").val("");
+				$('#error_nominee_relationship').show();
+				setTimeout(function() {
+					$('#error_nominee_relationship').hide().fadeOut('slow');
+				}, 3000);
+			}
+		});
+
+		$('#nominee_dob').datepicker({
+			endDate: '-1d'
+		});
+});
+
+		function validatePF() {
+			var inputVal = $("#pf_no").val();
+			if (!inputVal) {
+				return true;
+			}
+			var regg = /^[A-Z]{5}\d{17}$/gm;
+			return regg.test(inputVal);
+		}
+
+		function validateUAN() {
+			var inputVal = $("#uan_no").val();
+			if (!inputVal) {
+				return true;
+			}
+			var regg = /^\d{12}$/;
+			return regg.test(inputVal);
+		}
+
+		function validateESItest() {
+			var inputVal = $("#emp_esi_no").val();
+			if (!inputVal) {
+				return true;
+			}
+			var regesi = /^([1-9])([0-9]){16}?$/;
+			return regesi.test(inputVal);
+		}  
+</script>
+
+<!-- Javascript -->
+
+<script>
+  var abc = 0; //Declaring and defining global increement variable
+  var xyz = 1;
+  $(document).ready(function() {
+    //To add new input file field dynamically, on click of "Add More Files" button below function will be executed
+    $('#add_more').click(function() {
+    if (xyz <= 9) {
+      $(this).before($("<div/>", {
+      id: 'filediv',
+      class: 'btn mb-3 col-md-12'
+      }).fadeIn('slow').append(
+      $("<input/>", {
+        name: 'filetitle[]',
+        type: 'text',
+        id: 'filetitle',
+        class: "newtitlecls form-control"
+      }),
+      $("<input/>", {
+        name: 'files[]',
+        type: 'file',
+        id: 'files',
+        class: 'files'+xyz,
+        style:'cursor: pointer',
+      }),
+      $("<button class='deleter" + xyz + " ui-link col-md-1 btn btn-primary ' href='javascript:void(0);'>Delete</a>").click(function() {
+        $(this).parent().remove();
+        --xyz; 
+      }),
+      $("<br/>")
+      ));
+    } else {
+      document.getElementById('files').value = "";
+      swal('Maximum number of allowed files 10 only.');
+      //	alert('dddddddddddd');
+    }
+    if(xyz < 10){ xyz += 1;}
+    });
+
+    //following function will executes on change event of file input to select different file	
+    $('body').on('change', '#files', function() {
+    if (this.files && this.files[0]) {
+      abc += 1; //increementing global variable by 1
+      var filesize1 = this.files[0].size / 1024;
+      if ((this.files[0].size / 1024) > 1099 || (this.files.size / 1024) > 1099) {
+      document.getElementById('files').value = "";
+      var classname2 =$(this).attr('class');
+      $('.'+classname2).val("");   
+      swal('The maximum file size for uploads should not exceed 1MB');
+      return false;
+      }                                
+      // var fileInput = document.getElementById('files');
+      var filePath = (this.files[0].name);                                    
+      var allowedExtensions = /(\.jpg|\.JPG|\.jfif|\.JFIF|\.jpeg|\.JPEG|\.gif|\.GIF|\.png|\.PNG|\.pdf|\.PDF|\.doc|\.DOC|\.docx|\.DOCX|\.xlsx|\.xlsm|\.xls|\.csv)$/;
+      // $.map($('#files').get(0).files[0], function(file) { 
+      if (filePath != "" && !allowedExtensions.exec(filePath)) {
+      document.getElementById('files').value = "";  
+      var classname1 =$(this).attr('class');
+      $('.'+classname1).val("");   
+      swal("Only jpeg, jfif, jpg, png, gif, doc, pdf file types are allowed!. Sorry we cannot upload the document of the format you trying to upload. Please upload the document of correct format and hit update button to upload the document");
+      return false;
+      }
+      //});
+      //alert(document.getElementById('files').value);
+      if (allowedExtensions.exec(filePath)) {
+      var z = abc - 1;
+      var x = $(this).parent().find('#previewimg' + z).remove();
+      var allowedExtensionspdf = /(\.pdf|\.PDF)$/;
+      var allowedExtensionsdoc = /(\.doc|\.DOC|\.docx|\.DOCX)$/;
+                var allowedExtensionsxls = /(\.xlsx|\.xlsm|\.xls|\.csv)$/;
+
+      if (allowedExtensionspdf.exec(filePath)) {
+        $(this).before("<div id='abcd" + abc + "' class='abcd'>"+filePath+"</div>");
+                } else if (allowedExtensionsxls.exec(filePath)) {
+        $(this).before("<div id='abcd" + abc + "' class='abcd'>"+filePath+"</div>");
+      } else if (allowedExtensionsdoc.exec(filePath)) {
+        $(this).before("<div id='abcd" + abc + "' class='abcd'>"+filePath+"</div>");
+      } else {
+        $(this).before("<div id='abcd" + abc + "' class='abcd'>"+filePath+"</div>");
+      }
+
+      var reader = new FileReader();
+      reader.onload = imageIsLoaded;
+      reader.readAsDataURL(this.files[0]);
+      $(this).hide();
+      $("#abcd" + abc).append($("<img/>", {
+        id: 'img',
+        src: './assets/images/x.png',
+        alt: 'delete',
+        style:'float: revert'
+      }).click(function() {
+        $(this).parent().parent().remove();
+      }));
+      }
+    }
+    });
+
+    $(document).ready(function() {
+    var allowedExtensionstest = /(\.jpg|\.JPG|\.jfif|\.JFIF|\.jpeg|\.JPEG|\.gif|\.GIF|\.png|\.PNG|\.pdf|\.PDF|\.doc|\.DOC|\.docx|\.DOCX)$/;
+
+    $('#pannumberphoto').on('change', function(evt) {
+      if ((this.files[0].size / 1024) > 1099 || (this.files.size / 1024) > 1099) {
+      document.getElementById('pannumberphoto').value = "";
+      $(".pancheck").hide();                                                  
+      swal('The maximum file size for uploads should not exceed 1MB');
+      return false;
+      } else {
+      $(".pancheck").show();
+      $('#ImgPreview1').addClass('pdfimage');
+      }
+      var filePath1 = (this.files[0].name);
+      if (filePath1 != "" && !allowedExtensionstest.exec(filePath1)) {
+      document.getElementById('pannumberphoto').value = "";
+      $(".pancheck").hide();
+      $("#ImgPreview1").attr("src", "");
+      swal("Only jpeg, jfif, jpg, png, gif, doc, pdf file types are allowed!. Sorry we cannot upload the document of the format you trying to upload. Please upload the document of correct format and hit update button to upload the document");
+
+      return false;
+      } else {
+      $(".pancheck").show();
+      $('#ImgPreview1').addClass('pdfimage');
+      }
+    });
+
+    $('#anumberphoto').on('change', function(evt) {
+      if ((this.files[0].size / 1024) > 1099 || (this.files.size / 1024) > 1099) {
+
+      document.getElementById('anumberphoto').value = "";
+      $(".pancheck1").hide();
+      $("#ImgPreview2").attr("src", "");
+
+      swal('The maximum file size for uploads should not exceed 1MB');
+
+      return false;
+      } else {
+      $(".pancheck1").show();
+      $('#ImgPreview2').addClass('pdfimage');
+      }
+
+      var filePath11 = (this.files[0].name);
+      if (filePath11 != "" && !allowedExtensionstest.exec(filePath11)) {
+      document.getElementById('anumberphoto').value = "";
+      $(".pancheck1").hide();
+      $("#ImgPreview2").attr("src", "");
+
+      swal("Only jpeg, jfif, jpg, png, gif, doc, pdf file types are allowed!. Sorry we cannot upload the document of the format you trying to upload. Please upload the document of correct format and hit update button to upload the document");
+
+      return false;
+      } else {
+
+      $(".pancheck1").show();
+      $('#ImgPreview2').addClass('pdfimage');
+      }
+    });
+
+    $('#userfile').on('change', function(evt) {
+      if ((this.files[0].size / 1024) > 1099 || (this.files.size / 1024) > 1099) {
+      document.getElementById('userfile').value = "";
+      $(".pancheck2").hide();
+      $("#ImgPreview").attr("src", "");
+
+      swal('The maximum file size for uploads should not exceed 1MB');
+
+      return false;
+      } else {
+      $(".pancheck2").show();
+      $('#ImgPreview').addClass('pdfimage');
+      }
+
+      var filePath111 = (this.files[0].name);
+      if (filePath111 != "" && !allowedExtensionstest.exec(filePath111)) {
+      document.getElementById('userfile').value = "";
+      $(".pancheck2").hide();
+      $("#ImgPreview").attr("src", "");
+
+      swal("Only jpeg, jfif, jpg, png, gif, doc, pdf file types are allowed!. Sorry we cannot upload the document of the format you trying to upload. Please upload the document of correct format and hit update button to upload the document");
+      return false;
+      } else {
+      $(".pancheck2").show();
+      $('#ImgPreview').addClass('pdfimage');
+      }
+    });
+    });
+  //To preview image     
+    function imageIsLoaded(e) {
+    $('#previewimg' + abc).attr('src', e.target.result);
+    };
+
+    $('#upload').click(function(e) {
+    var name = $(":files").val();
+    if (!name) {
+      alert("First Image Must Be Selected");
+      e.preventDefault();
+    }
+    });
+  });
+</script>
+
+
+<script>
+  $(document).ready(function() {
+    // bind change event handler
+    var documentcheck = $('#document_type').val();
+    if (documentcheck == '') {
+    $("#attachmentdoc").show();
+    } else {
+    $("#attachmentdoc").show();
+    }
+    $('#document_type').change(function() {
+    var documentcheck2 = $('#document_type').val();
+    if (documentcheck2 == '') {
+      $("#attachmentdoc").show();
+    } else {
+      $("#attachmentdoc").show();
+    }
+    }).change();
+  });
+  //I added event handler for the file upload control to access the files properties.
+  document.addEventListener("DOMContentLoaded", init, false);
+  //To save an array of attachments
+  var AttachmentArray = [];
+  //counter for attachment array
+  var arrCounter = 0;
+  //to make sure the error message for number of files will be shown only one time.
+  var filesCounterAlertStatus = false;
+  //un ordered list to keep attachments thumbnails
+  var ul = document.createElement("ul");
+  ul.className = "thumb-Images";
+  ul.id = "imgList";
+  function init() {
+    //add javascript handlers for the file upload event
+    document
+    .querySelector("#files")
+    .addEventListener("change", handleFileSelect, false);
+  }
+  //the handler for file upload event
+  function handleFileSelect(e) {
+    //to make sure the user select file/files
+    if (!e.target.files) return;
+    //To obtaine a File reference
+    var files = e.target.files;
+    // Loop through the FileList and then to render image files as thumbnails.
+    for (var i = 0, f;
+    (f = files[i]); i++) {
+    // alert("Filename " + files[i].name);
+    //instantiate a FileReader object to read its contents into memory
+    var fileReader = new FileReader();
+    // Closure to capture the file information and apply validation.
+    fileReader.onload = (function(readerEvt) {
+      return function(e) {
+      //Apply the validation rules for attachments upload
+      ApplyFileValidationRules(readerEvt);
+      //Render attachments thumbnails.
+      RenderThumbnail(e, readerEvt);
+      //Fill the array of attachment
+      FillAttachmentArray(e, readerEvt);
+      };
+    })(f);
+    // Read in the image file as a data URL. 
+    fileReader.readAsDataURL(f);
+    }
+    document
+    .getElementById("files")
+    .addEventListener("change", handleFileSelect, false);
+  }
+
+  //To remove attachment once user click on x button
+  jQuery(function($) {
+    $("div").on("click", ".img-wrap .close", function() {
+    // alert(arrCounter);
+    var id = $(this)
+      .closest(".img-wrap")
+      .find("img")
+      .data("id"); //to remove the deleted item from array
+    var elementPos = AttachmentArray.map(function(x) {
+      return x.FileName;
+    }).indexOf(id);
+    if (elementPos !== -1) {
+      AttachmentArray.splice(elementPos, 1);
+    }
+
+    //when we need to same image upload for single remove and upload
+    var numImgs = $("#imgList").find("img").length;
+    //alert(numImgs);                                                                                                                          
+    if (numImgs == 1 || numImgs == 0) {
+      reset_form_element($('#files'));
+    }
+
+    //to remove image tag
+    $(this)
+      .parent()
+      .find("img")
+      .not()
+      .remove();
+
+    //to remove div tag that contain the image
+    $(this)
+      .parent()
+      .find("div")
+      .not()
+      .remove();
+
+      //to remove div tag that contain caption name
+      $(this)
+        .parent()
+        .parent()
+        .find("div")
+        .not()
+        .remove();
+
+      //to remove li tag
+      var lis = document.querySelectorAll("#imgList li");
+      for (var i = 0;
+        (li = lis[i]); i++) {
+        if (li.innerHTML == "") {
+        li.parentNode.removeChild(li);
+        }
+      }
+      });
+    });
+
+    //after remove file form reset start
+    function reset_form_element(e) {
+      e.wrap('<form>').parent('form').trigger('reset');
+      e.unwrap();
+    }
+    //after remove file form reset end
+
+    //Apply the validation rules for attachments upload
+    function ApplyFileValidationRules(readerEvt) {                            
+      //To check files count according to upload conditions
+      if (CheckFilesCount(AttachmentArray) == false) {
+      if (!filesCounterAlertStatus) {
+        filesCounterAlertStatus = true;
+        swal(
+        "You have added more than 10 files. According to upload conditions you can upload 10 files maximum"
+        );
+      }
+    e.preventDefault();
+    return;
+    }
+  }
+
+  //To check file type according to upload conditions
+  function CheckFileType(fileType) {
+    if (fileType == "image/jpeg") {
+    return true;
+    } else if (fileType == "image/png") {
+    return true;
+    } else if (fileType == "image/gif") {
+    return true;
+    } else if (fileType == "application/msword") {
+    return true;
+    } else if (fileType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+    return true;
+    } else if (fileType == "application/pdf") {
+    return true;
+    } else {
+    return false;
+    }
+    return true;
+  }
+
+  //To check file Size according to upload conditions
+  function CheckFileSize(fileSize) {
+    if (fileSize < 300000) {
+    return true;
+    } else {
+    return false;
+    }
+    return true;
+  }
+
+  //To check files count according to upload conditions
+  function CheckFilesCount(AttachmentArray) {
+    //Since AttachmentArray.length return the next available index in the array,
+    //I have used the loop to get the real length
+    var len = 0;
+    for (var i = 0; i < AttachmentArray.length; i++) {
+    if (AttachmentArray[i] !== undefined) {
+      len++;
+    }
+    }
+    //To check the length does not exceed 10 files maximum
+    if (len > 9) {
+    return false;
+    } else {
+    return true;
+    }
+  }
+  //Fill the array of attachment
+  function FillAttachmentArray(e, readerEvt) {
+    AttachmentArray[arrCounter] = {
+    AttachmentType: 1,
+    ObjectType: 1,
+    FileName: readerEvt.name,
+    FileDescription: "Attachment",
+    NoteText: "",
+    MimeType: readerEvt.type,
+    Content: e.target.result.split("base64,")[1],
+    FileSizeInBytes: readerEvt.size
+    };
+    arrCounter = arrCounter + 1;
+  }
+</script>
+
+<script>
+$('#basic-form').submit(function(e){
+
+  e.preventDefault()
+  var formdata = new FormData(this)
+
+  // formdata.append("emp_image",$('input[name="employee_image"]').get(0).files[0])
+
+  var employeeImageInput = $('input[name="employee_image"]').get(0).files[0];
+
+  if (employeeImageInput) {
+    formData.append("emp_image", employeeImageInput);
+  }
+
+
+  formdata.append("company_name", localStorage.cname);
+  
+    //   for (var pair of formdata.entries()) {
+    //     console.log(pair[0]+ ', ' + pair[1]); 
+    // }
+
+    $.ajax({
+        type: "POST",
+        url: "/qxbox/api/payroll/add_employee",
+        // contentType: 'application/json',
+        headers: {
+                "Authorization": "Bearer "+localStorage.getItem('acc_token')
+            },
+            // dataType: 'json',
+            contentType: false,
+            processData: false,
+            data: formdata,
+
+        success: function(result) {
+          swal({   title:"Updated",
+                  type: "success",
+                  confirmButtonColor: "#007bff",
+                  confirmButtonText: "Ok",
+                  closeOnConfirm: true  },
+                  function(isConfirm){
+                      window.location.replace("/qxbox/payroll/manage-employees/");
+                  });
+        },
+        error: function(result) {
+          // console.log(result.responseJSON['errors']['Dob']);
+          // console.log(JSON.parse(result.response['errors']));
+          
+
+// "{'Dob': [ErrorDetail(string='Date has wrong format. Use one of these formats instead: DD-MM-YYYY, DD/MM/YYYY.', code='invalid')], 'Married_date': [ErrorDetail(string='Date has wrong format. Use one of these formats instead: DD-MM-YYYY, DD/MM/YYYY.', code='invalid')], 'Joining_date': [ErrorDetail(string='Date has wrong format. Use one of these formats instead: DD-MM-YYYY, DD/MM/YYYY.', code='invalid')]}
+          swal({   title:"Error",
+                  type: "warning",
+                  confirmButtonColor: "#007bff",
+                  confirmButtonText: "Ok",
+                  closeOnConfirm: true  },
+                  function(isConfirm){
+                    // location.reload();
+                  });
+       
+        }
+    });
+});
+
+</script>
+
+<script>
+  if(window.location.href.indexOf("/qxbox/payroll/active-employees/")) {
+      $("#employeeNavItem").addClass("active")
+  }
+</script>
+
+
+
+<script>
+  $(document).ready(function() {
+
+    $("#per_pincode").blur(function() {
+        var per_pincode1 = $("#per_pincode").val();
+        
+        $.getJSON("https://api.postalpincode.in/pincode/" + per_pincode1, function (data) {
+            response = data[0]
+            if (response['Status'] != 'Error') {                    
+                
+                $("#state_id").val(response['PostOffice'][0].State);
+                $("#city_id").val(response['PostOffice'][0].District);
+                // $("#state_id").val(getdata.state);
+                // $('#address_type_id').prop('checked', false);
+            } else {                    
+                swal("Please enter the correct pincode");
+
+            }
+        })           
+    });
+
+    $("#curr_pincode").blur(function() {
+
+        var curr_pincode = $("#curr_pincode").val();
+        
+        $.getJSON("https://api.postalpincode.in/pincode/" + curr_pincode, function (data) {
+            response = data[0]
+            if (response['Status'] != 'Error') {                    
+                
+                $("#state_id1").val(response['PostOffice'][0].State);
+                $("#city_id1").val(response['PostOffice'][0].District);
+                // $("#state_id").val(getdata.state);
+                // $('#address_type_id').prop('checked', false);
+            } else {                    
+                swal("Please enter the correct pincode");
+
+            }
+        })           
+    })
+  });
+
+  function resetPincode() {
+    document.getElementById('city_id').value = '';
+    document.getElementById('state_id').value = '';
+  }
+
+</script>
+
+
+
+{% endblock %}

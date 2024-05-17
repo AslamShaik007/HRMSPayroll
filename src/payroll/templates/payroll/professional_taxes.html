@@ -1,0 +1,320 @@
+{% extends 'payroll/base/base.html' %}
+
+{% block main_content %}
+
+<div class="container-fluid">
+
+    {% include 'payroll/base/payroll-block-header.html' with t3=True %}
+
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+                <h1 class="ico_head"><i class="fa fa-list" aria-hidden="true"></i> Professional Tax</h1>
+            </div>
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-lg-10 mx-auto">
+            <div class="card">
+                <div class="body shadow border-0 px-5 pb-0">
+                    <div class="row">
+                        <div class="col-md-8"><p>This tax is levied on an employee’s income by the State Government. Tax slabs differ in each state.</p></div>
+                        <div class="col-md-4 text-right">
+                            <a href="" id="editBtn" class="btn btn-sm btn-primary text-uppercase addBtn rounded-circle p-0"><i class="fa fa-edit p-2"></i></a>
+                        </div>
+                    </div>
+                    <form id="basic-form" class="add-form" method="post" novalidate="">
+                        <div class="row clearfix">
+                            <div class="col-xl-3 col-md-4">
+                                <div class="form-group">
+                                    <label for="hoffice" class="font-weight-bold font-16">Head Office</label>
+                                    <p id="hoffice"></p>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-4">
+                                <div class="form-group">
+                                    <label for="state" class="font-weight-bold font-16">State</label>
+                                    <select id="state_id"  name="state_id" required class="form-control" disabled>
+                                        <option value="">Select</option>
+                                        {% for i in states.state_choices %}
+                                            <option value="{{i.0}}" >{{i.1}}</option>
+                                        {% endfor %}                                       
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    
+                      
+                        <!-- <div class="row clearfix">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="dep-name" class="font-weight-bold font-16">PT Slabs</label>
+                                    <a href="#" class="ml-2 text-success" data-toggle="modal" data-target=".viewTax">View Tax Slabs</a>
+                                </div>
+                            </div>
+                        </div> -->
+                        <div class="row clearfix">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <input type="hidden" name="con_mode" value="add" />
+                                    <input type="hidden" id="org_id" name="org_id" value="1" />
+                                    <!-- <input type="hidden" id="slab_id" name="slab_id" value="2" />  -->
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row clearfix my-3">
+        <div class="col-lg-10 mx-auto">
+            <div class="card">
+                <div class="card-body shadow pb-0 border-0">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5 class="font-16 font-weight-bold">Tax Slabs for Head Office</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th><span id="tax-base" style="text-transform: capitalize;"></span> Gross Salary (₹)</th>
+                                            <th>Monthly Tax Amount (₹)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tax-config">
+                                                                               
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade viewTax" tabindex="-1" role="dialog" aria-labelledby="viewTax" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title h4">Tax Slabs for Head Office</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead><tr><th>Monthly Gross Salary (&#8377;)</th><th>Monthly Tax Amount (&#8377;)</th></tr></thead>
+                        <tbody>
+                            <tr><td>1-15000</td><td>0</td></tr> <tr><td>15001-20000</td><td>150</td></tr> <tr><td>20001-9999999</td><td>200</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+<script>
+    function set_tax_table(salary_ranges,range_val){
+
+        for (var i = 0; i < salary_ranges.length; i++) {            ;
+            range_list = salary_ranges[i].split("-")
+            if (range_list[0] == "0") {
+                $("#tax-config").append(
+                    `
+                        <tr>
+                            <td>Equal or below `+ parseInt(range_list[1]).toLocaleString('en-IN') + `</td>
+                            <td>`+ range_val[i] + `</td>
+                        </tr>
+                    `
+                )
+            }
+            else if (range_list[1] == "x") {
+                $("#tax-config").append(
+                    `
+                                <tr>
+                                    <td>Above `+ parseInt(range_list[0]).toLocaleString('en-IN') + `</td>
+                                    <td>`+ range_val[i] + `</td>
+                                </tr>
+                            `
+                )
+            }
+            else {
+                $("#tax-config").append(
+                    `
+                                <tr>
+                                    <td>Between `+  parseInt(range_list[0]).toLocaleString('en-IN') + ` and  `+ parseInt(range_list[1]).toLocaleString('en-IN') +` </td>
+                                    <td>`+ range_val[i] + `</td>
+                                </tr>
+                            `
+                )
+            }
+
+        }            
+    }
+
+    $(document).ready(function(){        
+
+        $.ajax({
+            type: 'GET',
+            url: "/qxbox/{% url 'get_profession_tax_details' company_id=request.session.cmp_id %}",
+            dataType: 'json',
+            headers: {
+                "Authorization": "Bearer "+localStorage.getItem('acc_token')
+            },
+            success: function (data,textStatus) {
+    //             {
+    //     "id": 2,
+    //     "company": 29,
+    //     "stateId": 1,
+    //     "statusId": true,
+    //     "stateIdDisplay": "Andhra Pradesh"
+    // }
+
+//     [
+//   {
+//     "id": 2,
+//     "company": {
+//       "id": 29,
+//       "companyName": "vgs"
+//     },
+//     "state": {
+//       "id": 2,
+//       "state": "Telangana",
+//       "taxConfig": {
+//         "15000": 200
+//       }
+//     },
+//     "isEnabled": true
+//   }
+// ]
+
+// "taxConfig": {
+//         "base": "monthly",
+//         "male": {
+//           "taxValue": [
+//             0,
+//             175,
+//             200
+//           ],
+//           "salaryRanges": [
+//             "0-7500",
+//             "7501-10000",
+//             "10000-x"
+//           ]
+//         },
+//         "female": {
+//           "taxValue": [
+//             0,
+//             0,
+//             175
+//           ],
+//           "salaryRanges": [
+//             "0-7500",
+//             "7501-10000",
+//             "10000-x"
+//           ]
+//         },
+//         "exception": {
+//           "month": [
+//             "2"
+//           ],
+//           "value": [
+//             300
+//           ]
+//         }
+//       }
+//     },
+                var months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+                let resp = data[0]
+                $("#hoffice").text(resp.company.companyName)
+                
+                
+if(resp['state']){
+    $("#state_id option:contains('"+resp.state.state+"')").attr("selected","selected");                
+                // $("input[name=status_id][value=" + resp['isEnabled'] + "]").attr('checked', true);
+
+                $("#tax-base").text(resp['state']['taxConfig']['base']);
+    if(resp['state']['taxConfig']['male'] == resp['state']['taxConfig']['female']){
+                        $("#tax-config").append(
+                            `
+                            <tr>
+                                <td colspan="2" class="bg-light"><b>For Male and Females</b></td>
+                            </tr>
+                            `
+                        )
+                        salary_ranges = resp['state']['taxConfig']['female']['salaryRanges']
+                        range_val = resp['state']['taxConfig']['female']['taxValue']
+
+                        set_tax_table(salary_ranges,range_val)
+
+                    }
+                    else{
+                        $("#tax-config").append(
+                            `
+                            <tr>
+                                <td colspan="2" class="bg-light"><b>For Male</b></td>
+                            </tr>
+                            `
+                        )
+                        salary_ranges = resp['state']['taxConfig']['male']['salaryRanges']
+                        range_val = resp['state']['taxConfig']['male']['taxValue']
+
+                        set_tax_table(salary_ranges,range_val)
+
+                        $("#tax-config").append(
+                            `
+                            <tr>
+                                <td colspan="2" class="bg-light"><b>For Female</b></td>
+                            </tr>
+                            `
+                        )
+                        salary_ranges = resp['state']['taxConfig']['female']['salaryRanges']
+                        range_val = resp['state']['taxConfig']['female']['taxValue']
+
+                        set_tax_table(salary_ranges,range_val)
+                    }
+
+                
+                    if(resp['state']['taxConfig']['exception']['month'].length > 0){
+                        $("#tax-config").append(
+                            `
+                            <tr>
+                                <td colspan="2" class="bg-light"><b>Exception</b></td>
+                            </tr>
+                            <tr>                     
+                                <td> For `+months[resp['state']['taxConfig']['exception']['month'][0]]+`</td>
+                                <td>`+resp['state']['taxConfig']['exception']['value'][0]+`</td>
+                            </tr>
+                            `
+                        )  
+
+                    }
+                    
+                    
+}
+             
+                $('#editBtn').attr('href',"/qxbox/payroll/professional-tax-edit/"+resp['id'])
+
+            },
+            error:function(xhr, status, e) {
+                alert('Error');
+            }
+        })
+    })
+</script>
+
+<script>
+    if(window.location.href.indexOf("/qxbox/payroll/epf-details/")) {
+        $("#payrollCompNavItem").addClass("active")
+    }
+</script>
+{% endblock %}

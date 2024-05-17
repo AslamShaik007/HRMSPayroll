@@ -1,0 +1,42 @@
+{% load static %}
+
+<nav class="navbar top-navbar">
+    <div class="container-fluid">
+        <div class="navbar-left">
+    
+            <div class="navbar-brand pl-2">
+                <div class="d-flex align-baseline">
+                    <button class="navbar-toggler border border-0 shadow-lg mr-4" type="button" id="menuBtn" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span id="openBtn" class="lnr lnr-menu fa fa-bars"></span>
+                    </button>                           
+                    <a href="#"><img src=""  alt="" class="img-fluid logo user_image" style="width: 14%;"><span></span></a>
+                </div>
+            </div>
+        
+            <ul class="nav navbar-nav"></ul>
+        </div>
+                <div  id="infoIconAboutRunPayrollBtn">
+            <div class="RunPayrollInfoBtn blue_text position-relative">
+                <i class="fa fa-info-circle blue_text" aria-hidden="true"></i>
+            </div>
+        
+            <div class="TooltipCompliancePopup position-absolute px-3 py-2 rounded">
+                <div class=" mb-1">
+                    <div class="font_weight_600 font_12 "> To Enable run &quot;Payroll&quot; button please complete all payroll master components</div>
+                </div>
+            </div>
+        </div>
+        <a href="#" class="btn btn-success icon-menu runpayrollbtns" id="runPayrollBtn" title="if message">Run Payroll</a>
+        <!-- addBtn -->
+        <div class="navbar-right curv_hea py-3">
+            <div id="navbar-menu">
+                <ul class="nav navbar-nav">                         
+                    <li><a href="#" class="icon-menu log-out" onclick="log_out()"><i class="icon-power"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="progress-container">
+        <div class="progress-bar" id="myBar"></div>
+    </div>
+</nav>

@@ -1,0 +1,512 @@
+{% extends 'payroll/base/base.html' %}
+
+{% block main_content %}
+
+<div class="container-fluid">
+    {% include 'payroll/base/payroll-block-header.html' with t3=True %}
+
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+                <h1 class="ico_head"><i class="fa fa-list" aria-hidden="true"></i> Professional Tax</h1>
+            </div>
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-lg-10 mx-auto">
+            <div class="card">
+                <div class="body shadow border-0">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="font-weight-bold font-16">This tax is levied on an employee’s income by the State
+                                Government. Tax slabs differ in each state.</p>
+                        </div>
+                    </div>
+                    <form id="basic-form" class="add-form" method="post" novalidate="">
+                        <div class="row clearfix">
+                            <div class="col-xl-3 col-md-4">
+                                <div class="form-group">
+                                    <label for="hoffice" class="font-weight-bold font-16">Head Office</label>
+                                    <p id="hoffice"></p>
+
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-4">
+                                <div class="form-group">
+                                    <label for="state" class="font-weight-bold font-16">State</label>
+                                    <select onchange="stateProfessionalTax(this.value)" id="state_id" name="state_id"
+                                        required class="form-control" required>
+                                        <option value="">Select State</option>
+                                        {% for i in states.state_choices %}
+                                        <option value="{{i.0}}">{{i.1}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-6 col-md-4 text-right">
+                                <div class="form-group">
+
+                                    <!-- <input type="hidden" id="slab_id" name="slab_id" value="2" />  -->
+                                    <div class="pb-4"></div>
+                                    <button class="btn btn-sm btn-primary text-uppercase addBtn"><i
+                                            class="fa fa-floppy-o mr-1" aria-hidden="true"></i> Update</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="row clearfix">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="b-name">Deduction</label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+
+                        <!-- <div class="row clearfix">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="dep-name" class="font-weight-bold font-16">PT Slabs</label>
+                                    <a href="#" class="ml-2 text-success" data-toggle="modal" data-target=".viewTax">View Tax Slabs</a>
+                                    <div class="col-md-8">
+                                        <h5 class="font-16 font-weight-bold">Tax Slabs for Head Office</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Monthly Gross Salary (₹)</th>
+                                                        <th>Monthly Tax Amount (₹)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>1-15000</td>
+                                                    <td>0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>15001-20000</td>
+                                                    <td>150</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>20001-9999999</td>
+                                                    <td>200</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                        <!-- <div class="row clearfix">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                  
+                                    <input type="hidden" id="slab_id" name="slab_id" value="2" /> 
+                                    <label class="pb-3"></label>
+                                    <button class="btn btn-sm btn-primary text-uppercase addBtn d-block">Update</button>
+                                </div>
+                            </div>
+                        </div> -->
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <div class="row clearfix my-3 udHideShowTaxTable">
+        <div class="col-lg-10 mx-auto">
+            <div class="card">
+                <div class="card-body shadow pb-0 border-0">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5 class="font-16 font-weight-bold">Tax Slab for State: <b style="color:red;"
+                                    class="udStateName"></b></h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th><span id="tax-base" style="text-transform: capitalize;"></span> Gross
+                                                Salary (₹)</th>
+                                            <th>Monthly Tax Amount (₹)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tax-config">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+</div>
+
+
+
+<div class="modal fade viewTax" tabindex="-1" role="dialog" aria-labelledby="viewTax" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title h4">Tax Slabs for Head Office</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Monthly Gross Salary (&#8377;)</th>
+                                <th>Monthly Tax Amount (&#8377;)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1-15000</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>15001-20000</td>
+                                <td>150</td>
+                            </tr>
+                            <tr>
+                                <td>20001-9999999</td>
+                                <td>200</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $.ajax({
+            type: 'GET',
+            url: "/qxbox/{% url 'get_profession_tax_details' company_id=request.session.cmp_id %}",
+            dataType: 'json',
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem('acc_token')
+            },
+            success: function (data, textStatus) {
+                var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                let resp = data[0]
+                // let resp = data[0]
+                $("#hoffice").text(resp.company.companyName)
+                $("#state_id option:contains('"+resp.state.state+"')").attr("selected","selected");                
+                // // $("input[name=status_id][value=" + resp['isEnabled'] + "]").attr('checked', true);
+                // $('.udHideShowTaxTable').hide('slow');
+                resp = data[0]['state']
+
+                
+
+
+                if (resp['state']) {
+                    $('.udHideShowTaxTable').show('slow');
+                    $(".udStateName").text(resp['state'])
+                    $("#tax-config").html("");
+                    $("#state_id option:contains('" + resp.state.state + "')").attr("selected", "selected");
+                    // $("input[name=status_id][value=" + resp['isEnabled'] + "]").attr('checked', true);
+
+                    $("#tax-base").text(resp['taxConfig']['base']);
+                    if (resp['taxConfig']['male'] == resp['taxConfig']['female']) {
+                        $("#tax-config").append(
+                            `
+                                           <tr>
+                                               <td colspan="2" class="bg-light"><b>For Male and Females</b></td>
+                                           </tr>
+                                           `
+                        )
+                        salary_ranges = resp['taxConfig']['female']['salaryRanges']
+                        range_val = resp['taxConfig']['female']['taxValue']
+
+                        set_tax_table(salary_ranges, range_val)
+
+                    }
+                    else {
+                        $("#tax-config").append(
+                            `
+                                           <tr>
+                                               <td colspan="2" class="bg-light"><b>For Male</b></td>
+                                           </tr>
+                                           `
+                        )
+                        salary_ranges = resp['taxConfig']['male']['salaryRanges']
+                        range_val = resp['taxConfig']['male']['taxValue']
+
+                        set_tax_table(salary_ranges, range_val)
+
+                        $("#tax-config").append(
+                            `
+                                           <tr>
+                                               <td colspan="2" class="bg-light"><b>For Female</b></td>
+                                           </tr>
+                                           `
+                        )
+                        salary_ranges = resp['taxConfig']['female']['salaryRanges']
+                        range_val = resp['taxConfig']['female']['taxValue']
+
+                        set_tax_table(salary_ranges, range_val)
+                    }
+
+
+                    if (resp['taxConfig']['exception']['month'].length > 0) {
+                        $("#tax-config").append(
+                            `
+                                           <tr>
+                                               <td colspan="2" class="bg-light"><b>Exception</b></td>
+                                           </tr>
+                                           <tr>                     
+                                               <td> For `+ months[resp['taxConfig']['exception']['month'][0]] + `</td>
+                                               <td>`+ resp['taxConfig']['exception']['value'][0] + `</td>
+                                           </tr>
+                                           `
+                        )
+
+                    }
+
+
+                } else {
+                    $('.udHideShowTaxTable').hide();
+                }
+
+            },
+            error: function (xhr, status, e) {
+     
+                swal({
+                    title: "Error" + e,
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true
+                });
+            }
+        })
+
+
+
+        $('#basic-form').submit(function (e) {
+            e.preventDefault();
+            var state_id = $('#state_id').val();
+            // var status = $('input[name="status_id"]:checked').val();
+            var status = "true";
+
+            console.log(state_id, status);
+
+            if (state_id != "") {
+                $.ajax({
+                    type: "PATCH",
+                    url: "/qxbox/{% url 'update_profession_tax_details' id=ptId %}",
+                    data: JSON.stringify({ "isEnabled": status, "state": { "state": state_id } }),
+                    dataType: 'json',
+                    headers: {
+                        "Authorization": "Bearer " + localStorage.getItem('acc_token'),
+                    },
+                    contentType: 'application/json',
+                    success: function (response) {
+                        swal({
+                            title: "updated",
+                            type: "success",
+                            confirmButtonColor: "#007bff",
+                            confirmButtonText: "Ok",
+                            closeOnConfirm: true
+                        },
+                            function (isConfirm) {
+                                window.location.replace("/qxbox/payroll/professional-taxes/");
+                            });
+
+                        window.setTimeout(function () {
+                            window.location.replace("/qxbox/payroll/professional-taxes/");
+                        }, 500);
+                    },
+                    error: function (xhr, status, e) {
+                        
+                        swal({
+                            title: "Error" + e,
+                            type: "info",
+                            showCancelButton: false,
+                            confirmButtonColor: "#007bff",
+                            confirmButtonText: "Ok",
+                            closeOnConfirm: false,
+                            closeOnCancel: true
+                        });
+                    }
+                });
+            }
+
+        });
+    });
+
+
+</script>
+
+<script>
+    if (window.location.href.indexOf("/qxbox/payroll/epf-details/")) {
+        $("#payrollCompNavItem").addClass("active")
+    }
+</script>
+
+
+
+<script>
+
+
+
+    function set_tax_table(salary_ranges, range_val) {
+
+        for (var i = 0; i < salary_ranges.length; i++) {
+            ;
+            range_list = salary_ranges[i].split("-")
+            if (range_list[0] == "0") {
+                $("#tax-config").append(
+                    `
+                            <tr>
+                                <td>Equal or below `+ parseInt(range_list[1]).toLocaleString('en-IN') + `</td>
+                                <td>`+ range_val[i] + `</td>
+                            </tr>
+                        `
+                )
+            }
+            else if (range_list[1] == "x") {
+                $("#tax-config").append(
+                    `
+                                    <tr>
+                                        <td>Above `+ parseInt(range_list[0]).toLocaleString('en-IN') + `</td>
+                                        <td>`+ range_val[i] + `</td>
+                                    </tr>
+                                `
+                )
+            }
+            else {
+                $("#tax-config").append(
+                    `
+                                    <tr>
+                                        <td>Between `+ parseInt(range_list[0]).toLocaleString('en-IN') + ` and  ` + parseInt(range_list[1]).toLocaleString('en-IN') + ` </td>
+                                        <td>`+ range_val[i] + `</td>
+                                    </tr>
+                                `
+                )
+            }
+
+        }
+    }
+
+
+    // console.log(stateName);
+    function stateProfessionalTax(stateName) {
+        if (stateName != "") {
+            $.ajax({
+                type: 'GET',
+                url: "/qxbox/{% url 'state-professional-tax' %}?state_name=" + stateName,
+                dataType: 'json',
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem('acc_token')
+                },
+                success: function (data, textStatus) {
+                    $('.udHideShowTaxTable').hide('slow');
+
+                    var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                    let resp = data['result'][0]
+
+
+                    if (resp['state']) {
+                        $('.udHideShowTaxTable').show('slow');
+                        $(".udStateName").text(resp['state'])
+                        $("#tax-config").html("");
+                        $("#state_id option:contains('" + resp.state.state + "')").attr("selected", "selected");
+                        // $("input[name=status_id][value=" + resp['isEnabled'] + "]").attr('checked', true);
+
+                        $("#tax-base").text(resp['taxConfig']['base']);
+                        if (resp['taxConfig']['male'] == resp['taxConfig']['female']) {
+                            $("#tax-config").append(
+                                `
+                                            <tr>
+                                                <td colspan="2" class="bg-light"><b>For Male and Females</b></td>
+                                            </tr>
+                                            `
+                            )
+                            salary_ranges = resp['taxConfig']['female']['salaryRanges']
+                            range_val = resp['taxConfig']['female']['taxValue']
+
+                            set_tax_table(salary_ranges, range_val)
+
+                        }
+                        else {
+                            $("#tax-config").append(
+                                `
+                                            <tr>
+                                                <td colspan="2" class="bg-light"><b>For Male</b></td>
+                                            </tr>
+                                            `
+                            )
+                            salary_ranges = resp['taxConfig']['male']['salaryRanges']
+                            range_val = resp['taxConfig']['male']['taxValue']
+
+                            set_tax_table(salary_ranges, range_val)
+
+                            $("#tax-config").append(
+                                `
+                                            <tr>
+                                                <td colspan="2" class="bg-light"><b>For Female</b></td>
+                                            </tr>
+                                            `
+                            )
+                            salary_ranges = resp['taxConfig']['female']['salaryRanges']
+                            range_val = resp['taxConfig']['female']['taxValue']
+
+                            set_tax_table(salary_ranges, range_val)
+                        }
+
+
+                        if (resp['taxConfig']['exception']['month'].length > 0) {
+                            $("#tax-config").append(
+                                `
+                                            <tr>
+                                                <td colspan="2" class="bg-light"><b>Exception</b></td>
+                                            </tr>
+                                            <tr>                     
+                                                <td> For `+ months[resp['taxConfig']['exception']['month'][0]] + `</td>
+                                                <td>`+ resp['taxConfig']['exception']['value'][0] + `</td>
+                                            </tr>
+                                            `
+                            )
+
+                        }
+
+
+                    } else {
+                        $('.udHideShowTaxTable').hide();
+                    }
+                },
+                error: function (xhr, status, e) {
+                    swal("Something went wrong.");
+                }
+            });
+        } else {
+            swal("Please select State");
+        }
+    }
+</script>
+
+
+{% endblock %}

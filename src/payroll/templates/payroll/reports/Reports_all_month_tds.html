@@ -1,0 +1,689 @@
+{% extends 'payroll/base/base.html' %}
+{% load static %}
+
+{% block css %}
+
+<style>
+    td.details-control {
+        background: url('./assets/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+
+    tr.shown td.details-control {
+        background: url('./assets/images/details_open.png') no-repeat center center;
+    }
+
+    .parsley-errors {
+        color: rgb(225, 88, 88);
+        font-size: 0.9em;
+        margin-top: 3px;
+    }
+</style>
+<style>
+    #menuBtn:active {
+        border: 2px solid #30239f;
+    }
+
+    #menuBtn:visited {
+        border: 2px solid #30239f;
+    }
+
+    #menuBtn:focus {
+        border: 2px solid #30239f;
+        outline: 1px dotted !important;
+    }
+</style>
+
+<style type="text/css">
+    .has-search .form-control-feedback {
+        position: absolute;
+        z-index: 2;
+        display: block;
+        width: 2.375rem;
+        height: 2.375rem;
+        line-height: 2.075rem;
+        right: 15px;
+        text-align: center;
+        cursor: pointer;
+        color: #aaa;
+    }   
+</style>
+<style>
+    td.details-control {
+        background: url('./assets/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+
+    tr.shown td.details-control {
+        background: url('./assets/images/details_open.png') no-repeat center center;
+    }
+
+    .parsley-errors {
+        color: rgb(225, 88, 88);
+        font-size: 0.9em;
+        margin-top: 3px;
+    }
+
+    #main-content {
+        margin-top: 1.5rem !important;
+    }
+
+    .BtnActive {
+        background-color: #187ebe;
+        border: 2px solid #187ebe;
+        color: white;
+        font-weight: 500;
+    }   
+    .prev{
+        float: initial !important;       
+    }
+    .spictext{
+        text-transform: lowercase;
+    }
+    .spictext::first-letter{
+        text-transform: capitalize;
+    }
+    
+</style>
+
+{% endblock %}
+
+{% block main_content %}
+
+<div class="container-fluid">
+  
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+                <h1 class="ico_head"><i class="fa fa-bar-chart" aria-hidden="true"></i> <b>Monthly TDS Report</b></h1>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row clearfix">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="w-auto ml-2">
+                    <button id="download_records" class="btn btn btn-info"
+                        title=""><i class="fa fa-download"></i> Download</a>
+                </div>  
+                <div class="body top_sp shadow border-0 pt-2" id="summary_id">
+                    <div class="tab-content">
+                        <div class="tab-pane show active" id="e_employees">
+                            <select class="form-control form-control NofEntriesShowSel" id="NofEntriesSel" name="NofEntriesSel" data-live-search="true">
+
+                                <option value="10" selected>10</option>
+                            
+                                <option value="25" >25</option>
+                            
+                                <option value="50" >50</option>
+                            
+                                <option value="100" >100</option>
+                            
+                                <option value="10000" >All</option>
+                            
+                            </select>
+
+                            <div class="table-responsive">
+
+                                <table class="display table table-hover table-custom spacing5 mb-0" id="sortingtable">
+
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">S. NO</th>                                       
+                                        <th>EMP ID</th>
+                                        <th>Name</th>
+                                        <th>Org. Name</th>                                                                               
+                                        <th>Department</th>                                                                               
+                                        <th>PAN</th>
+                                        <th>Year</th>
+                                        <th>Income from previous employer</th>
+                                        <th>Apr</th>
+                                        <th>May</th>
+                                        <th>Jun</th>
+                                        <th>July</th>
+                                        <th>Aug</th>
+                                        <th>Sept</th>
+                                        <th>Oct</th>
+                                        <th>Nov</th>
+                                        <th>Dec</th>
+                                        <th>Jan</th>
+                                        <th>Feb</th>
+                                        <th>Mar</th>                                       
+                                        <th>Total Earned Gross</th>
+                                        <th>F1(SD)</th>
+                                        <th>F2(80C)</th>
+                                        <th>F3(MP)</th>
+                                        <th>F4(HL)</th>
+                                        <th>F5(HRA)</th>
+                                        <th>F6(LTA)</th>
+                                        <th>F7(Others)</th>
+                                        <th>TDS from previous employer</th>
+                                        <th>Apr(TDS)</th>
+                                        <th>May(TDS)</th>
+                                        <th>Jun(TDS)</th>
+                                        <th>July(TDS)</th>
+                                        <th>Aug(TDS)</th>
+                                        <th>Sept(TDS)</th>
+                                        <th>Oct(TDS)</th>
+                                        <th>Nov(TDS)</th>
+                                        <th>Dec(TDS)</th>
+                                        <th>Jan(TDS)</th>
+                                        <th>Feb(TDS)</th>
+                                        <th>Mar(TDS)</th>
+                                        <th>Total Tax</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>                                                                              
+                                     </tr>
+                                </tfoot>	
+                            
+                            </table>
+                        </div>
+                                <div class="row mt-3">
+                                    <div class="col-6">
+                                        <div>Showing <span class="currentRecord"><span class="lastRecord"></span> of
+                                                <span class="totalRecord"></span> entries</div>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <div class="btnGroup">
+                                            <button type="button"
+                                                class="btn btn-secondary btn-sm nav-btn prev disabled">Previous</button>
+                                            <button type="button" class="btn btn-sm cpage"></button>
+                                            <button type="button"
+                                                class="btn btn-secondary btn-sm nav-btn nxt disabled">Next</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+    $(document).on( "ajaxSend", function() {
+      $("#AjaxCallOverlay").fadeIn(300);
+    });
+    let myResponseStatus = true;
+
+  </script>
+
+
+<script>
+
+
+function setTable(results){            
+
+
+             var rescounter = 0;
+            var tyIds = [];
+
+             results.forEach(function(item) {
+                 rescounter ++;
+                 let previnc = 0
+                 let prevtds = 0
+                 if(item.idcObjs[0]?.incomeFromPreviousEmployer){
+                    previnc = item.idcObjs[0]?.incomeFromPreviousEmployer
+                 }
+                 if(item.idcObjs[0]?.tdsFromPreviousEmployer){
+                    prevtds = item.idcObjs[0]?.tdsFromPreviousEmployer
+                 }
+
+                 var ttemp  = parseInt(item['totalGross'])+previnc
+                 var ttds  = parseInt(item['totalTds'])+prevtds
+
+                 if (!tyIds.includes(item.empNumber)){
+                    $('#sortingtable tbody').append(
+                     `
+                     <tr>                                            
+                         <td>`+rescounter+`</td>
+                         <td>`+item.empNumber+`</td>
+                         <td class="spictext">`+item.empName+`</td>
+                         <td>`+item.orgName+`</td>
+                         
+                         <td class="spictext">`+item.deptName+`</td>                         
+                         <td>`+item.pan+`</td>
+                         <td>2023-2024</td>
+                         <td>`+changeToBlankwoBracket(item.idcObjs[0]?.incomeFromPreviousEmployer)+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyGross['April-Gross'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyGross['May-Gross'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyGross['June-Gross'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyGross['July-Gross'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyGross['August-Gross'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyGross['September-Gross'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyGross['October-Gross'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyGross['November-Gross'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyGross['December-Gross'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyGross['January-Gross'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyGross['February-Gross'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyGross['March-Gross'])+`</td>
+                         
+                         <td>`+ttemp+`</td>
+
+
+                         <td>`+changeToBlankwoBracket(item.idcObjs[0]?.f1)+`</td>
+                         <td>`+changeToBlankwoBracket(item.idcObjs[0]?.f2)+`</td>
+                         <td>`+changeToBlankwoBracket(item.idcObjs[0]?.f3)+`</td>
+                         <td>`+changeToBlankwoBracket(item.idcObjs[0]?.f4)+`</td>
+                         <td>`+changeToBlankwoBracket(item.idcObjs[0]?.f5)+`</td>
+                         <td>`+changeToBlankwoBracket(item.idcObjs[0]?.f6)+`</td>
+                         <td>`+changeToBlankwoBracket(item.idcObjs[0]?.f7)+`</td>
+                         <td>`+changeToBlankwoBracket(item.idcObjs[0]?.tdsFromPreviousEmployer)+`</td>
+
+                         <td>`+changeToBlankwoBracket(item.monthlyTds['April-TDS'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyTds['May-TDS'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyTds['June-TDS'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyTds['July-TDS'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyTds['August-TDS'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyTds['September-TDS'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyTds['October-TDS'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyTds['November-TDS'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyTds['December-TDS'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyTds['January-TDS'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyTds['February-TDS'])+`</td>
+                         <td>`+changeToBlankwoBracket(item.monthlyTds['March-TDS'])+`</td>
+                                     
+                         <td>`+ ttds+`</td>
+                                                                                              
+                     </tr> 
+                     `
+                 )
+                    tyIds.push(item.empNumber)
+                 }
+                });
+         
+         }
+ 
+
+    function get_employees_list(page,page_size,apiurl){        
+
+        let apiUrl = "/qxbox/{% url 'get-tds-report' %}" 
+        
+        if (apiurl){
+            apiUrl = apiurl
+        }else{
+            apiUrl = apiUrl + "?company_id="+ '{{request.session.cmp_id}}'            
+            apiUrl = apiUrl + '&page='+ page
+            apiUrl = apiUrl + '&page_size='+ page_size
+            apiUrl = apiUrl + '&start_year=2023',
+            apiUrl = apiUrl + '&end_year=2024'
+        }  
+
+        $.ajax({
+            type: 'GET',
+            url: apiUrl,
+            headers: {
+                            "Authorization": "Bearer "+localStorage.getItem('acc_token'),                            
+                        },                
+            contentType: "application/json",
+            dataType:"json",            
+            success: function (response) {
+                
+                $('#sortingtable tbody').html('')
+
+
+                // let filtersData = response['result']['filtersData'];
+                let paginatedData = response['result']['paginatedData'];
+                let results = paginatedData['results'];
+
+                // if(is_filter){
+                //     set_filters(filtersData);
+                // }
+
+                // var oTable = $('#sortingtable').DataTable().destroy();
+                $('#sortingtable').DataTable().clear().destroy()
+
+                if(results){
+                    setTable(results);
+                }
+
+
+
+                $('#sortingtable').DataTable(
+                    {
+                        destroy: true,
+                        responsive: true,
+                        pageLength: 10,
+                        paginate: false,
+                        info: false,
+                        order: [],
+                        footerCallback: function( tfoot, data, start, end, display ) {
+                            var api = this.api();
+                            $(api.column(7).footer()).html(
+                                api.column(7).data().sum()
+                            );
+                            $(api.column(8).footer()).html(
+                                api.column(8).data().sum()
+                            );
+                            $(api.column(9).footer()).html(
+                                api.column(9).data().sum()
+                            );
+                            $(api.column(10).footer()).html(
+                                api.column(10).data().sum()
+                            );
+                            $(api.column(11).footer()).html(
+                                api.column(11).data().sum()
+                            );
+                            $(api.column(12).footer()).html(
+                                api.column(12).data().sum()
+                            );
+                            $(api.column(13).footer()).html(
+                                api.column(13).data().sum()
+                            );
+                            $(api.column(14).footer()).html(
+                                api.column(14).data().sum()
+                            );
+                            $(api.column(15).footer()).html(
+                                api.column(15).data().sum()
+                            );
+                            $(api.column(16).footer()).html(
+                                api.column(16).data().sum()
+                            );
+                            $(api.column(17).footer()).html(
+                                api.column(17).data().sum()
+                            );
+                            $(api.column(18).footer()).html(
+                                api.column(18).data().sum()
+                            );
+                            $(api.column(19).footer()).html(
+                                api.column(19).data().sum()
+                            );
+                            $(api.column(20).footer()).html(
+                                api.column(20).data().sum()
+                            );
+                            $(api.column(21).footer()).html(
+                                api.column(21).data().sum()
+                            );
+                            $(api.column(22).footer()).html(
+                                api.column(22).data().sum()
+                            );
+                            $(api.column(23).footer()).html(
+                                api.column(23).data().sum()
+                            );
+                            $(api.column(24).footer()).html(
+                                api.column(24).data().sum()
+                            );
+                            $(api.column(25).footer()).html(
+                                api.column(25).data().sum()
+                            );
+                            $(api.column(26).footer()).html(
+                                api.column(26).data().sum()
+                            );
+                            $(api.column(27).footer()).html(
+                                api.column(27).data().sum()
+                            );
+                            $(api.column(28).footer()).html(
+                                api.column(28).data().sum()
+                            );
+                            $(api.column(29).footer()).html(
+                                api.column(29).data().sum()
+                            );
+                            $(api.column(30).footer()).html(
+                                api.column(30).data().sum()
+                            );
+                            $(api.column(31).footer()).html(
+                                api.column(31).data().sum()
+                            );
+                            $(api.column(32).footer()).html(
+                                api.column(32).data().sum()
+                            );
+                            $(api.column(33).footer()).html(
+                                api.column(33).data().sum()
+                            );
+                            $(api.column(34).footer()).html(
+                                api.column(34).data().sum()
+                            );
+                            $(api.column(35).footer()).html(
+                                api.column(35).data().sum()
+                            );
+                            $(api.column(36).footer()).html(
+                                api.column(36).data().sum()
+                            );
+                            $(api.column(37).footer()).html(
+                                api.column(37).data().sum()
+                            );
+                            $(api.column(38).footer()).html(
+                                api.column(38).data().sum()
+                            );                            
+                            $(api.column(39).footer()).html(
+                                api.column(39).data().sum()
+                            ); 
+                            $(api.column(40).footer()).html(
+                                api.column(40).data().sum()
+                            );  
+                            $(api.column(41).footer()).html(
+                                api.column(41).data().sum()
+                            );  
+                            // $(api.column(42).footer()).html(
+                            //     api.column(42).data().sum()
+                            // );                          
+                        
+                                                       
+                        }    
+                        // dom: 'Bfrtip',
+                        // buttons: [
+                        //     'copy', 'csv', 'excel', 'pdf'
+                        // ]
+                    }
+                );
+
+                if (paginatedData?.previous) {
+                    $('.prev').removeClass('disabled')
+                    $('.prev').addClass('BtnActive')
+                    $('.prev').data('url', (paginatedData.previous).replace('api','qxbox/api').replace('http:','https:'))
+                } else {
+                    $('.prev').addClass('disabled')
+                }
+                if (paginatedData?.next) {
+                    $('.nxt').removeClass('disabled')
+                    $('.nxt').addClass('BtnActive')
+                    $('.nxt').data('url', (paginatedData.next).replace('api','qxbox/api').replace('http:','https:'))
+                } else {
+                    $('.nxt').addClass('disabled')
+                }
+
+                $('.lastRecord').text(results?.length)
+                $('.totalRecord').text(paginatedData?.count)
+                $(".cpage").text(paginatedData?.currentPage)
+
+            }
+        }).done(function() {
+            
+            if(myResponseStatus == true) {
+                // setTimeout(function(){
+                    $("#AjaxCallOverlay").fadeOut('slow');
+                // },500);
+            } else {                    
+                setTimeout(function(){
+                    $("#AjaxCallOverlay").fadeOut('slow');
+                },3000);
+            }
+            
+        }).fail(function (xhr, status, e) {                 
+            swal({   
+                title: "Error",
+                type: "info",
+                showCancelButton: false,
+                confirmButtonColor: "#007bff",
+                confirmButtonText: "Ok",
+                closeOnConfirm: false,
+                closeOnCancel: true 
+            });
+            setTimeout(function(){
+                    $("#AjaxCallOverlay").fadeOut('slow');
+                },3000);                
+        }); 
+
+    }
+
+
+    function download_employees_list(){        
+        
+        let apiUrl = "/qxbox/{% url 'get-tds-report' %}"     
+        apiUrl = apiUrl + "?company_id="+ '{{request.session.cmp_id}}'                                
+               
+        apiUrl = apiUrl + '&download=true'
+        apiUrl = apiUrl + '&start_year=2023'
+        apiUrl = apiUrl + '&end_year=2024'
+
+        $.ajax({
+            type: 'GET',
+            url: apiUrl,
+            xhrFields: {
+                            responseType: 'blob' // Set the response type to blob
+                        }, 
+            headers: {
+                            "Authorization": "Bearer "+localStorage.getItem('acc_token'),                            
+                        },                                        
+            success: function (data, status, xhr) {
+                const blob = new Blob([data], { type: 'application/ms-excel' })
+                            var link = document.createElement('a');
+                            link.href = window.URL.createObjectURL(blob);
+                            link.download = "TDS_Report.xlsx";
+                            link.click();
+
+            }
+        }).done(function() {
+                
+                if(myResponseStatus == true) {
+                    // setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    // },500);
+                } else {                    
+                    setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);
+                }
+                
+            }).fail(function (xhr, status, e) {                 
+                swal({   
+                    title: "Error",
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+                setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);                
+            }); 
+
+    }
+
+
+</script>
+
+
+<script>
+    $(document).ready(function() {
+        get_employees_list(1,10,false)
+        // $(".epfLink").attr("href","/qxbox/payroll/reports/")
+        // var myPathRegEx = "/qxbox/payroll/reports/";
+        
+        if(window.location.href.indexOf("/qxbox/payroll/reports/")) {
+            console.log("success")
+            $("#MainMenu").addClass("active")
+        } else {
+            console.log("failed")
+        }
+
+    })
+</script>
+
+
+<script>
+
+    var page_size = 10;
+
+    $('#NofEntriesSel').on('change', function() {
+        page_size = this.value 
+
+
+        get_employees_list(1,page_size,false)
+    });
+
+    $("#search_form").on('submit',function(e){
+        e.preventDefault()       
+
+        get_employees_list(1,page_size,false)
+
+    })
+</script>
+
+
+<script>
+    
+        $('body').on('click','#download_records' ,function (e) {
+            e.preventDefault();
+                     
+            download_employees_list()        
+        })
+        
+
+    $('body').on('click','.nav-btn' ,function (e) {
+        e.preventDefault();
+        let apiurl = $(this).data('url');    
+                        
+        get_employees_list(1,page_size,apiurl)        
+    })
+</script>
+
+
+{% endblock %}

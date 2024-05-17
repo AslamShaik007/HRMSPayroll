@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body class="fontFamily">
+    <p>Hello {{admin_name}} [{{tag}}]</p>
+
+    <p>I wanted to bring to your attention that there are pending approval requests from employees that have not been addressed by their respective reporting managers,</p> 
+    
+    <p>Despite multiple reminders. This delay is impacting critical processes, and I kindly request your prompt intervention to expedite the approval workflow.</p>
+    <br>
+    <p>Please refer the links for more information :</p>
+    <p>Leave Module Link : {{leave_domain}}.</p>
+    <p>Attendance Module Link : {{attendance_domain}}.</p>
+
+    <br>
+    <table>
+        <thead>
+            <tr>
+                <th style="text-align:left; padding-right:100px;">Emp Code |</th>
+                <th style="text-align:left; padding-right:100px;">Employee Name | </th>
+                <th style="text-align:left; paddin-left: 10px;">Department | </th>
+                <th style="text-align:left; paddin-left: 10px;">Pending Leaves Count | </th>
+                <th style="text-align:left; paddin-left: 10px;">Pending Anamolies Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in recds %}
+            <tr>
+                <td style="text-align:left; padding-right:100px;">{{item.rp_emp_id}}</td>
+                <td style="text-align:left; padding-right:100px;">{{item.rp_name}}</td>
+                <td style="text-align:left; padding-right:100px;">{{item.department}}</td>
+                <td style="text-align:left; padding-right:100px;">{{item.leaves_count}}</td>
+                <td style="text-align:left; padding-right:100px;">{{item.anamoly_count}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <p><b>Thanks &amp; Regards,</b></p>
+    <p class="textItalic font120 fontWeightBolder">{{company_name}}.</p>
+</body>
+</html>

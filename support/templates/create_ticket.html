@@ -1,0 +1,190 @@
+{% extends 'payroll/base/base.html' %}
+{% load static %}
+
+{% block main_content%}
+    
+    <div class="container-fluid">
+           <div class="block-header">
+             <div class="pb-3">
+                 <div class="header">
+                     <ul class="nav nav-tabs2 text-center">
+                         <li class="nav-item px-0" style="width: 20%; margin-left: 20px; margin-right: 20px;"><span class="my_circleBtn">1</span><a class="nav-link  pt-3 pb-3  pl-4 {% if activeFor == 'listing_tickets' %}{{'active show'}}{% else %}{{''}}{% endif %}" data-toggle="tab" id="ESI_listtypes" href="#l_ESITypes" onclick="location.href='/qxbox{% url 'support:listing_ticketapi' %}'">Ticket Listing</a></li>
+                         <li class="nav-item px-0" style="width: 20%; margin-left: 20px; margin-right: 20px;"><span class="my_circleBtn">2</span><a class="nav-link pt-3 pb-3 pl-4 {% if activeFor == 'create_ticket' %}{{'active show'}}{% else %}{{''}}{% endif %}" data-toggle="tab" id="EPF_listtypes" href="#l_EPF_Types" onclick="location.href='/qxbox{% url 'support:ticketapi_create' %}'">Create Ticket</a></li>
+                         {% comment %} <li class="nav-item px-0" style="width: 20%; margin-left: 20px; margin-right: 20px;"><span class="my_circleBtn">3</span><a class="nav-link pt-3 pb-3  pl-4 {% if activeFor == 'customer-service' %}{{'active show'}}{% else %}{{''}}{% endif %}" data-toggle="tab" id="Profiessional_Tax_listtypes" href="#l_Pro_Tax_Types" onclick="location.href='/qxbox{% url 'support:tickets' %}'">Predefined Replies</a></li> {% endcomment %}
+                         {% comment %} <li class="nav-item px-0" style="width: 20%; margin-left: 20px; margin-right: 20px;"><span class="my_circleBtn">4</span><a class="nav-link pt-3 pb-3  pl-4 {% if activeFor == 'customer-journey' %}{{'active show'}}{% else %}{{''}}{% endif %} " data-toggle="tab" id="Profiessional_Tax_listtypes" href="#l_Pro_Tax_Types" onclick="location.href='/qxbox{% url 'support:tickets' %}'">Email Bucket</a></li> {% endcomment %}
+                     </ul>
+                     <!-- <li class="nav-item"><a class="nav-link active show" data-toggle="tab" id="departlisttypes" href="#l_departtypes">Departments</a></li> -->
+                 </div>
+             </div>
+ 
+              <div class="row clearfix">
+                 <div class="col-md-6 col-sm-12">
+                        <h1 class="ico_head"><i class="fa fa-handshake-o"></i>Create Support</h1>
+                        {% comment %} {{data}} {% endcomment %}
+                 </div>
+              </div>
+           </div>
+       {% comment %} <!-----------------Form Start------------------------------> {% endcomment %}
+ 
+         <div class="row clearfix"> 
+             <div class="col-lg-12">   
+                 <div class="card">
+                     <div class="body shadow-lg p-5">
+                         <form id="basic-form" method="post" class="add-form" enctype="multipart/form-data" novalidate="">
+ 
+                             {% comment %} Row Start Uday{% endcomment %}
+                            <div class="row">  
+ 
+                                <div class="col-md-6">
+                                    <div class="form-group"> 
+                                        <label for="o-name" class="font-weight-bold font-16">Select Category<span class="asterisk"> * </span></label>   
+                                        <select id="category" name="category" class="form-control errorbox" required>
+                                            <option value="">Select Category</option>
+                                            <option value="billingissue" >Billing Issue</option>
+                                            <option value="accessissue" >Access Issue</option>
+                                            <option value="payrollissue" >Payroll Issue</option>
+                                        </select>
+                                    </div>
+                                </div>
+ 
+                                <div class="col-md-6">
+                                    <div class="form-group"> 
+                                        <label for="o-name" class="font-weight-bold font-16">Title<span class="asterisk"> * </span></label>
+                                        <input id="title" name="title" type="text" class="form-control" required maxlength="100">
+                                    </div>
+                                </div>
+ 
+                             </div>
+                             
+                             <div class="row">
+ 
+                                <div class="col-md-6">
+                                    <div class="form-group"> 
+                                        <label for="o-name" class="font-weight-bold font-16">Ticket Description<span class="asterisk"> * </span></label>
+                                        <textarea id="description" name="description" type="text" required class="form-control"></textarea>
+                                    </div>
+                                </div>
+ 
+                             </div>
+ 
+                             <div class="row text-right">
+                                 <div class="col-md-12">
+                                     <input type="hidden" name="con_mode" id="con_mode" value="add">
+                                     <button class="btn btn-primary addBtn pull-right" id="button1" type="submit">Save</button>
+                                 </div>
+                             </div>
+                             
+                             <div class="col-md-7">
+                                 
+                             </div>
+                             
+                         </form>
+                     </div>
+                 </div>
+             </div>
+         </div>
+           {% comment %} <!-----------------Form Ends------------------------------> {% endcomment %}
+     </div>
+ </div>
+
+{% endblock main_content %}
+
+{% block js %}
+
+<script type="text/javascript">
+                
+    $(document).ready(function(){
+
+        $("#basic-form").on('submit', function (e) {
+            e.preventDefault();
+
+            var formData = new FormData(this);
+            {% comment %} formData.append("companyName",$('#org_name').val()) {% endcomment %}
+            {% comment %} alert("Hello Uday"); {% endcomment %}
+
+            if($('#category').val() == ""){
+                swal({   
+                    title:"Required",
+                    text: "Category field should not be blank",  
+                    type: "info"
+                });
+                return false;
+            }else if($('#title').val() == ""){
+                swal({   
+                    title:"Required",
+                    text: "Title field should not be blank",  
+                    type: "info"
+                });
+                return false;
+            }else if($('#description').val() == ""){
+                swal({   
+                    title:"Required",
+                    text: "Description field should not be blank",  
+                    type: "info"
+                });
+                return false;
+            }else{
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'support:ticketapi_create' %}",
+                    headers: {
+                        "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                    },
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    success: function (result) {
+                        {% comment %} alert("Hello Uday 2"); {% endcomment %}
+                        console.log(result)
+
+                        if((result.response).trim() == 'success' && result.msg == ''){
+                            swal({   
+                                title:"Success",
+                                text: "Data has been saved successfully",  
+                                type: "success",
+                                confirmButtonColor: "#007bff",
+                                confirmButtonText: "Ok",
+                                closeOnConfirm: true  
+                            },function() { 
+                                location.reload();
+                            });
+                        }else if(result.msg != ''){
+                            swal({ 
+                                title: (result.title).trim(),
+                                text: (result.msg).trim(), 
+                                type: (result.type).trim(),
+                                confirmButtonColor: "#007bff",
+                                confirmButtonText: "Ok",
+                                closeOnConfirm: true  
+                            },function() { 
+                                location.reload();
+                            });
+                        }else{
+                            swal({   
+                                title:"Error",
+                                text: "Something went wrong! Please try after some time.",  
+                                type: "error",
+                                confirmButtonColor: "#007bff",
+                                confirmButtonText: "Ok",
+                                closeOnConfirm: true  
+                            },function() { 
+                                location.reload();
+                            });
+                        }
+                    },
+                    error:function(xhr, status, e) {
+                        alert('Error',e);
+                    }
+                });
+
+            }
+
+        });
+
+    });
+
+</script>
+
+{% endblock js %}

@@ -1,0 +1,83 @@
+{% extends 'payroll/base/base.html' %}
+{% load static %}
+
+{% block main_content%}
+    
+    <div class="container-fluid">
+           <div class="block-header">
+             <div class="pb-3">
+                 <div class="header">
+                     <ul class="nav nav-tabs2 text-center">
+                         <li class="nav-item px-0" style="width: 20%; margin-left: 20px; margin-right: 20px;"><span class="my_circleBtn">1</span><a class="nav-link  pt-3 pb-3  pl-4 {% if activeFor == 'listing_billing' %}{{'active show'}}{% else %}{{''}}{% endif %}" data-toggle="tab" id="ESI_listtypes" href="#l_ESITypes" onclick="location.href='/qxbox{% url 'billing:view' %}'">Billing Listing</a></li>
+                     </ul>
+                 </div>
+             </div>
+ 
+             <div class="row clearfix pt-4">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="row pb-5 row">
+                            <div class="col-md-4 col-sm-12">
+                                <h1 class="ico_head" style="
+                                font-size: large;
+                            "><i class="icon-grid"></i> Billing Listing </h1>
+                            </div>
+                            {% comment %} <div class="col-md-8 col-sm-12 text-right">
+                                <button type="button" class="btn addBtn mr-2" data-toggle="modal" data-target="#addDepartmentModal">Add Department</button>                        
+                                <a href="javascript:void(0);" class="full-screen"><i class="icon-frame"></i></a>
+                            </div> {% endcomment %}
+                            <div class="col-md-6 col-sm-12 text-right hidden-xs"></div>
+                        </div>
+                     
+                        <div class="body shadow-lg">
+                            <div class="tab-content mt-0">
+                                <div class="tab-pane show active" id="l_departtypes">
+                                    <div class="table-responsive">
+                                        <table class="stripe row-border order-column table zp-table reports-table  india-reports-table js-basic-example" id="testTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>S No.</th> 
+                                                    <th>Transaction ID</th>
+                                                    <th>Payment Done By</th>
+                                                    <th>Amount</th>
+                                                    <th>Plan Name</th>
+                                                    <th>Updated By</th>
+                                                    <th>Payment Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                {% if data %}
+                                                    {% for listing in data %}
+
+                                                        <tr>
+                                                            <td>{{ forloop.counter }}</td>                                                    
+                                                            <td>{{ listing.transaction_id }}</td>                                                    
+                                                            <td>{{ listing.billing__payment_done_by__username }}</td>                                                    
+                                                            <td>{{ listing.billing__amount }}</td>                                                    
+                                                            <td>{{ listing.plan_name | title }}</td>  
+                                                            <td>{{ listing.billing__payment_updated_by.name | title }}</td>                                                                                                     
+                                                            <td>{{ listing.billing__payment_status | title }}</td>                                                                                                                                                         
+                                                        </tr>
+
+                                                    {% endfor %} 
+                                                {% endif %} 
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                              
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+{% endblock main_content %}
+
+{% block js %}
+
+
+
+{% endblock js %}

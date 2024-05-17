@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Leave Application</title>
+</head>
+
+<body>
+    <p>Hello {{emp_name}} [{{emp_code}}],<br><br>
+
+    Your applied leave has been {{status}} by {{manager_name}}. Connect to your HRMS application to find more details.<br><br>
+    
+    Please refer the link for more information {{domain}}userLeaveLogsTable<br><br>
+
+    <b>Leave Type</b>    : {{leave_rule_name}}<br>
+    <b>Start Date</b>    : {{start_date}} <br>
+    <b>End Date</b>      : {{end_date}} <br>
+    <b>No Of Days</b>    : {{no_of_leaves_applied}}<br><br>
+    {% comment %} <b>Reason</b>           : {{reason}}<br><br> {% endcomment %}
+
+    Thanks & Regards<br>
+    {{company_name}}</p>
+</body>
+
+</html>

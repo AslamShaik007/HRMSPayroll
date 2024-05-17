@@ -1,0 +1,497 @@
+{% extends 'payroll/base/base.html' %}
+
+{% block css %}
+<style>
+    .avatar-upload {
+        position: relative;
+        max-width: 205px;
+        /* margin: 50px auto; */
+    }
+    .avatar-upload .avatar-edit {
+         /* position: absolute; */
+        /* right: 12px; */
+        /* z-index: 1; */
+        /* top: 10px; */
+    }
+    .avatar-upload .avatar-edit input {
+        display: none;
+    }
+    .avatar-upload .avatar-edit .elabe {
+        display: inline-block;
+        width: 34px;
+        height: 34px;
+        margin-bottom: 0;
+        border-radius: 100%;
+        background: #FFFFFF;
+        border: 1px solid transparent;
+        box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
+        cursor: pointer;
+        font-weight: normal;
+        transition: all 0.2s ease-in-out;
+    }
+    .avatar-upload .avatar-edit .elabe:hover {
+        background: #f1f1f1;
+        border-color: #d6d6d6;
+    }
+    .avatar-upload .avatar-edit .elabe:after {
+        content: "\f040";
+        font-family: 'FontAwesome';
+        color: #757575;
+        position: absolute;
+        /* top: 10px;
+        left: 0;
+        right: 0;
+        text-align: center; */
+        margin: auto;
+    }
+    .avatar-upload .avatar-preview {
+        width: 120px;
+        height: 120px;
+        position: relative;
+        border: 6px solid #F8F8F8;
+        box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+    }
+    .avatar-upload .avatar-preview > div {
+        width: 100%;
+        height: 100%;
+        max-width:190px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+    .avatar-edit .parsley-errors-list{position: relative!important;}
+    .form-group label {
+
+        font-size: 16px;
+    }
+
+    .form-group {
+        margin-bottom: 0.7rem;
+    }
+</style>
+{% endblock %}
+
+{% block main_content %}
+
+<div class="container-fluid">
+
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+                <h1 class="ico_head"><i class="icon-grid"></i> Organization Setup</h1>
+            </div>
+        </div>
+    </div>
+    <form id="basic-form" class="add-form" novalidate="" enctype="multipart/form-data" class="form-horizontal" method="POST" name="FmCategory">
+        <div class="row clearfix">
+            <div class="col-lg-10 mx-auto">
+                <div class="card mb-1">
+                    <article class="media body mb-0  align-items-center shadow border-0">
+                        <div class="row w-100">
+          
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="dpmaster ">
+                                    <div class="avatar-upload">
+                                        <label for="o-name">Upload Watermark Image  </label>
+                                        <div class="avatar-edit">
+                                            <label for="payslip_watermark" class="elabe"></label>
+                                            <input type='file' id="payslip_watermark" name="payslip_watermark" accept=".png, .jpg, .jpeg" />
+                                        </div>
+                                        <div class="avatar-preview">
+                                            <div id="imagePreviewWatermark" style="background-image: url();">
+                                               
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>   
+                            
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="dpmaster ">
+                                    <div class="avatar-upload">
+                                        <label for="o-name">Upload Digital Signature Image  </label>
+                                        <div class="avatar-edit">
+                                            <label for="payslip_signature" class="elabe"></label>
+                                            <input type='file' id="payslip_signature" name="payslip_signature" accept=".png, .jpg, .jpeg" />
+                                        </div>
+                                        <div class="avatar-preview">
+                                            <div id="imagePreviewSignature" style="background-image: url();">
+                                               
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div> 
+                            
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                                <div class="dpmaster ">
+                                    <div class="avatar-upload">
+                                        <label for="o-name">Select Watermark Status * </label>
+                                        <div class="avatar-edit">
+                                            <label for="watermark_status" class="elabe1"></label>
+                                            <select id="watermark_status" name="watermark_status" required="" class="form-control" fdprocessedid="jqpoqp">
+                                                <option value="">Select Watermark Status</option>                                 
+                                                <option value="1">Show</option>                                 
+                                                <option value="2">Hide</option>                                 
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                                <div class="dpmaster ">
+                                    <div class="avatar-upload">
+                                        <label for="o-name">Select Signature Status * </label>
+                                        <div class="avatar-edit">
+                                            <label for="signature_status" class="elabe1"></label>
+                                            <select id="signature_status" name="signature_status" required="" class="form-control" fdprocessedid="jqpoqp">
+                                                <option value="">Select Signature Status</option>                                 
+                                                <option value="1">Show</option>                                 
+                                                <option value="2">Hide</option>                                 
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 mt-2">
+                                    <div class="dpmaster ">
+                                        <div class="avatar-upload">
+                                            <label for="o-name">Select Decimals</label>
+                                            <div class="avatar-edit">
+                                                <label for="decimal_status" class="elabe1"></label>
+                                                <select id="decimal_status" name="decimal_status" required="" class="form-control" fdprocessedid="jqpoqp">
+                                                    <option value="">Select Decimals</option>                                 
+                                                    <option value="true">Show</option>                                 
+                                                    <option value="false">Hide</option>                                 
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 mt-2">
+                                    <div class="dpmaster ">
+                                        <div class="avatar-upload">
+                                            <label for="o-name">Select Roundoffs</label>
+                                            <div class="avatar-edit">
+                                                <label for="roundoff_status" class="elabe1"></label>
+                                                <select id="roundoff_status" name="roundoff_status" required="" class="form-control" fdprocessedid="jqpoqp">
+                                                    <option value="">Select roundoffs</option>                                 
+                                                    <option value="true">Show</option>                                 
+                                                    <option value="false">Hide</option>                                 
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 mt-2">
+                                    
+                                       
+                                            <label for="o-name">HR Email ID</label>
+                                    
+                                                <input type="text" class="form-control" id="hr_email_id" required/>
+                                    
+                                    
+                                </div>
+
+                                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 mt-2">
+                                  
+                                            <label for="o-name">HR Phone No.</label>
+                                  
+                                                <input type="text" class="form-control" id="hr_phone_no" required/>
+                                  
+                                    
+                                </div>
+                            
+
+                            <div class="col-12">
+                                <div class="my-4"></div>
+                                <div class="form-group text-right">
+                                    <a href="/qxbox{% url 'organization_view' %}" class="addBtn btn btn-primary mr-2"><i class="fa fa-arrow-left mr-1" aria-hidden="true"></i> Back</a>
+                                    <button type="submit" class="btn btn-primary addBtn"><i class="fa fa-floppy-o mr-1" aria-hidden="true"></i> Update</button>
+                                </div>
+                            </div>
+                        </div>                    
+
+                    </article>
+                                            
+                </div>
+            </div>
+        </div>    
+
+    </form>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+
+    function load_close(){ window.location.replace("./payroll/organizations"); }
+
+    function JSalert(org_id){
+        swal({   
+            title: "Are you sure you want to delete this!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#007bff",
+            confirmButtonText: "Delete",
+            cancelButtonText: "Cancel",
+            closeOnConfirm: false,
+            closeOnCancel: true 
+        },
+        function(isConfirm){
+
+            if (isConfirm) {
+                swal("Deleted Successfully!", " ", "success");
+                window.location.replace("./payroll/organizations/is_deleted/"+ org_id);
+            } 
+        });
+    }
+   
+ 
+   $(document).ready(function(){
+        $('#basic-form').submit(function(e){
+         e.preventDefault();
+
+         var formData = new FormData()
+   
+         formData.append("watermarkStatus",$('#watermark_status').val())
+         formData.append("signatureStatus",$('#signature_status').val())
+
+         formData.append("payslipHrEmail",$('#hr_email_id').val())
+         formData.append("payslipHrPhone",$('#hr_phone_no').val())
+                  
+         if ($('#org_logo_path').get(0)?.files[0]){
+            formData.append("companyImage",$('#org_logo_path').get(0).files[0])
+         }
+         
+         if ($('#payslip_watermark').get(0)?.files[0]){
+            // console.log($('#payslip_watermark').get(0)?.files[0])
+            formData.append("payslipWatermark",$('#payslip_watermark').get(0).files[0])
+         }
+         if ($('#payslip_signature').get(0)?.files[0]){
+            formData.append("payslipSignature",$('#payslip_signature').get(0).files[0])
+         }
+         
+         $.ajax({
+                 type: "PATCH",
+                 url: "/qxbox/{% url 'update_company_details' id=request.session.cmp_id %}",
+                 data:formData,
+                 contentType: false,
+                    processData: false,
+                //  dataType: 'json',
+                 headers: {
+                     "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                 },                  
+                 success: function (response) {
+
+                         swal({   title:"updated",
+                            type: "success",
+                            confirmButtonColor: "#007bff",
+                            confirmButtonText: "Ok",
+                            closeOnConfirm: true  },
+                            function(isConfirm){
+
+                             window.location.replace("/qxbox/payroll/organization/");
+                            });
+
+                            window.setTimeout(function () {
+                             window.location.replace("/qxbox/payroll/organization/");
+                              }, 500);
+
+                 },
+             error:function(xhr, status, e) {
+                console.log(xhr);
+                
+                swal({   
+                    title: "Error - "+xhr.responseJSON['companyName'][0],
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+             }
+             });
+     })
+         
+
+         $.ajax({
+             type: 'GET',
+             url: "/qxbox/{% url 'update_company_details' id=request.session.cmp_id %}",
+             dataType: 'json',
+             headers: {
+                 "Authorization": "Bearer "+localStorage.getItem('acc_token')
+             },
+             success: function (data,textStatus) {
+                 
+                 $("#org_name").val(data.companyName)
+
+                 if(data.payslipSignature){
+                    let cimg3 = (data.payslipSignature).replace("media", "qxbox/media");
+                    $("#imagePreviewSignature").html(
+                        `
+                        <img src="`+cimg3+`" style="width: -webkit-fill-available;" />
+                        `
+                    )
+                 }
+
+                 if(data.companyImage){
+                    let cimg1 = (data.companyImage).replace("media", "qxbox/media");
+
+                        $("#imagePreview").html(
+                        `
+                        <img src="`+cimg1+`" style="width: -webkit-fill-available;" />
+                        `
+                    )
+                 }
+
+
+                 if(data.payslipWatermark){
+                    let cimg2 = (data.payslipWatermark).replace("media", "qxbox/media");
+
+
+                            $("#imagePreviewWatermark").html(
+                            `
+                            <img src="`+cimg2+`" style="width: -webkit-fill-available;" />
+                            `
+                        )
+                 }       
+
+                 $("#brandName").val(data.companyName)                
+                 $("#address").val(data.registeredAdressLine1 + data.registeredAdressLine2 + data.registeredCity + data.registeredPincode)
+                 $("location_id").val(data.registeredState)                
+                 $("#address_1").val(data.registeredAdressLine1)
+                 $("#address_2").val(data.registeredAdressLine2)
+                 $("#city_id").val(data.registeredCity)
+                 $("#state_id").val(data.registeredState)
+                 $("#pin_code").val(data.registeredPincode) 
+                 $("#watermark_status").val(data.watermarkStatus) 
+                 $("#signature_status").val(data.signatureStatus) 
+                 $("#hr_email_id").val(data.payslipHrEmail) 
+                 $("#hr_phone_no").val(data.payslipHrPhone) 
+                 $("#decimal_status").val((data.decimals).toString())                                   
+                 $("#roundoff_status").val((data.roundOffs).toString()) 
+                               
+                 // let resp = data[0];
+                 // let epfId = resp['id'];
+                 // $("#epf_number").val(resp['epfNumber'])
+                 // $("#is_pf_contribution_in_ctc").prop("checked", resp['isEmployerContributionInCtc']);
+             },
+             error:function(xhr, status, e) {
+                
+                swal({   
+                    title: "Error"+e,
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+             }
+         })
+ 
+     });
+
+
+
+ $('#address_1').keypress(function (e) {
+     var regex = new RegExp("^[#.0-9a-zA-Z\s,-/ ]+$");
+     var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+     if (regex.test(strigChar)) {
+         return true;
+     }
+     return false;
+   });
+
+ $('#address_2').keypress(function (e) {
+     var regex = new RegExp("^[#.0-9a-zA-Z\s,-/ ]+$");
+     var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+     if (regex.test(strigChar)) {
+         return true;
+     }
+     return false
+   });
+
+
+ $('#org_name').keypress(function (e) {
+     var regex = new RegExp("^[a-zA-Z ]+$");
+     var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+     if (regex.test(strigChar)) {
+         return true;
+     }
+     return false
+   });
+ 
+
+ function resetData() {
+     document.getElementById('city_id').value = '';
+     document.getElementById('state_id').value = '';
+   }
+
+ </script>
+
+
+ <script>
+ function readURL(input) {
+     if (input.files && input.files[0]) {
+         var reader = new FileReader();
+         reader.onload = function(e) {
+             $('#imagePreview').css('background-image', 'url('+e.target.result +')');
+             $('#imagePreview').hide();
+             $('#imagePreview').fadeIn(650);
+         }
+         reader.readAsDataURL(input.files[0]);
+     }
+ }
+//  $("#org_logo_path").change(function() {
+//      readURL(this);
+//  });
+ </script>
+
+ <script type="text/javascript">
+
+    $(document).ready(function() {
+
+        $("#pin_code").blur(function() {
+            var per_pincode = $("#pin_code").val();
+            
+            $.getJSON("https://api.postalpincode.in/pincode/" + per_pincode, function (data) {
+                response = data[0]
+                if (response['Status'] != 'Error') {                    
+                    
+                    $("#state_id").val(response['PostOffice'][0].State);
+                    $("#city_id").val(response['PostOffice'][0].District);
+                    // $("#state_id").val(getdata.state);
+                    // $('#address_type_id').prop('checked', false);
+                } else {                    
+                    swal("Please enter the correct pincode");
+
+                }
+            })           
+        });
+
+    });
+
+    function resetPincode() {
+        document.getElementById('city_id').value = '';
+        document.getElementById('state_id').value = '';
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,229 @@
+{% extends 'payroll/base/base.html' %}
+
+{% block main_content %}
+
+<div class="container-fluid">
+
+
+   {% include 'payroll/base/payroll-block-header.html' with t4=True %}
+
+
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-sm-6">
+                <h1 class="ico_head"><i class="fa fa-list" aria-hidden="true"></i> Salary Components</h1>
+            </div>
+            <!-- <div class="col-sm-6 text-right">
+                <a href="/qxbox{% url 'salary_component_add' %}" class="btn btn-sm btn-primary addBtn text-uppercase"><i class="fa fa-edit"></i> Add Component</a>
+            </div> -->
+        </div>
+    </div>
+    <!-----------------Form Start------------------------------>
+    <!-- <style>
+        #salaryComponentTableView thead tr th {
+            text-transform: capitalize !important;
+            border: 2px solid red;
+        }
+    </style> -->
+    <div class="row clearfix">
+        <div class="col-lg-10 mx-auto">
+            <div class="card">
+                <div class="body shadow border-0 pb-0">
+                    <div class="row mb-3">
+                        <div class="col-sm-12 text-right">
+                            <a href="/qxbox{% url 'salary_component_add' %}" class="btn btn-sm btn-primary addBtn text-uppercase"><i class="fa fa-plus mr-1" aria-hidden="true"></i> Add Component</a>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="card">
+                                <div class="table-responsive">
+                                    <table  class="table table-hover" id="salaryComponentTableView">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Earning Type</th>
+                                                <th>Calculation type</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="salTable">
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-----------------Form Ends------------------------------>
+
+
+
+
+
+
+
+
+</div>
+{% endblock %}
+
+{% block js %}
+
+
+<script>
+    $(document).on( "ajaxSend", function() {
+    //   $("#AjaxCallOverlay").fadeIn(300);
+    });
+    let myResponseStatus;
+  </script>
+
+
+<script>
+    
+    function setSalTable(comp_name,ear_type,value,active,insid){
+        $("#salTable").append(
+                            `
+                            <tr>
+                                <td><div class="font-15">`+comp_name+`</div></td>
+                                <td>`+ear_type+`</td>
+                                <td >`+value+`</td>
+                                <td><span class="badge badge-success">`+active+`</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-default" ><a href="/qxbox/payroll/salary-component-edit/`+insid+`"> <i class="fa fa-edit text-dark"></i></button></span>
+                                    <button type="button" class="btn btn-sm btn-default" ><a href="/qxbox/payroll/salary-component-view/`+insid+`"> <i class="fa fa-eye text-dark"></i></button></span>
+                                </td>
+                            </tr>
+                            `
+                        )
+    }
+
+    function setSalTable2(comp_name,ear_type,value,active,insid){
+        $("#salTable").append(
+                            `
+                            <tr>
+                                <td><div class="font-15">`+comp_name+`</div></td>
+                                <td>`+ear_type+`</td>
+                                <td >`+value+`</td>
+                                <td><span class="badge badge-success">`+active+`</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-default" ><a href="/qxbox/payroll/salary-component-view/`+insid+`"> <i class="fa fa-eye"></i></button></span>
+                                </td>
+                            </tr>
+                            `
+                        )
+    }
+
+    $(document).ready(function(){        
+
+        $.ajax({
+            type: 'GET',
+            url: "/qxbox/{% url 'get_pay_salary_components' company_id=request.session.cmp_id %}",
+            dataType: 'json',
+            headers: {
+                "Authorization": "Bearer "+localStorage.getItem('acc_token')
+            },
+            success: function (data,textStatus) {
+
+                if(data){
+                    myResponseStatus = true;
+                }else{
+                    myResponseStatus = false;
+                }
+
+
+                // {
+                //     "id": 9,
+                //     "company": 29,
+                //     "earningType": "Earning",
+                //     "componentName": "Basic",
+                //     "nameOnPayslip": "Basic",
+                //     "calculationType": 2,
+                //     "flatAmount": null,
+                //     "pctOfBasic": 50.0,
+                //     "thresholdBaseAmount": null,
+                //     "isActive": true,
+                //     "isPartOfSalaryStructure": false,
+                //     "isTaxable": false,
+                //     "isProrated": false,
+                //     "isPartOfFlexiblePlan": false,
+                //     "isPartOfEpf": true,
+                //     "isPartOfEsi": false,
+                //     "isVisibleOnPayslip": false
+                //      "isDefault":false
+                // },
+                
+                var active = ""                
+                $("#salTable").html("")
+                for(var i=0;i<data.length;i++){
+                    if(data[i]['isActive']){
+                        active = "Active"
+                    }else{
+                        active = "In-Active"
+                    }                 
+                    // if(data[i]['isDefault']){
+                    //     if(data[i]['calculationType']==2){                      
+                    //         setSalTable2(data[i]['componentName'],data[i]['earningType'],data[i]['pctOfBasic']+"%",active,data[i]['id'])
+                    //     }else if(data[i]['calculationType']==1){
+                    //         setSalTable2(data[i]['componentName'],data[i]['earningType'],"Rs. "+data[i]['flatAmount'],active,data[i]['id'])                       
+                    //     }
+                    //     else{
+                    //         setSalTable2(data[i]['componentName'],data[i]['earningType'],"Rs. "+data[i]['thresholdBaseAmount'],active,data[i]['id'])                       
+                    //     }
+                    // }else{
+                        if(data[i]['calculationType']==2){                      
+                            setSalTable(data[i]['componentName'],data[i]['earningType'],data[i]['pctOfBasic']+"%",active,data[i]['id'])
+                        }else if(data[i]['calculationType']==1){
+                            setSalTable(data[i]['componentName'],data[i]['earningType'],"Rs. "+data[i]['flatAmount'],active,data[i]['id'])                       
+                        }
+                        else{
+                            setSalTable(data[i]['componentName'],data[i]['earningType'],"Rs. "+data[i]['thresholdBaseAmount'],active,data[i]['id'])                       
+                        }
+                    // }                                    
+                }
+            }
+        }).done(function() {
+            
+            if(myResponseStatus == true) {
+                // setTimeout(function(){
+                    $("#AjaxCallOverlay").fadeOut('slow');
+                // },500);
+            } else {
+                console.log("failed msg")
+                setTimeout(function(){
+                    $("#AjaxCallOverlay").fadeOut('slow');
+                },2000);
+            }
+            
+        }).fail(function (xhr, status, e) {           
+            swal({   
+                title: "Error"+e,
+                type: "info",
+                showCancelButton: false,
+                confirmButtonColor: "#007bff",
+                confirmButtonText: "Ok",
+                closeOnConfirm: false,
+                closeOnCancel: true 
+            });
+        });
+    })
+</script>
+
+<script>
+    if(window.location.href.indexOf("/qxbox/payroll/epf-details/")) {
+        $("#payrollCompNavItem").addClass("active")
+    }
+</script>
+
+<!-- <script>
+    $(document).ready(function() {
+        $("#salaryComponentTableView").dataTable({})
+    })
+</script> -->
+{% endblock %}

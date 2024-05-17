@@ -1,0 +1,63 @@
+{% extends 'payroll/base/base.html' %}
+{% load static %}
+
+{% block main_content%}
+    
+    {% for ticket in data  %}
+        {{ticket}} <br> <br>
+    {% endfor %}
+        
+    <br>
+        <div class="container">
+            <hr>
+        
+            <div class="form-group">
+            <label>title</label>
+            <input type="text" name="title" id="title" placeholder="title" size="15" required /><br>
+            </div>
+            <br>
+
+            <div class="form-group">
+            <label for="category">category</label>
+            <select id="category" name="category" class="multiselect multiselect-custom single-selection">
+                <option value="">Select Category</option>
+                <option value="billingissue" >Billing Issue</option>
+                <option value="accessissue" >Access Issue</option>
+                <option value="payrollissue" >Payroll Issue</option>
+            </select>
+            </div>
+            <br>
+        <div class="form-group">
+        <label for="description">Description</label>
+        <textarea class="form-control" name="description" id="description" rows="3"></textarea>
+        </div>
+        <br>
+    
+        <button onclick="submittitle()">Click me</button>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+{%endblock%}
+
+{% block js %}
+<script type="text/javascript">
+            
+function submittitle(){
+    $.ajax({
+        type: "POST",
+        url: "{% url 'support:ticketapi_create' %}",
+        headers: {
+            "Authorization": "Bearer "+localStorage.getItem('acc_token')
+        },
+        data: {"title":document.getElementById('title').value, "category":document.getElementById('category').value , "description": document.getElementById('description').value},
+        success: function (response) {
+            console.log("created", response)
+        },
+        error:function(xhr, status, e) {
+            alert('Error',e);
+        }
+    });
+}
+
+</script>
+
+{%endblock%}

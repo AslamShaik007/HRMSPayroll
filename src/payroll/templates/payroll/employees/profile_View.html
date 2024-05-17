@@ -1,0 +1,717 @@
+
+{% extends 'payroll/base/base.html' %}
+{% load static %}
+
+{% block css %}
+
+    <style>
+        #menuBtn:active {
+            border: 2px solid #30239f;
+        }
+        #menuBtn:visited {
+            border: 2px solid #30239f;
+        }
+
+        #menuBtn:focus {
+            border: 2px solid #30239f;
+            outline: 1px dotted !important;
+        }
+    </style>
+    <style>
+        .profile_label {
+            color: #6c757d !important;
+        }
+        
+        .EmpViewRow p {
+            margin-bottom: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block main_content %}
+    
+            <div class="container-fluid">
+
+                <div class="block-header">
+                    <div class="row clearfix">
+                        <div class="col-md-6 col-sm-12">
+                            <h1>
+                                <i class="icon-user"></i> Employee Profile
+                            </h1>
+                        </div>
+                        <div class="col-md-6 col-sm-12 text-right hidden-xs">
+                            <!--<a href="manage-employee-edit.php" class="btn btn-sm btn-primary" title="">Edit Profile</a>-->
+                        </div>
+                    </div>
+                </div>
+                <div class="row clearfix">
+
+                <div class="col-lg-4 col-md-12">
+                        <div class="card profile-header">
+                            <div class="body text-center shadow-lg d-flex justify-content-start py-3">
+                                <div class="w-50">
+                                    <img src="{% if emp_obj.employee_image %}/qxbox{{emp_obj.employee_image.url}}{% endif %}" class="img-thumbnail" alt="" style="width: 180px; height: 200px;">                                    
+                                </div>
+                                <div class="py-3 w-50">
+                                    <div class="mt-3">
+                                        <h5 class="mb-0"><strong >{{emp_obj.first_name}}</strong></h5>
+                                        <span>{{i.work_details.designation.name}}</span>
+                                    </div>
+                                    <div class="m-t-15">
+                                        <a class="btn btn-primary addBtn" href="/qxbox{% url 'profile_edit_employees' emp_id=emp_obj.id %}">Edit Profile</a>
+                                        <!-- <a href="./message/Messages" class="btn btn-outline-secondary addBtn ml-2 my-2">Message</a> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 col-md-12">
+                        <div class="card">
+                            
+                            <div class="body shadow-lg py-4">
+                                <div class="header">
+                                    <h5>Quick Lookup</h5>
+                                </div>
+                                <div class="row mb-4 EmpViewRow empQuickLookUp"> 
+                                    <div class="col-xl-4 col-6 font-16 font-weight-bold">
+                                        <small class="text-muted profile_label font-16 font-weight-bold">Designation: </small>
+                                        <p>{{i.work_details.designation.name}}</p>
+                                    </div>
+                                    <div class="col-xl-4 col-6 font-16 font-weight-bold">
+                                        <small class="text-muted profile_label font-16 font-weight-bold" id="official_email">Email address: </small>
+                                        <p>{{emp_obj.official_email}}</p>
+                                    </div>
+                                    <div class="col-xl-4 col-6 font-16 font-weight-bold">
+                                        <small class="text-muted profile_label font-16 font-weight-bold">Mobile: </small>
+                                        <p>{{emp_obj.phone}}</p>
+                                    </div>
+                                    <div class="col-xl-12 col-12 font-16 font-weight-bold">
+                                        <small class="text-muted profile_label font-16 font-weight-bold" id="permanent_address_line1">Address: </small>
+                                        <p>
+                                           <span id="permanent_address_line1">
+                                            {{emp_obj.address_details.permanent_address_line1}}, 
+                                           </span> 
+                                           <span id="permanent_address_line2">
+                                            {{emp_obj.address_details.permanent_address_line2}},                                             
+                                           </span> 
+                                           <span id="permanent_state">
+                                            {{emp_obj.address_details.permanent_state}} ,
+                                           </span> 
+                                           <span id="permanent_city">
+                                            {{emp_obj.address_details.permanent_city}} ,
+
+                                           </span> 
+                                           <span id="permanent_pincode">
+                                            {{emp_obj.address_details.permanent_pincode}} 
+
+                                           </span> 
+                                                                                      
+                                        </p>
+                                        <!-- <hr> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="card mb-2">
+                            <div class="row profile_state"></div>
+                        </div>
+                        <div class="card">
+                            <div class="body shadow-lg p-4">
+                                <div class="">
+                                    <ul class="nav nav-tabs2 text-center">
+                                        <li class="nav-item" style="width: 20%; margin-left: 20px; margin-right: 20px;"><a class="nav-link show pt-3 pb-3 active" data-toggle="tab" href="#personal">Personal Details</a></li>
+                                        <li class="nav-item" style="width: 20%; margin-left: 20px; margin-right: 20px;"><a class="nav-link pt-3 pb-3 " data-toggle="tab" href="#emp-details">Employment Details</a></li>                                   
+                                    </ul>
+                                </div>
+
+                                <div class="tab-content pt-3">
+                                    <div class="tab-pane active" id="personal">
+                                        <div class="row mb-3 EmpViewRow">
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Full Name: </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold">
+                                                <p>
+                                                    <span id="first_name">
+                                                        {{emp_obj.first_name}}
+                                                    </span>
+                                                    <span id="middle_name">
+                                                        {{emp_obj.middle_name}}
+                                                    </span>
+                                                    <span id="last_name">
+                                                        {{emp_obj.last_name}}
+                                                    </span>                                                      
+                                                </p>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Date of Birth: </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold" id="date_of_birth">
+                                                <p>{{emp_obj.date_of_birth}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3 EmpViewRow">
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">C.T.C: </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold" id="ctc">
+                                                <p>{{emp_obj.salary_details.ctc}}</p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Gender: </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold" id="gender">
+                                                <p>{{emp_obj.gender}}</p>
+                                            </div>                                        
+                                        </div>
+                                        <div class="row mb-3 EmpViewRow">
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Personal Email : </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold border-0 bg-transparent" id="personal_email">
+                                                <p>{{emp_obj.personal_email}}</p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Photograph: </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold">
+                                                <p>
+                                                    <a href="/qxbox/{% if emp_obj.employee_image %}{{emp_obj.employee_image.url}}{% endif %}" target="_blank">
+                                                        {% if emp_obj.employee_image %}{{emp_obj.employee_image.url}}{% endif %}                                                                                                 
+                                                    </a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3 EmpViewRow">
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Mother's Name: </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold">
+                                                <p>
+                                                    {% for rel in emp_obj.employee_family_details.all %}                                                                                                       
+                                                        {% if rel.relationship.relationship_type == 20 %}
+                                                            {{rel.name}}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Father Name: </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold">
+                                                <p>
+                                                    {% for rel in emp_obj.employee_family_details.all %}                                                    
+                                                        {% if rel.relationship.relationship_type == 10 %}
+                                                         {{rel.name}}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3 EmpViewRow">
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Marital Status: </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold border-0 bg-transparent" id="marital_status">
+                                                <p>{{emp_obj.marital_status}}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3 EmpViewRow">
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Married Date: </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold" id="anniversary_date">
+                                                <p>{{emp_obj.anniversary_date}}</p>
+                                            </div>
+                                            <!-- </div> -->
+                                            <!-- <div class="row"> -->
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Spouse Name: </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold">
+                                                <p>
+                                                    {% for rel in emp_obj.employee_family_details.all %}                                                    
+                                                    {% if rel.relationship.relationship_type == 40 %}
+                                                        {{rel.name}}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3 EmpViewRow">
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Spouse Birthday: </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold">
+                                                <p>
+                                                    {% for rel in emp_obj.employee_family_details.all %}                                                    
+                                                    {% if rel.relationship.relationship_type == 40 %}
+                                                        {{rel.date_of_birth}}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3 EmpViewRow">
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Pan Number: </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold">
+                                                <p>
+                                                    {% for doc in emp_obj.employee_document_ids.all %}
+                                                        {% if doc.document_type|slugify == 'pan-card' %}
+                                                            {% if doc.document_number %}
+                                                                {{doc.document_number}}
+                                                            {% else %}
+                                                                ---NA---
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Aadhar Number: </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold">
+                                                <p>
+                                                    {% for doc in emp_obj.employee_document_ids.all %}
+                                                        {% if doc.document_type|slugify == 'aadhaar-card' %}
+                                                        {% if doc.document_number %}
+                                                            {{doc.document_number}}
+                                                        {% else %}
+                                                            ---NA---
+                                                        {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3 EmpViewRow">
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Pan Card Photograph: </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold">
+                                                <p>
+                                                    
+                                                {% for doc in emp_obj.employee_document_ids.all %}
+                                                    {% if doc.document_type|slugify == 'pan-card' %}
+                                                        {% if doc.select_file %}
+                                                            <a href="/qxbox/{{doc.select_file.url}}" target="_blank">View</a>                                                        
+                                                        {% else %}
+                                                            -- NA --
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %} 
+                                                </p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Aadhar Card Photograph: </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold">
+                                                <p>
+                                                    {% for doc in emp_obj.employee_document_ids.all %}
+                                                        {% if doc.document_type|slugify == 'aadhaar-card' and doc.select_file %}
+                                                        {% if doc.select_file %}
+                                                            <a href="/qxbox/{{doc.select_file.url}}" target="_blank">View</a>                                                        
+                                                        {% else %}
+                                                            -- NA --
+                                                        {% endif %}                                                                
+                                                        
+                                                    {% endif %}
+
+                                                    {% endfor %}
+
+                                                    
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div class="row"></div>
+                                        <div class="row mb-3 EmpViewRow">
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Mobile No.: </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold" id="phone">
+                                                <p>{{emp_obj.phone}}</p>
+                                            </div>
+                                            <!-- </div>
+                                            <div class="row"> -->
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Alternate Mobile No.: </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold border-0 bg-transparent" id="alternate_phone">
+                                                <p>{{emp_obj.alternate_phone}}</p>
+                                            </div>
+                                        </div>
+                                          
+                                        <!-- shadow Starting -->
+                                        <div class="shadow-sm py-1 mb-1 mb-3"></div>
+                                        <!-- shadow End -->
+                                        <!-- <hr style="margin-top:2px; margin-bottom: 2px; border-width: 2px !important;"> -->
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <small class="font-18 font-weight-bold"><b>Bank Details </b> </small>
+                                            </div>
+                                        </div>
+                                        <hr style="margin-top:0px">
+                                        <div class="row mb-3 EmpViewRow">
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Bank Name : </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold" id="bank_name">
+                                                <p>{{emp_obj.salary_details.bank_name}}</p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Bank Account number : </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold" id="account_number">
+                                                <p>{{emp_obj.salary_details.account_number}}</p>
+                                            </div>
+                                            <!-- </div>
+                                            <div class="row"> -->
+                                        </div>
+                                        <div class="row mb-3 EmpViewRow">
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Branch : </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold" id="branch_name">
+                                                <p>{{emp_obj.salary_details.branch_name}}</p>
+                                            </div>
+                                            
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">IFSC Code : </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold" id="ifsc_code">
+                                                <p>{{emp_obj.salary_details.ifsc_code}}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3 EmpViewRow">
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">PF Account Number : </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold" id="pf_num">
+                                                <p>{{emp_obj.emp_compliance_detail.pf_num}}</p>
+                                            </div>
+                                            <!-- </div>
+                                            <div class="row"> -->
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">UAN Number : </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold" id="uan_num">
+                                                <p>{{emp_obj.emp_compliance_detail.uan_num}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3 EmpViewRow">
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">ESI Number : </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold" id="esi_num">
+                                                <p>{{emp_obj.emp_compliance_detail.esi_num}}</p>
+                                            </div>
+                                            <!-- </div>
+                                            <div class="row"> -->
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Nominee Name : </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold" id="nominee_name">
+                                                <p>{{emp_obj.emp_compliance_detail.nominee_name}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3 EmpViewRow">
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Nominee Relationship : </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold" id="nominee_rel">
+                                                <p>{{emp_obj.emp_compliance_detail.nominee_rel}}</p>
+                                            </div>
+                                            <!-- </div>
+                                            <div class="row"> -->
+                                            <div class="col-md-3">
+                                                <small class="text-muted profile_label font-16 font-weight-bold">Nominee Date of Birth : </small>
+                                            </div>
+                                            <div class="col-md-3 font-16 font-weight-bold" id="nominee_dob">
+                                                <p>{{emp_obj.emp_compliance_detail.nominee_dob}}</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- shadow Starting -->
+                                        <div class="shadow-sm py-1 mb-1 mb-3"></div>
+                                        <!-- shadow End -->
+
+                                        <div class="row ">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <small class="font-18 font-weight-bold" ><b>Permanent Address </b> </small>
+                                                    </div>
+                                                </div>
+                                                <hr style="margin-top:0px">
+                                                <div class="row mb-3 EmpViewRow">
+                                                    <div class="col-md-6">
+                                                        <small class="text-muted profile_label font-16 font-weight-bold">Address 1 : </small>
+                                                    </div>
+                                                    <div class="col-md-6 font-16 font-weight-bold" id="permanent_address_line1">
+                                                        <p>{{emp_obj.address_details.permanent_address_line1}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3 EmpViewRow">
+                                                    <div class="col-md-6">
+                                                        <small class="text-muted profile_label font-16 font-weight-bold">Address 2 : </small>
+                                                    </div>
+                                                    <div class="col-md-6 font-16 font-weight-bold" id="permanent_address_line2">
+                                                        <p>{{emp_obj.address_details.permanent_address_line2}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3 EmpViewRow">
+                                                    <div class="col-md-6">
+                                                        <small class="text-muted profile_label font-16 font-weight-bold">State: </small>
+                                                    </div>
+                                                    <div class="col-md-6 font-16 font-weight-bold" id="permanent_state">
+                                                        <p>{{emp_obj.address_details.permanent_state}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3 EmpViewRow">
+                                                    <div class="col-md-6">
+                                                        <small class="text-muted profile_label font-16 font-weight-bold">City : </small>
+                                                    </div>
+                                                    <div class="col-md-6 font-16 font-weight-bold" id="permanent_city">
+                                                        <p>{{emp_obj.address_details.permanent_city}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3 EmpViewRow">
+                                                    <div class="col-md-6">
+                                                        <small class="text-muted profile_label font-16 font-weight-bold">Pincode : </small>
+                                                    </div>
+                                                    <div class="col-md-6 font-16 font-weight-bold" id="permanent_pincode">
+                                                        <p>{{emp_obj.address_details.permanent_pincode}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row mb-3 EmpViewRow">
+                                                    <div class="col-md-12">
+                                                        <small class="font-18 font-weight-bold"><b>Current Address </b> </small>
+                                                    </div>
+                                                </div>
+                                                <hr style="margin-top:0px">
+
+                                                <div class="row mb-3 EmpViewRow">
+                                                    <div class="col-md-6">
+                                                        <small class="text-muted profile_label font-16 font-weight-bold">Address 1 : </small>
+                                                    </div>
+                                                    <div class="col-md-6 font-16 font-weight-bold" id="current_address_line1">
+                                                        <p>
+                                                            {{emp_obj.address_details.current_address_line1}}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3 EmpViewRow">
+                                                    <div class="col-md-6">
+                                                        <small class="text-muted profile_label font-16 font-weight-bold">Address 2 : </small>
+                                                    </div>
+                                                    <div class="col-md-6 font-16 font-weight-bold" id="current_address_line2">
+                                                        <p>
+                                                            {{emp_obj.address_details.current_address_line2}}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3 EmpViewRow">
+                                                    <div class="col-md-6">
+                                                        <small class="text-muted profile_label font-16 font-weight-bold">State: </small>
+                                                    </div>
+                                                    <div class="col-md-6 font-16 font-weight-bold" id="current_state">
+                                                        <p>
+                                                            {{emp_obj.address_details.current_state}}                                                                
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3 EmpViewRow">
+                                                    <div class="col-md-6">
+                                                        <small class="text-muted profile_label font-16 font-weight-bold">City : </small>
+                                                    </div>
+                                                    <div class="col-md-6 font-16 font-weight-bold" id="current_city">
+                                                        <p>
+                                                            {{emp_obj.address_details.current_city}}                                                                
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3 EmpViewRow">
+                                                    <div class="col-md-6">
+                                                        <small class="text-muted profile_label font-16 font-weight-bold">Pincode : </small>
+                                                    </div>
+                                                    <div class="col-md-6 font-16 font-weight-bold" id="current_pincode">
+                                                        <p>
+                                                            {{emp_obj.address_details.current_pincode}}                                                                
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Current Address -->
+                                        <!-- Current Address -->
+                                    </div>
+
+                                        <div class="tab-pane" id="emp-details">
+                                            <div class="row mb-3 EmpViewRow">
+                                                <div class="col-md-3">
+                                                    <small class="text-muted profile_label font-16 font-weight-bold">Employee Code: </small>
+                                                </div>
+                                                <div class="col-md-3 font-16 font-weight-bold" id="employee_number">
+                                                    <p>{{emp_obj.work_details.employee_number}}</p>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3 EmpViewRow">
+                                                <div class="col-md-3">
+                                                    <small class="text-muted profile_label font-16 font-weight-bold">Company Name: </small>
+                                                </div>
+                                                <div class="col-md-3 font-16 font-weight-bold" id="company_name">
+                                                    <p>{{emp_obj.company.company_name}}</p>
+                                                </div>
+                                            </div>
+                                           
+
+                                            <div class="row mb-3 EmpViewRow">
+                                                <div class="col-md-3">
+                                                    <small class="text-muted profile_label font-16 font-weight-bold">Department: </small>
+                                                </div>
+                                                <div class="col-md-3 font-16 font-weight-bold">
+                                                    <p>{{emp_obj.work_details.department.name}}</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3 EmpViewRow">
+                                                <div class="col-md-3">
+                                                    <small class="text-muted profile_label font-16 font-weight-bold">Designation: </small>
+                                                </div>
+                                                <div class="col-md-3 font-16 font-weight-bold">
+                                                    <p>{{emp_obj.work_details.designation.name}}</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3 EmpViewRow">
+                                                <div class="col-md-3">
+                                                    <small class="text-muted profile_label font-16 font-weight-bold">Reporting Manager: </small>
+                                                </div>
+                                                <div class="col-md-3 font-16 font-weight-bold">
+
+                                                    <p></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3 EmpViewRow">
+                                                <div class="col-md-3">
+                                                    <small class="text-muted profile_label font-16 font-weight-bold">Location: </small>
+                                                </div>
+                                                <div class="col-md-3 font-16 font-weight-bold">
+                                                    <p>---------------</p>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3 EmpViewRow">
+                                                <div class="col-md-3">
+                                                    <small class="text-muted profile_label font-16 font-weight-bold">Branch: </small>
+                                                </div>
+                                                <div class="col-md-3 font-16 font-weight-bold">
+                                                    <p>---------------</p>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3 EmpViewRow">
+                                                <div class="col-md-3">
+                                                    <small class="text-muted profile_label font-16 font-weight-bold">Shift Time: </small>
+                                                </div>
+                                                <div class="col-md-3 font-16 font-weight-bold">
+                                                    <p>---------------</p>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3 EmpViewRow">
+                                                <div class="col-md-3">
+                                                    <small class="text-muted profile_label font-16 font-weight-bold">Official Email : </small>
+                                                </div>
+                                                <div class="col-md-3 font-16 font-weight-bold" id="official_email">
+                                                    <p>{{emp_obj.official_email}}</p>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3 EmpViewRow">
+                                                <div class="col-md-3">
+                                                    <small class="text-muted profile_label font-16 font-weight-bold">Date of Joining: </small>
+                                                </div>
+                                                <div class="col-md-3 font-16 font-weight-bold border-0 bg-transparent" id="date_of_join">
+                                                    <p>{{emp_obj.date_of_join}}</p>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3 EmpViewRow">
+                                                <div class="col-md-3">
+                                                    <small class="text-muted profile_label font-16 font-weight-bold">Employee Status: </small>
+                                                </div>
+                                                <div class="col-md-3 font-16 font-weight-bold" id="is_active">
+                                                    <p>{{ emp_obj.work_details.employee_status }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3 EmpViewRow">
+                                                <div class="col-md-3">
+                                                    <small class="text-muted profile_label font-16 font-weight-bold">Payroll Status: </small>
+                                                </div>
+                                                <div class="col-md-3 font-16 font-weight-bold" id="payroll_status">
+                                                    <p>{% if emp_obj.user.payroll_status %}Active{% else %}In-Active{% endif %}</p>
+                                                </div>
+                                            </div>
+                                                                                
+                                            <div class="tab-pane" id="bank">
+                                                <div class="row mb-3 EmpViewRow">
+                                                    <div class="col-md-3">
+                                                        <small class="text-muted profile_label font-16 font-weight-bold"><b>Document Type & Attachments:</b> </small>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3 EmpViewRow">
+                                                    <div class="col-md-12 mt-2">
+                                                        <h6>Attachments</h6>
+                                                        <ul class="att_img">                                                            
+                                                            <li>
+                                                                <div class="col-md-3">
+                                                                    {% for attachment in emp_obj.employee_documentation_work.all %}
+                                                                        {{attachment.document_title}} - <a href='{{attachment.select_file.url}}'>View</a>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>                                      
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        </div>
+
+{% endblock %}
+
+{% block js %}  
+<script>
+    if(window.location.href.indexOf("/qxbox/payroll/active-employees/")) {
+        $("#employeeNavItem").addClass("active")
+    }
+</script>
+
+<script>
+    // {% for i in keys_updated %}
+    //     try{
+    //         document.getElementById('{{i}}').style.backgroundColor = '#20b2aa6e';
+    //         document.getElementById('{{i}}').style.border = 'solid green 1px';
+    //         document.getElementById('{{i}}').style.borderRadius = '1rem';
+    //         document.getElementById('{{i}}').style.height = 'fit-content';
+    //     }  catch{
+    //         console.log("hi");
+    //     }     
+    // {% endfor %}
+
+</script>
+    
+{% endblock %}

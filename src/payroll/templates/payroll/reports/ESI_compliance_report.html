@@ -1,0 +1,365 @@
+{% extends 'payroll/base/base.html' %}
+
+{% block css %}
+
+<style>
+    td.details-control {
+        background: url('./assets/images/details_open.png') no-repeat center center;
+    cursor: pointer;
+    }
+    tr.shown td.details-control {
+        background: url('./assets/images/details_open.png') no-repeat center center;
+    }
+
+    .parsley-errors {
+        color: rgb(225, 88, 88);
+        font-size: 0.9em;
+        margin-top: 3px;
+    }
+</style>
+
+<style>
+    #menuBtn:active {
+        border: 2px solid #30239f;
+    }
+    #menuBtn:visited {
+        border: 2px solid #30239f;
+    }
+
+    #menuBtn:focus {
+        border: 2px solid #30239f;
+        outline: 1px dotted !important;
+    }
+</style>
+
+<style type="text/css">
+    .has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.075rem; right:15px;
+    text-align: center;
+    cursor: pointer;
+    color: #aaa;
+    }
+   
+</style>
+
+<style>
+  .select2-container .select2-selection--single {
+     height: 34px;
+     padding-top: 2px;
+     border-color: #9c9c9c;
+     color: #000;
+  }
+  
+</style>
+<style>
+td.details-control {
+    background: url('./assets/images/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+
+tr.shown td.details-control {
+    background: url('./assets/images/details_open.png') no-repeat center center;
+}
+
+.parsley-errors {
+    color: rgb(225, 88, 88);
+    font-size: 0.9em;
+    margin-top: 3px;
+}
+
+#main-content {
+    margin-top: 1.5rem !important;
+}
+
+.BtnActive {
+    background-color: #187ebe;
+    border: 2px solid #187ebe;
+    color: white;
+    font-weight: 500;
+}   
+.prev{
+    float: initial !important;       
+}
+</style>
+{% endblock %}
+
+
+{% block main_content %}
+
+<div class="container-fluid">
+   <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+                <h1 class="ico_head"><i class="icon-credit-card"></i> Generate ESI Compliance Report </h1>
+            </div>
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-12">
+            <div class="card mb-2">
+                <div class="body pb-0 pt-3 shadow border_radius_10  pb-4 border-0 mb-3">
+                    <h6 class="ico_head"> Create ESI File </h6>
+                    
+                        <div class="row"><br>
+                           <form class="form-inline col-lg-12 convert_file">
+                            <div class="col-lg-4 col-md-4 col-sm-6 ">
+                                <div class="form-group">
+                                    <!-- <div class="multiselect_div"> -->
+                                        <div class="row  w-100">
+                                            <div class="col-lg-4"><label class="d-block pt-2 font-16">Month-Year</label></div>
+                                            <div class="col-lg-8">
+                                                <select  name="month_year"  class="form-control selectpicker11 w-100 dept_id">                                            
+                                                     {% for month_year in completed_month_year %}   
+                                                        <option value="{{month_year|date:'Y-m-d'}}">{{month_year|date:'M-Y'}}</option>
+                                                    {% endfor %}
+                                            </select>
+                                            </div>
+                                        </div>
+                                        
+                                        
+                                    <!-- </div> -->
+                                </div>
+                            </div>
+                          
+                            <div class="w-auto ml-3">
+                                <button type="button" class="btn btn-primary empbutton addBtn"><i class="fa fa-search mr-1"></i> Generate Report</button>
+                            </div>
+
+                            <div class="w-auto ml-3 download_btn">
+                                <a href="" type="button" class="btn btn-success addBtn">Download File</a>
+                            </div>
+                        </form>
+                        </div>
+                    
+                </div>
+            </div>
+            <div class="body top_sp border-0 pt-2 shadow" id="summary_id">
+                <div class="tab-content" style="padding: 2%;" >
+                    <!-- <div class="w-auto ml-2">
+                        <button id="download_records" class="btn btn btn-info"
+                            title=""><i class="fa fa-download"></i> Download</a>
+                    </div>  -->
+                    <div class="tab-pane show active pt-4" id="e_employees">
+
+                        <select class="form-control form-control NofEntriesShowSel" id="NofEntriesSel" name="NofEntriesSel" data-live-search="true">
+
+                            <option value="10" selected>10</option>
+                        
+                            <option value="25" >25</option>
+                        
+                            <option value="50" >50</option>
+                        
+                            <option value="100" >100</option>
+                        
+                            <option value="10000" >All</option>
+                        
+                        </select>
+                        
+                        <div class="table-responsive">
+
+                            <table class="display table table-hover table-custom spacing5 mb-0" id="sortingtable">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th>Sr. No</th>                                            
+                                            <th>IP Number</th>
+                                            <th>IP Name</th>
+                                            <th>No of Days for which wages paid/payable during the month</th>
+                                            <th>Total Monthly Wages</th>
+                                            <th>Reason Code for Zero workings days</br>(numeric only; provide 0 for all other reasons- Click on the link for reference)</th>
+                                            <th>Last Working Day ( Format DD/MM/YYYY  or DD-MM-YYYY)</th>                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>	                                                            
+                                                                                                                                           
+                                    </tbody>	
+                                </table>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-6">
+                                    <div>Showing <span class="currentRecord"><span class="lastRecord"></span> of
+                                            <span class="totalRecord"></span> entries</div>
+                                </div>
+                                <div class="col-6 text-right">
+                                    <div class="btnGroup">
+                                        <button type="button"
+                                            class="btn btn-secondary btn-sm nav-btn prev disabled">Previous</button>
+                                        <button type="button" class="btn btn-sm cpage"></button>
+                                        <button type="button"
+                                            class="btn btn-secondary btn-sm nav-btn nxt disabled">Next</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+
+<script type="text/javascript">
+    $(document).ready(function(){
+
+
+
+        $('.empbutton').click(function(){
+
+            
+                $(document).on( "ajaxSend", function() {
+                    $("#AjaxCallOverlay").fadeIn(300);
+                });
+               let myResponseStatus;
+            
+           
+            if($(".dept_id").val()){
+              
+                $.ajax({
+                    url: "/qxbox/{% url 'get-esi-complaince-report' %}",
+                    type: "GET",
+                    xhrFields: {
+                            responseType: 'blob' // Set the response type to blob
+                        }, 
+                    data: {
+                        "company_id": '{{cmp_id}}',
+                        "month_year": $(".dept_id").val(),
+                        "download":"true"
+                    },                
+                    headers: {
+                        "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                    },
+                    success: function(data, status, xhr) {
+                    // alert(response);
+                        $(".download_btn").show()
+                        swal('File generated Successfully');
+                        // console.log(response);
+                        const blob = new Blob([data], { type: 'application/ms-excel' })
+                        // var link = document.createElement('a');
+
+                        // url = window.URL.createObjectURL(blob);                   
+                        $(".download_btn a").attr("href", window.URL.createObjectURL(blob));
+                        $(".download_btn a").attr("download", "ESI_complaince_report.xlsx");                    
+                        $(".download_btn a").click();
+                        
+                    },
+                    error:function(xhr, status, e) {
+                        swal('Could not convert, try again! ');
+                    }
+                });
+            
+
+                $.ajax({
+                    url: "/qxbox/{% url 'get-esi-complaince-report' %}",
+                    type: "GET",
+                    data: {
+                        "company_id": '{{cmp_id}}',
+                        "month_year": $(".dept_id").val(),
+                        "type":"json"
+                    },                
+                    headers: {
+                        "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                    },
+                    success: function(response) {
+                    console.log(response['result']);
+                    $('#sortingtable tbody').html('')
+
+
+                    // let filtersData = response['result']['filtersData'];
+                    let paginatedData = response['result']['paginatedData'];
+                    let results = paginatedData['results'];
+
+                    // if(is_filter){
+                    //     set_filters(filtersData);
+                    // }
+
+                    // var oTable = $('#sortingtable').DataTable().destroy();
+                    $('#sortingtable').DataTable().clear().destroy()
+
+                
+
+                        $("#empTable").html('')
+                        for(let resp=0;resp<results.length;resp++){
+                            $("#sortingtable tbody").append(
+                                `
+                                <tr>
+                                    <td>`+(resp+1)+`</td>
+                                    <td>`+results[resp]['esiNum']+`</td>
+                                    <td>`+results[resp]['userName']+`</td>
+                                    <td>`+results[resp]['paidDays']+`</td>
+                                    <td>`+results[resp]['payableGross']+`</td>
+                                    <td>0</td>                                                                        
+                                    <td></td>                                                                        
+                                </tr>
+                                `
+                            )
+                        }
+
+                        $('#sortingtable').DataTable(
+                        {
+                            destroy: true,
+                            responsive: true,
+                            pageLength: 10,
+                            paginate: false,
+                            info: false,
+                            order: [],                            
+                        })
+
+                        if (paginatedData.previous) {
+                        $('.prev').removeClass('disabled')
+                        $('.prev').addClass('BtnActive')
+                        $('.prev').data('url', (paginatedData.previous).replace('api','qxbox/api').replace('http:','https:'))
+                    } else {
+                        $('.prev').addClass('disabled')
+                    }
+                    if (paginatedData.next) {
+                        $('.nxt').removeClass('disabled')
+                        $('.nxt').addClass('BtnActive')
+                        $('.nxt').data('url', (paginatedData.next).replace('api','qxbox/api').replace('http:','https:'))
+                    } else {
+                        $('.nxt').addClass('disabled')
+                    }
+
+                    $('.lastRecord').text(results.length)
+                    $('.totalRecord').text(paginatedData.count)
+                    $(".cpage").text(paginatedData.currentPage)
+                        
+                    }
+                }).done(function() {
+                    console.log(myResponseStatus)
+                    if(myResponseStatus == true) {
+                        // setTimeout(function(){
+                            $("#AjaxCallOverlay").fadeOut('slow');
+                        // },500);
+                    }else {
+                        console.log("failed msg")
+                        setTimeout(function(){
+                            $("#AjaxCallOverlay").fadeOut('slow');
+                        },1000);
+                    }
+                    
+                }).fail(function (xhr, status, e) { 
+                    swal('Could not convert, try again! ');
+                });
+            }else{
+                swal('Select Month and Year');
+            }
+
+
+        });
+
+       
+
+    });
+
+</script>
+
+{% endblock %}

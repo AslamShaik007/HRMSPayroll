@@ -1,0 +1,10 @@
+<div class="header mt-5">
+    <ul class="nav nav-tabs2 text-center" id="LeaveApplicationNavTab">
+        <li class="nav-item px-0" style="width: 25%; margin-left: 20px; margin-right: 20px;"><a class="nav-link {% if t1 %}active show{% endif %}  pt-3 pb-3" data-toggle="tab" id="LeaveApplicationlisttypes" href="#l_LeaveApplicationtypes" onclick="location.href='/qxbox{% url 'rep_payroll_overview' %}';">Payroll Overview</a></li>
+        <li class="nav-item px-0" style="width: 25%; margin-left: 20px; margin-right: 20px;"><a class="nav-link {% if t2 %}active show{% endif %} pt-3 pb-3" data-toggle="tab" id="LeaveApprovallisttypes" href="#l_LeaveApprovaltypes" onclick="location.href='/qxbox{% url 'rep_epf_summary' %}';">Statutory Reports</a></li>
+        <li class="nav-item px-0" style="width: 25%; margin-left: 20px; margin-right: 20px;"><a class="nav-link {% if t3 %}active show{% endif %} pt-3 pb-3" data-toggle="tab" id="EmployeeLeaveDetailslisttypes" href="#l_EmployeeLeaveDetailstypes" onclick="location.href='/qxbox{% url 'rep_emp_reports' %}';">Employee Reports</a></li> 
+    </ul>
+   <!-- <ul class="nav nav-tabs2">
+        <li class="nav-item"><a class="nav-link active show" data-toggle="tab" href="#all_reports">Statutory Reports</a></li>
+    </ul>-->
+</div>

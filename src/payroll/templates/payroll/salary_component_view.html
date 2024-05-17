@@ -1,0 +1,449 @@
+{% extends 'payroll/base/base.html' %}
+
+{% block main_content %}
+
+{% include 'payroll/base/payroll-block-header.html' with t4=True %}
+
+
+<div class="container-fluid">
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+                <h1 class="ico_head"><i class="fa fa-list" aria-hidden="true"></i> Salary Components</h1>
+            </div>
+        </div>
+    </div>
+    <!-----------------Form Start------------------------------>
+
+    <div class="row clearfix">
+        <div class="col-lg-10 mx-auto">
+            <div class="card">
+                <div class="body shadow border-0 pt-3 pb-0">
+                    <form id="basic-form" method="post" class="add-form" enctype="multipart/form-data" novalidate="">
+                        <div class="row clearfix">
+                            <div class="col-md-6" style="border-right: dashed 1px #ddd;">
+                                <div class="row clearfix">
+                                    <div class="col-md-11">
+                                        <div class="form-group">
+                                            <label for="o-name" class="font-weight-bold font-16">Earning Type</label>
+                                            <input id="component_type" name="component_name" type="text" value="Earning" class="form-control" style="pointer-events: none;" disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-11">
+                                        <div class="form-group">
+                                            <label for="o-name" class="font-weight-bold font-16">Earning Name</label>
+                                            <input id="component_name" name="component_name" type="text" value="Basic" class="form-control" required="" maxlength="50" style="pointer-events: none;" disabled />
+                                        </div>
+                                        <span id="error_name"></span>
+                                    </div>
+                                    <div class="col-md-11">
+                                        <div class="form-group">
+                                            <label for="o-name" class="font-weight-bold font-16">Name In Payslip</label>
+                                            <input id="name_on_payslip" name="name_on_payslip" type="text" value="Basic" class="form-control" required="" style="pointer-events: none;" disabled />
+                                        </div>
+                                        <span id="error_payslip"></span>
+                                    </div>
+                                    <div id="dvearning" style="display: block;">
+                                        <div class="col-md-11">
+                                            <div class="form-group">
+                                                <label class="mb-0 font-weight-bold font-16">Calculation Type</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-11">
+                                            <div class="form-group demo-masked-input">
+                                                <label class="fancy-radio mb-0 custom-color-blue">
+                                                    <input name="flat_amount" value="1" type="radio" disabled />
+                                                    <span class="font_weight_600 font-16">Flat Amount</span></label>
+                                                <label class="fancy-radio mb-0 custom-color-blue">
+                                                    <input checked name="flat_amount" value="2" type="radio" disabled />
+                                                    <span class="font_weight_600 font-16">Percentage of Basic</span></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-11">
+                                            <div class="form-group w-auto 1 rbox amount_box" style="display: none">
+                                                <label for="o-name" class="font-weight-bold font-16">Enter
+                                                    Amount</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">&#8377;</span>
+                                                    </div>
+                                                    <input style="pointer-events: none;" type="number" name="enter_amount1" required id="enter_amount1" value="" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" />
+                                                </div>
+                                                <span id="error_amt"></span>
+                                            </div>
+                                            <div class="form-group w-auto 2 rbox per_box" style="display: block;">
+                                                <label for="o-name" class="font-weight-bold font-16">Enter
+                                                    Percentage</label>
+                                                <div class="input-group">
+                                                    <input style="pointer-events: none;" type="number" name="enter_amount" required id="enter_amount" value="50" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" />
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">%</span>
+                                                    </div>
+                                                    <span id="error_per"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <!----------------Deduction Start------------->
+
+                                    <div id="dvdeduction" style="display: none">
+
+                                        <div class="col-md-11">
+                                            <div class="form-group w-auto 1 rbox show" style="display: block;">
+                                                <label for="o-name" class="font-weight-bold font-16">Threshold Base
+                                                    Amount</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">&#8377;</span>
+                                                    </div>
+                                                    <input style="pointer-events: none;" type="number" name="threshold_base_amount" id="threshold_base_amount" value="" required class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" />
+                                                </div> <span id="error_thr"></span>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                    <!------------------Deduction------------------->
+
+
+                                    <div class="col-md-9">
+                                        <div class="form-group demo-masked-input">
+                                            <label class="fancy-checkbox mb-0">
+                                                <input type="checkbox" id="is_active" name="is_active" disabled checked value='1' />
+                                                <span class="font-weight-bold font-16">Mark this as Active</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <!--  style="border-left: dashed 1px #ddd;" -->
+                                <div class="mt-4 pl-3">
+                                    <h6 class="font-18">Other Configurations</h6>
+                                    <label class="fancy-checkbox d-block mb-4" id="salaryCompnentViewPage">
+                                        <input type="checkbox" id="is_part_of_salary_structure" name="is_part_of_salary_structure" disabled />
+                                        <span class="font-weight-bold font-16">Make this component a part of employee's salary structure</span>
+                                    </label>
+                                    <label class="fancy-checkbox d-block mb-4">
+                                        <input type="checkbox" id="is_taxable" name="is_taxable" disabled />
+                                        <span class="font-weight-bold font-16">
+                                            It is a taxable component                                            
+                                        </span>                                        
+                                        <label class="fancy-checkbox d-block mb-3">
+                                            <input type="checkbox" id="is_visible_on_payslip" name="is_visible_on_payslip" disabled />
+                                            <span class="font-weight-bold font-16">Show this component in payslip</span>
+                                        </label>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row clearfix">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <input type="hidden" name="con_mode" value="add" />
+                                    <input type="hidden" name="org_id" value="1" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+    <!-----------------Form Ends------------------------------>
+
+
+
+
+
+
+
+
+</div>
+{% endblock %}
+
+{% block js %}
+
+<script></script>
+<script>
+    $("#is_active").click(function () {
+        $('input[name="is_active"]').attr("checked", "checked");
+        $(this).val('1');
+    });
+    $("#is_part_of_salary_structure").click(function () {
+        $('input[name="is_part_of_salary_structure"]').attr("checked", "checked");
+        $(this).val('1');
+    });
+    $("#is_prorated").click(function () {
+        $('input[name="is_prorated"]').attr("checked", "checked");
+        $(this).val('1');
+    });
+    $("#is_part_of_flexible_plan").click(function () {
+        $('input[name="is_part_of_flexible_plan"]').attr("checked", "checked");
+        $(this).val('1');
+    });
+    $("#is_part_of_epf").click(function () {
+        $('input[name="is_part_of_epf"]').attr("checked", "checked");
+        $(this).val('1');
+    });
+    $("#is_part_of_esi").click(function () {
+        $('input[name="is_part_of_esi"]').attr("checked", "checked");
+        $(this).val('1');
+    });
+    $("#is_visible_on_payslip").click(function () {
+        $('input[name="is_visible_on_payslip"]').attr("checked", "checked");
+        $(this).val('1');
+    });
+    $("#is_taxable").click(function () {
+        $('input[name="is_taxable"]').attr("checked", "checked");
+        $(this).val('1');
+    });
+
+</script>
+<style type="text/css">
+    .dpmaster .dropify-wrapper {
+        max-height: 120px;
+    }
+
+    .rbox {
+        display: none;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $('input[type="radio"]').click(function () {
+            var inputValue = $(this).attr("value");
+            var targetBox = $("." + inputValue);
+            $(".rbox").not(targetBox).hide();
+            $(targetBox).show();
+        });
+        /*
+            $( "#pct_of_basic" ).click(function() {
+                $('#flat_amount').val('');
+                $('input[name=flat_amount]').removeAttr('value');
+                $(this).val('2');
+     
+          });
+          $( "#flat_amount" ).click(function() {
+            $('#pct_of_basic').val('');
+            $('input[name=pct_of_basic]').removeAttr('value');
+                $(this).val('1');
+     
+          });
+     
+        */
+
+    });
+   /*
+    $(document).ready(function(){
+        $('#single-selection').change(function(){
+         var type = $(this).val();
+        //alert(type);
+        if(type=='Deduction'){
+ 
+         $('.cal_type').attr('style', 'display:none');
+            $('#thres_type').css("display","block");
+ 
+ 
+        }
+        else{
+         $('#thres_type').css("display","none");
+         $('.cal_type').attr('style', 'display:block');
+        }
+          });
+      });
+ 
+    */
+
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+
+        $("#component_name").change(function () {
+            var inputvalues = $(this).val();
+            var reg = /^[a-zA-Z ]*$/;
+            if (inputvalues.match(reg)) {
+                error_name.innerHTML = "";
+            }
+            else {
+                $("#component_name").val("");
+
+                error_name.innerHTML = "<span style='color: red;'>" +
+                    "Name field should accet only Alphabets</span>"
+
+            }
+        });
+        $("#name_on_payslip").change(function () {
+            var inputvalues = $(this).val();
+            var reg = /^[a-zA-Z ]*$/;
+            if (inputvalues.match(reg)) {
+                error_payslip.innerHTML = "";
+            }
+            else {
+                $("#name_on_payslip").val("");
+
+                error_payslip.innerHTML = "<span style='color: red;'>" +
+                    "Name field should accet only Alphabets</span>"
+
+            }
+        });
+        $("#enter_amount").change(function () {
+            var inputvalues = $(this).val();
+            var reg = /^((0|[1-9]\d?)(\.\d{1,2})?|100(\.00?)?)$/;;
+            if (inputvalues.match(reg)) {
+                error_per.innerHTML = "";
+            }
+            else {
+                $("#enter_amount").val("");
+                // alert("You entered invalid IFSC code");
+                //document.getElementById("txtifsc").focus();
+                error_per.innerHTML = "<span style='color: red;'>" +
+                    "Please enter correct percentage</span>"
+                // ("#bank_ifsc_code").html("You entered invalid IFSC code");
+            }
+
+
+        });
+        $("#threshold_base_amount").keypress(function (e) {
+            //if the letter is not digit then display error and don't type anything
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                //display error message
+                $("#error_thr").html("Digits Only").show().fadeOut("slow");
+                return false;
+            }
+        });
+
+        $("#enter_amount1").keypress(function (e) {
+            //if the letter is not digit then display error and don't type anything
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                //display error message
+                $("#error_amt").html("Digits Only").show().fadeOut("slow");
+                return false;
+            }
+        });
+        //    $('.multiselect-custom').change(function(){
+
+        // $("#name_on_payslip").val("");
+        // $("#component_name").val("");
+        // $("#threshold_base_amount").val("");
+        // $("#enter_amount1").val("");
+        // $("#enter_amount").val("");
+
+        // $("#is_active").prop("checked", false);
+        // $("#is_part_of_salary_structure").prop("checked", false);
+        // $("#is_taxable").prop("checked", false);
+        // $("#is_prorated").prop("checked", false);
+        // $("#is_part_of_flexible_plan").prop("checked", false);
+        // $("#is_part_of_epf").prop("checked", false);
+        // $("#is_part_of_esi").prop("checked", false);
+        // $("#is_visible_on_payslip").prop("checked", false);
+
+        // });
+
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+
+        $.ajax({
+            type: 'GET',
+            url: "/qxbox/{% url 'update_pay_salary_component' id=sal_comp_id %}",
+            dataType: 'json',
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem('acc_token')
+            },
+            success: function (data, textStatus) {
+                //                 {
+                //     "id": 9,
+                //     "company": 29,
+                //     "earningType": "Earning",
+                //     "componentName": "Basic",
+                //     "nameOnPayslip": "Basic",
+                //     "calculationType": 2,
+                //     "flatAmount": null,
+                //     "pctOfBasic": 50.0,
+                //     "thresholdBaseAmount": null,
+                //     "isActive": true,
+                //     "isPartOfSalaryStructure": false,
+                //     "isTaxable": false,
+                //     "isProrated": false,
+                //     "isPartOfFlexiblePlan": false,
+                //     "isPartOfEpf": true,
+                //     "isPartOfEsi": false,
+                //     "isVisibleOnPayslip": false
+                // }
+                console.log(data);
+                $("#component_type").val(data['earningType']);
+                $("#component_name").val(data['componentName']);
+                $("#name_on_payslip").val(data['nameOnPayslip']);
+                if (data['calculationType'] == 0) {
+                    $('#dvdeduction').show();
+                    $(".amount_box").hide();
+                    $(".per_box").hide();
+                    $("#dvearning").hide()
+                    $('#threshold_base_amount').val(data['thresholdBaseAmount']);
+
+                }
+                else if (data['calculationType'] == 1) {
+                    $("input[name='flat_amount'][value=" + data['calculationType'] + "]").attr('checked', true);
+                    $(".amount_box").show();
+                    $(".per_box").hide();
+                    $('#enter_amount1').val(data['flatAmount'])
+                }
+                else {
+                    $("input[name='flat_amount'][value=" + data['calculationType'] + "]").attr('checked', true);
+                    $(".amount_box").hide();
+                    $(".per_box").show();
+                    $('#enter_amount').val(data['pctOfBasic'])
+                }
+                $('#is_active').attr('checked', data['isActive'])
+
+                $('#isPartOfSalaryStructure').attr('checked', data['isPartOfSalaryStructure'])
+                $('#is_taxable').attr('checked', data['isTaxable'])
+                $('#is_prorated').attr('checked', data['isProrated'])
+                $('#is_part_of_flexible_plan').attr('checked', data['isPartOfFlexiblePlan'])
+                $('#is_part_of_epf').attr('checked', data['isPartOfEpf'])
+                $('#is_part_of_esi').attr('checked', data['isPartOfEsi'])
+                $('#is_visible_on_payslip').attr('checked', data['isVisibleOnPayslip'])
+
+
+
+            },
+            error: function (xhr, status, e) {
+                
+                swal({   
+                    title: "Error"+e,
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+            }
+        })
+    })
+</script>
+
+<script>
+    if(window.location.href.indexOf("/qxbox/payroll/epf-details/")) {
+        $("#payrollCompNavItem").addClass("active")
+    }
+</script>
+{% endblock %}

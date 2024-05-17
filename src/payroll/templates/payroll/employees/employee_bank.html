@@ -1,0 +1,254 @@
+{% extends 'payroll/base/base.html' %}
+
+
+{% block css %}
+<style>
+    .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    }
+
+    .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    }
+
+    .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+
+    .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+
+    .sliderchecked {
+    background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+    border-radius: 34px;
+    }
+
+    .slider.round:before {
+    border-radius: 50%;
+    }
+
+    div.dataTables_wrapper div.dataTables_length label {
+    color: #000 !important;
+    }
+</style>
+{% endblock %}
+
+{% block main_content %}
+
+<div class="container-fluid">
+
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+                <h1 class="ico_head">Employee Bank</h1>
+            </div>
+            <!-- <div class="col-md-6 text-right">
+                <a  href="/qxbox{% url 'employee_bank_details_edit' id=id %}" id="editBtn" class="btn btn-sm btn-primary text-uppercase addBtn rounded-circle p-0"><i class="fa fa-edit p-2"></i></a>
+            </div>  -->
+        </div>
+        <!-- <div class="row clearfix">
+            <div class="col-md-6 col-sm-12 d-flex mt-3 align-items-center">
+                <div class="ml-2">
+                    <h5 class="mb-0"><strong>admintest 1 admin1 admin2</strong> </h5>
+                    <span>Development Team <span class="badge badge-warning">EMP ID:-0000</span></span>
+                </div>
+            </div>
+        </div> -->
+    </div>
+    <div class="row clearfix">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="body shadow border-0">
+                    <div class="tab-content">
+                        <div class="tab-pane show active" id="bank_details">
+                            <div class="card">
+                                <div id="emp_det"></div>
+<!-- 
+                                <div class="col-md-12 text-right">
+                                    <a  href="/qxbox{% url 'employee_bank_details_edit' id=id %}" id="editBtn" class="btn btn-sm btn-primary text-uppercase addBtn rounded-circle p-0"><i class="fa fa-edit p-2"></i></a>
+                                </div> -->
+                                <form id="basic-form" class="add-form" method="post" novalidate="">
+                                    <div class="col-md-12 text-right"></div>
+                                    <div class="row clearfix">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="bname" class="font-16">Bank Name</label>
+                                                <input id="bank_name" name="bank_name" type="text" style="pointer-events: none;"  class="form-control" required="" autocomplete="off" maxlength="50" />
+                                            </div>
+                                            <span id="error_bank" ></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="baccount" class="font-16">Bank Account</label>
+                                                <input id="bank_ac_number" name="bank_ac_number" style="pointer-events: none;"  type="text" class="form-control" required="" />
+                                            </div>
+                                            <span id="errors" ></span>
+                                        </div>
+                                    </div>
+                                    <div class="row clearfix">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="ifsc" class="font-16">IFSC Code</label>
+                                                <input id="bank_ifsc_code" type="text" name="bank_ifsc_code" style="pointer-events: none;"  class="form-control" autocomplete="off" />
+                                            </div>
+                                            <span id="error" ></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="branch" class="font-16">Branch</label>
+                                                <input id="bank_branch" type="text" name="bank_branch" style="pointer-events: none;"  class="form-control" required="" maxlength="50" />
+                                            </div>
+                                            <span id="error_branch" ></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="pf_no" class="font-16">PF Account Number</label>
+                                                <input id="pf_no" name="pf_no" style="pointer-events: none;"  value="" type="text" class="form-control" required="" />
+                                            </div>
+                                            <span id="errors" ></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="uan_no" class="font-16">UAN Number</label>
+                                                <input id="uan_no" name="uan_no" style="pointer-events: none;"  value="" type="text" class="form-control" required="" />
+                                            </div>
+                                            <span id="errors" ></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="emp_esi_no" class="font-16">ESI Number</label>
+                                                <input id="emp_esi_no" name="emp_esi_no" style="pointer-events: none;"  value="" type="text" class="form-control" required="" />
+                                            </div>
+                                            <span id="errors" ></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="nominee_name" class="font-16">Nominee Name</label>
+                                                <input id="nominee_name" name="nominee_name" style="pointer-events: none;"  type="text" class="form-control" required="" />
+                                            </div>
+                                            <span id="error_nominee_name" ></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="nominee_relationship" class="font-16">Nominee Relationship</label>
+                                                <input id="nominee_relationship" name="nominee_relationship" style="pointer-events: none;"  type="text" class="form-control" required="" />
+                                            </div>
+                                            <span id="error_nominee_relationship" ></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="nominee_dob" class="font-16">Nominee DOB</label>
+                                                <input id="nominee_dob" name="nominee_dob" style="pointer-events: none;"  type="text" class="form-control" required="" />
+                                            </div>
+                                            <span id="error_nominee_dob" ></span>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="emp_id" id="emp_id" value="2" />
+                                    <input type="hidden" name="con_mode" value="edit" />
+                                    <div class="row clearfix" >
+                                        <div class="col-md-12">
+                                            <button class="btn btn-primary addBtn" style="display:none;">Save</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function(){
+        set_employee_info('{{id}}')
+
+
+            $.ajax({
+                    type: "GET",
+                    url: "/qxbox/{% url 'get_bank_details' id=id %}",
+                    dataType: 'json',
+                    headers: {
+                        "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                    },
+                    success: function (response) {
+
+                    if (response && response != 0) {
+
+                        let bnkDet = response[0]
+   
+                        // $("#emp_name").text(bnkDet['employee__first_name']);
+                        $("#bank_name").val(bnkDet['bank_name']);
+                           $("#bank_ac_number").val(bnkDet['account_number']);
+                           $("#bank_ifsc_code").val(bnkDet['ifsc_code']);
+                           $("#bank_branch").val(bnkDet['branch_name']);
+                         
+                           $("#pf_no").val(bnkDet['employee__emp_compliance_detail__pf_num']);
+                           $("#uan_no").val(bnkDet['employee__emp_compliance_detail__uan_num']);
+                           $("#emp_esi_no").val(bnkDet['employee__emp_compliance_detail__esi_num']);
+                           $("#nominee_name").val(bnkDet['employee__emp_compliance_detail__nominee_name']);
+                           $("#nominee_relationship").val(bnkDet['employee__emp_compliance_detail__nominee_rel']);
+                           $("#nominee_dob").val(changeToDDMMYYYY( bnkDet['employee__emp_compliance_detail__nominee_dob']) );
+                      
+
+
+                    }
+                },
+                    error:function(xhr, status, e) {
+                        alert('Error');
+                    }
+                });
+
+
+          
+        });
+
+</script>
+
+<script>
+    if(window.location.href.indexOf("/qxbox/payroll/active-employees/")) {
+        $("#employeeNavItem").addClass("active")
+    }
+</script>
+
+{% endblock %}

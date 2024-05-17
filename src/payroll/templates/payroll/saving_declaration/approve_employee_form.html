@@ -1,0 +1,397 @@
+{% extends 'payroll/base/base.html' %}
+{% load static %}
+
+{% block css %}
+
+<title>Saving Declaration | Dashboard</title>
+<!-- Font Awesome 4.7 Styles -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
+    type="text/css">
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+<!-- Custom CSS -->
+<style>
+    #main-content {
+        margin-top: 1.5rem !important;
+    }
+    .BtnActive {
+        background-color: #187ebe;
+        border: 2px solid #187ebe;
+        color: white;
+        font-weight: 500;
+    }  
+    .prev{
+        float: initial !important;      
+    }
+</style>
+
+{% endblock css %}
+
+{% block main_content %}
+
+<section id="content-wrapper">
+
+    <div class="row  mx-0">
+
+        <div class="col-lg-12">
+
+            <div class="container-fluid mt-5">
+                {% include 'payroll/saving_declaration/header.html' with t2=True %}
+
+                <div class="block-header ">
+                    <div class="row clearfix">
+                        <div class="col-md-6 col-sm-12">
+                            <h1 class="ico_head"><i class="fa fa-money" aria-hidden="true"></i> Employer Approvals</h1>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row clearfix mx-0">
+                    <div class="col-lg-12 px-0">
+                        <div class="card">
+                            
+                            <div class="body shadow border-0">
+                                <div class="w-auto ml-2 mt-2 mb-2 pt-1">
+                                    <button type="button" id="export_button" class="btn btn-primary addBtn"><i class="fa fa-search mr-1"></i>Export</button>
+                                </div> 
+                                <div class="mt-4">
+                                    <select class="form-control form-control NofEntriesShowSel" id="NofEntriesSel" name="NofEntriesSel" data-live-search="true">
+
+                                        <option value="10" selected>10</option>
+                                    
+                                        <option value="25" >25</option>
+                                    
+                                        <option value="50" >50</option>
+                                    
+                                        <option value="100" >100</option>
+                                    
+                                        <option value="10000" >All</option>
+                                    
+                                    </select>  
+
+                                    <table class="display table table-hover table-custom spacing5 mb-0 no-footer table-responsive"
+                                        id="deptTable" aria-describedby="deptTable_info">
+                                        <thead>
+                                            <tr>
+                                                <th>Year</th>
+                                                <th>Employee </th>
+                                                <th>Regime </th>
+                                                <th>Declared Amount</th>
+                                                <th class="text-right">Approved Amount</th>
+                                                <th class="text-right">Final Declared Amount</th>
+                                                <th class="text-right">Final Approved Amount</th>
+                                                <th class="text-right">Submitted date</th>
+                                                <th class="text-right">Approved date</th>
+                                                <th class="text-right">Employee Status</th>
+                                                <th class="text-right">Employer Status</th>
+                                                <th class="text-right">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="emp_sds">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-6">
+                                        <div>Showing <span class="currentRecord"><span class="lastRecord"></span> of
+                                                <span class="totalRecord"></span> entries</div>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <div class="btnGroup">
+                                            <button type="button"
+                                                class="btn btn-secondary btn-sm nav-btn prev disabled">Previous</button>
+                                            <button type="button" class="btn btn-sm cpage">0</button>
+                                            <button type="button"
+                                                class="btn btn-secondary btn-sm nav-btn nxt disabled">Next</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock main_content %}
+
+{% block js %}
+
+
+<script>
+    $(document).on( "ajaxSend", function() {
+    //   $("#AjaxCallOverlay").fadeIn(300);
+    });
+    let myResponseStatus;
+  </script>
+
+
+<!-- Sidebar Script -->
+<!-- <script>
+    const $button = document.querySelector('#sidebar-toggle');
+    const $wrapper = document.querySelector('#wrapper');
+
+    $button.addEventListener('click', (e) => {
+        e.preventDefault();
+        $wrapper.classList.toggle('toggled');
+    });
+</script> -->
+<!-- /Sidebar Script -->
+
+<script>
+
+    function hideSideLogo() {
+        if (document.querySelector("#sideNavLogo").style.display === 'none') {
+            document.querySelector("#topNavLogo").style.display = "none";
+            document.querySelector("#sideNavLogo").style.display = 'block';
+        } else {
+            document.querySelector("#topNavLogo").style.display = "block";
+            document.querySelector("#sideNavLogo").style.display = 'none';
+        }
+    }
+
+    // DataTable Script
+    // $(document).ready(function() {
+    //     $('#deptTable').DataTable({"order": [0, 'asc'],'ordering': true});
+    // });
+
+    // Add and Remove New Desigantion Textboxes 
+
+    // Delete Desigantion Text boxes
+    $(".delSubDeptName").on('click', function (e) {
+        $(this).parent().parent().remove();
+    })
+    $("#addNewDesigantionNameBtn").click(function () {
+        $("#DesigantionContainer").append(`<div class="DesigantionFormField position-relative my-2"><input type="text" class="form-control addNewDesigantionName" name="addNewDesigantionName" placeholder="Designation" /><div class="actionPart position-absolute"><span class="text-danger delSubDeptName mx-1" onclick="$('.delSubDeptName').on('click', function(e) {$(this).parent().parent().remove();})">X</span></div></div>`);
+    });
+</script>
+
+<script>
+
+    function get_data(page,page_size) {
+        $('#deptTable').DataTable().clear().destroy()
+
+
+        $.ajax({
+            type: 'GET',
+            url: "/qxbox/{% url 'get_declarations' %}",
+            dataType: 'json',
+            data: { "company": '{{request.session.cmp_id}}', 'admin_status': "60,90", 'page': page, 'page_size':page_size },
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem('acc_token')
+            },
+            success: function (data, textStatus) {
+
+                let resp = data['result']['results'];
+
+                    if(resp != ""){
+                        myResponseStatus = true;
+                        console.log("success data");
+                        console.log(resp);
+                    }
+                    else {
+                        console.log("failed data")
+                        myResponseStatus = false
+                    }
+
+                  
+
+                $("#emp_sds").html("")
+                var domain = window.location.origin + "/media/";
+                for (var i = 0; i < resp.length; i++) {
+                    var datetc = new Date(resp[i]['approvalDate'])
+                    var datetb = new Date(resp[i]['updatedAt'])
+                    if(resp[i]['adminRstatusDisplay']){
+                        adminRstatusDisplay = (resp[i]['adminRstatusDisplay']).replace('_',' ')
+                    }
+                    $("#emp_sds").append(
+                        `
+                         <tr class="odd">
+                             <td class="sorting_1">`+ resp[i]['startYear'] + `-` + resp[i]['endYear'] + `</td>
+                             <td>`+ resp[i]['employeeData']['employeeNumber'] + " - " + resp[i]['employeeData']['name'] + `</td>
+                             <td>`+ resp[i]['regimeTypeDisplay'] + `</td>
+                             <td>`+ resp[i]['declarationAmount'] + `</td>
+                             <td>`+ resp[i]['approvedAmount'] + `</td>
+                             <td>`+ resp[i]['finalDeclaredAmount'] + `</td>
+                             <td>`+ resp[i]['finalApprovedAmount'] + `</td>
+                             
+                                 <td>`+ datetb.getDate() + `-` + (datetb.getMonth()+1) + `-` + datetb.getFullYear() + `</td>
+                                 <td>`+ datetc.getDate() + `-` + (datetc.getMonth()+1) + `-` + datetc.getFullYear() + `</td>
+
+                             <td class="app">`+ resp[i]['statusDisplay'] + `</td>
+                             <td class="app">`+ adminRstatusDisplay + `</td>
+                             <td class="viw"><a href="/qxbox/payroll/saving/declaration/user-submitted/`+ resp[i]["id"] + `">View</a></td>
+                         </tr>
+                         `
+                    )
+                }
+
+                $('#deptTable').DataTable(
+                    {
+                        responsive: true,
+                        pageLength: 10,
+                        paginate: false,
+                        info: false,
+                        order: [],
+                        // dom: 'Bfrtip',
+                        // buttons: [
+                        //     'copy', 'csv', 'excel', 'pdf'
+                        // ]
+                    }
+                );
+
+                if (data['result'].previous) {
+                    $('.prev').removeClass('disabled')
+                    $('.prev').addClass('BtnActive')
+                    $('.prev').attr('data-page', parseInt(data['result'].currentPage) - 1)
+                } else {
+                    $('.prev').addClass('disabled')
+                }
+                if (data['result'].next) {
+                    $('.nxt').removeClass('disabled')
+                    $('.nxt').addClass('BtnActive')
+                    $('.nxt').attr('data-page', parseInt(data['result'].currentPage) + 1)
+                } else {
+                    $('.nxt').addClass('disabled')
+                }
+
+                $('.totalRecord').text(data['result'].totalPages)
+                $('.lastRecord').text(data['result'].currentPage)
+
+            },
+            error: function (xhr, status, e) {
+                alert('Error');
+            }
+        })
+        .done(function() {
+            
+            if(myResponseStatus == true) {
+                // setTimeout(function(){
+                    $("#AjaxCallOverlay").fadeOut('slow');
+                // },500);
+            } else {
+                console.log("failed msg")
+                setTimeout(function(){
+                    $("#AjaxCallOverlay").fadeOut('slow');
+                },2000);
+            }
+        }).fail(function (xhr, status, e) {                 
+                swal({   
+                    title: "Error",
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+                 setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },2000);                
+            });    
+
+    }
+
+    $(document).ready(function () {
+        var page = 1;
+        get_data(page,10);
+
+    })
+
+    
+    var page_size = 10;
+
+$('#NofEntriesSel').on('change', function() {
+    page_size = this.value 
+
+    get_data(1,page_size);
+});
+
+
+    $('.nav-btn').click(function (e) {
+        e.preventDefault();
+        const nextPage = parseInt($(this).data('page'));
+        if (!isNaN(nextPage)) {
+            get_data(nextPage,page_size);
+        }
+    })
+
+</script>
+
+
+<script>   
+    $(document).on('click', '#export_button', function() {
+        
+            $.ajax({
+                type: 'GET',
+                url: "/qxbox/{% url 'get_declarations' %}",            
+                data: { "company": '{{request.session.cmp_id}}', 'admin_status': "60,90",'download':true},            
+                xhrFields: {
+                    responseType: 'blob' // Set the response type to blob
+                },             
+                headers: {
+                    "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                },
+                success: function (data, status, xhr) {
+                    
+                    const blob = new Blob([data], { type: 'application/ms-excel' })
+                           
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "saving_declaration.xlsx";
+                    link.click();                                        
+                },   
+                error:function(xhr, status, e) {                           
+                            swal({   
+                                title: 'Error' + e + xhr +status,
+                                type: "info",
+                                showCancelButton: false,
+                                confirmButtonColor: "#007bff",
+                                confirmButtonText: "Ok",
+                                closeOnConfirm: false,
+                                closeOnCancel: true 
+                            });
+                        }              
+            })
+            .done(function() {
+                
+                if(myResponseStatus == true) {
+                    // setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    // },500);
+                } else {                    
+                    setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },2000);
+                }
+                
+            }).fail(function (xhr, status, e) {                 
+                swal({   
+                    title: "Error",
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+                 setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },2000);                
+            });           
+        
+    
+    })
+    
+</script>
+
+<script>
+    if(window.location.href.indexOf("/qxbox/payroll/active-employees/")) {
+        $("#SavingDeclartion").addClass("active")
+    }
+</script>
+
+
+{% endblock js %}

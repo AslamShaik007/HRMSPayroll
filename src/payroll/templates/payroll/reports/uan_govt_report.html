@@ -1,0 +1,372 @@
+{% extends 'payroll/base/base.html' %}
+
+{% block css %}
+<style type="text/css">
+    .has-search .form-control-feedback {
+        position: absolute;
+        z-index: 2;
+        display: block;
+        width: 2.375rem;
+        height: 2.375rem;
+        line-height: 2.075rem; right:15px;
+        text-align: center;
+        cursor: pointer;
+        color: #aaa;
+    }
+        /*next css*/
+    .table{width:100%;}
+    .top_sp{
+        margin-top:20px;
+    }
+    .reports-header {
+        margin: 30px auto 20px;
+    }
+    .text-center {
+        text-align: center;
+    }
+    .table.form16-table, .table.reports-table {
+        margin: 25px auto;
+    }
+    .zp-table {
+        border-bottom: 1px solid rgba(239,236,236,.42);
+        border-left: none;
+        border-right: none;
+    }
+    .table-centered {
+        width: 60%;
+    }
+    .table-responsive {
+        overflow-x: auto;
+        min-height: .01%;
+    }
+    .table.form16-table tbody>tr>td.sub-headder, .table.form16-table tbody>tr>th.sub-headder, .table.form16-table tfoot>tr>th.sub-headder, .table.reports-table tbody>tr>td.sub-headder, .table.reports-table tbody>tr>th.sub-headder, .table.reports-table tfoot>tr>th.sub-headder {
+        border: none;
+        padding-top: 20px;
+        padding-bottom: 0;
+    }
+    .table.form16-table tbody>tr>td, .table.form16-table tbody>tr>th, .table.form16-table tfoot>tr>th, .table.reports-table tbody>tr>td, .table.reports-table tbody>tr>th, .table.reports-table tfoot>tr>th {
+        border-top: 0;
+        border-bottom: 1px solid #f1f1f1;
+        padding: 12px 25px;
+        font-size: 14px!important;
+    }
+    .zp-table tr td:last-of-type, .zp-table tr th:last-of-type {
+        padding-right: 30px;
+    }
+    .zp-table tr td:first-of-type, .zp-table tr th:first-of-type {
+        padding-left: 30px;
+    }
+    .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+        padding: 8px;
+        line-height: 1.6;
+        vertical-align: top;
+        border-top: 1px solid rgba(239,236,236,.42);
+    }
+    .zp-table td, .zp-table thead>tr>th {
+        border-color: rgba(239,236,236,.42);
+        vertical-align: middle;
+    }
+    .zp-table thead>tr>th {
+        font-weight: 400;
+        background-color: #f8faff !important;
+        color: #555;
+        font-size: 12px;
+        height: 40px;
+        text-transform: uppercase;
+    }
+    .table.reports-table tfoot.highlight-bg>tr>th {
+        background: #fcfcfc;
+    }
+    .table.reports-table tfoot>tr>th {
+        border-top: 0;
+        border-bottom: 1px solid #f1f1f1;
+        padding: 12px 25px;
+        font-size: 14px!important;
+    }
+    /*newly added*/
+    .table.reports-table {
+        margin: 25px auto;
+    }
+    .zp-table {
+        border-bottom: 1px solid rgba(239,236,236,.42);
+        border-left: none;
+    }
+    .india-reports-table, .table.zp-table.table-responsive.table-hover.reports-table.fixed-scroll-table {
+        table-layout: fixed;
+    }
+    .table-responsive {
+        overflow-x: auto;
+        min-height: .01%;
+    }
+    .zp-table.table thead:first-child>tr:first-child>th {
+        border-top: 1px solid rgba(239,236,236,.42);
+        border-bottom: 1px solid rgba(239,236,236,.42);
+    }
+    .table.form16-table thead>tr>th, .table.reports-table thead>tr>th {
+        padding: 8px 25px;
+    }
+    .zp-table tr td:first-of-type, .zp-table tr th:first-of-type {
+        padding-left: 30px;
+    }
+    .zp-table thead>tr>th {
+        font-weight: 400;
+        background-color: #f8faff;
+        color: #555;
+        font-size: 12px;
+        height: 40px;
+        text-transform: uppercase;
+    }
+    .zp-table td, .zp-table thead>tr>th {
+        border-color: rgba(239,236,236,.42);
+        vertical-align: middle;
+    }
+</style>
+{% endblock %}
+
+
+{% block main_content %}
+
+<div class="container-fluid">
+   <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+                <h1 class="ico_head"><i class="icon-credit-card"></i> Generate Compliance Report </h1>
+            </div>
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-12">
+            <div class="card mb-2">
+                <div class="body pb-0 pt-3 shadow border_radius_10  pb-4 border-0 mb-3">
+                    <h6 class="ico_head"> Create EPF Text File </h6>
+                    
+                        <div class="row"><br>
+                           <form class="form-inline col-lg-12 convert_file">
+                            <div class="col-lg-4 col-md-4 col-sm-6 ">
+                                <div class="form-group">
+                                    <!-- <div class="multiselect_div"> -->
+                                        <div class="row  w-100">
+                                            <div class="col-lg-4"><label class="d-block pt-2 font-16">Month-Year</label></div>
+                                            <div class="col-lg-8">
+                                                <select  name="month_year"  class="form-control selectpicker11 w-100 dept_id">                                            
+                                                     {% for month_year in completed_month_year %}   
+                                                        <option value="{{month_year|date:'Y-m-d'}}">{{month_year|date:'M-Y'}}</option>
+                                                    {% endfor %}
+                                            </select>
+                                            </div>
+                                        </div>
+                                        
+                                        
+                                    <!-- </div> -->
+                                </div>
+                            </div>
+                          
+                            <div class="w-auto ml-3">
+                                <button type="button" class="btn btn-primary empbutton addBtn"><i class="fa fa-search mr-1"></i> Generate Report</button>
+                            </div>
+
+                            <div class="w-auto ml-3 download_btn" style="display: none;">
+                                <a href="" type="button" class="btn btn-success addBtn">Download File</a>
+                            </div>
+                        </form>
+                        </div>
+                    
+                </div>
+            </div>
+            <div class="body shadow p-3 border_radius_10 bg-white">
+                <div class="row clearfix">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="card">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-custom spacing5 mb-0" id="sortingtable">
+                                    <thead>
+                                        <tr>
+                                            <th>Sr. No</th>                                            
+                                            <th>UAN</th>
+                                            <th>Member Name</th>
+                                            <th>Gross Wages</th>
+                                            <th>EPF Wages</th>
+                                            <th>EPS Wages</th>
+                                            <th>EDLI Wages</th>
+                                            <th>EPF Contribution Remitted</th>
+                                            <th>EPS Contribution Remitted</th>
+                                            <th>EPF EPS Difference Remitted</th>
+                                            <!-- <th>TDS</th>-->
+                                            <th>NCP Days</th>
+                                            <th>Refund Of Advances</th>
+                                            <!-- <th>Saving Declaration</th> -->
+                                        </tr>
+                                    </thead>
+                                    <tbody id="empTable">
+    
+    
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="verifyMailUd" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog_box">
+        <div class="modal-content" style="width: 600px;height: 200px;">
+            <div class="modal-header_box">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="javascript:load_close_ud()"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body text-center" id="getCode1">
+                <label id="showHeading">Please Enter Email ID</label>
+                <form id="emailCheckform" class="emailcheck" method="post">
+                    <!-- <input type="email" name="emailId" id="emailId" onchange="checkEmailId(this.value)" maxlength="30"> -->
+                    <input style="width: 65%;" type="email" name="emailId" id="emailId" maxlength="30">
+                    <div id="erroremail1" style="display: none" class="error">Please enter email id.</div>
+                    <div id="erroremail2" style="display: none" class="error">Invalid email id entered .</div>
+                    <button type="button" class="btn btn-primary modal2 addBtn"  onclick="checkEmailId()">Submit</button>
+                </form>
+                <input type="text" style="width: 65%;" name="otpCheck" id="otpCheck" onkeypress="return event.charCode >= 48 && event.charCode <= 57;" onkeyup="checkOtp(this.value)" maxlength="6" />
+            </div>
+            <div class="text-center mb-3">
+                <!-- <button type="submit" class="btn btn-primary modal2" data-dismiss="modal" onclick="javascript:load_close()">Submit</button> -->
+                <!-- <button type="button" class="btn btn-warning modal2" data-dismiss="modal" onclick="javascript:load_close()">Close</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+
+<script type="text/javascript">
+    $(document).ready(function(){
+
+
+
+        $('.empbutton').click(function(){
+
+            
+                $(document).on( "ajaxSend", function() {
+                    $("#AjaxCallOverlay").fadeIn(300);
+                });
+               let myResponseStatus;
+            
+           
+            if($(".dept_id").val()){
+                $.ajax({
+                    url: "/qxbox/{% url 'third_party_data' %}",
+                    type: "GET",
+                    data: {
+                        "company_id": '{{cmp_id}}',
+                        "month_year": $(".dept_id").val()
+                    },                
+                    headers: {
+                        "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                    },
+                    success: function(response) {
+                    // alert(response);
+                        $(".download_btn").show()
+                        swal('File generated Successfully');
+                        console.log(response);
+                        const blob = new Blob([response], { type: 'text/plain;charset=utf-8;' }),
+                        url = window.URL.createObjectURL(blob);                   
+                        $(".download_btn a").attr("href", window.URL.createObjectURL(blob));
+                        $(".download_btn a").attr("download", $(".dept_id").val() + ".txt");                    
+                        $(".download_btn a").click();
+                        
+                    },
+                    error:function(xhr, status, e) {
+                        swal('Could not convert, try again! ');
+                    }
+                });
+            
+
+                $.ajax({
+                    url: "/qxbox/{% url 'third_party_data' %}",
+                    type: "GET",
+                    data: {
+                        "company_id": '{{cmp_id}}',
+                        "month_year": $(".dept_id").val(),
+                        "type":"json"
+                    },                
+                    headers: {
+                        "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                    },
+                    success: function(response) {
+                    // alert(response);
+                        // $(".download_btn").show()
+                        // swal('File generated Successfully');  
+                        console.log(response);
+
+                        if(response != "" || response != null){
+                            myresponseonseStatus = true;
+                            console.log("success data");
+                            console.log(response);
+                        }
+                        else {
+                            console.log("failed data");
+                            myResponseStatus = false
+                        }
+
+                        $("#empTable").html('')
+                        for(let resp=0;resp<response['result']['qs'].length;resp++){
+                            $("#empTable").append(
+                                `
+                                <tr>
+                                    <td>`+(resp+1)+`</td>
+                                    <td>`+response['result']['qs'][resp]['uan']+`</td>
+                                    <td>`+response['result']['qs'][resp]['empName']+`</td>
+                                    <td>`+response['result']['qs'][resp]['netSalary']+`</td>
+                                    <td>`+response['result']['qs'][resp]['pfBasic']+`</td>
+                                    <td>`+response['result']['qs'][resp]['pfBasic']+`</td>
+                                    <td>`+response['result']['qs'][resp]['pfBasic']+`</td>
+                                    <td>`+response['result']['qs'][resp]['employeePf']+`</td>
+                                    <td>`+response['result']['qs'][resp]['epsContribution']+`</td>
+                                    <td>`+response['result']['qs'][resp]['edliContribution']+`</td>
+                                    <td>`+response['result']['qs'][resp]['lop']+`</td>
+                                    <td>0</td>
+                                </tr>
+                                `
+                            )
+                        }
+                        // const blob = new Blob([response], { type: 'text/plain;charset=utf-8;' }),
+                        // url = window.URL.createObjectURL(blob);                   
+                        // $(".download_btn a").attr("href", window.URL.createObjectURL(blob));
+                        // $(".download_btn a").attr("download", $(".dept_id").val() + ".txt");                    
+                        // $(".download_btn a").click();
+                        
+                    }
+                }).done(function() {
+                    console.log(myResponseStatus)
+                    if(myResponseStatus == true) {
+                        // setTimeout(function(){
+                            $("#AjaxCallOverlay").fadeOut('slow');
+                        // },500);
+                    }else {
+                        console.log("failed msg")
+                        setTimeout(function(){
+                            $("#AjaxCallOverlay").fadeOut('slow');
+                        },5000);
+                    }
+                    
+                }).fail(function (xhr, status, e) { 
+                    swal('Could not convert, try again! ');
+                });
+            }else{
+                swal('Select Month and Year');
+            }
+
+
+        });
+
+       
+
+    });
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,687 @@
+{% extends 'payroll/base/base.html' %}
+{% load static %}
+
+{% block css %}
+<style>
+    .avatar-upload {
+        position: relative;
+        max-width: 205px;
+        /* margin: 50px auto; */
+    }
+    .avatar-upload .avatar-edit {
+        position: absolute;
+        right: 12px;
+        z-index: 1;
+        top: 10px;
+    }
+    .avatar-upload .avatar-edit input {
+        display: none;
+    }
+    .avatar-upload .avatar-edit .elabe {
+        display: inline-block;
+        width: 34px;
+        height: 34px;
+        margin-bottom: 0;
+        border-radius: 100%;
+        background: #FFFFFF;
+        border: 1px solid transparent;
+        box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
+        cursor: pointer;
+        font-weight: normal;
+        transition: all 0.2s ease-in-out;
+    }
+    .avatar-upload .avatar-edit .elabe:hover {
+        background: #f1f1f1;
+        border-color: #d6d6d6;
+    }
+    .avatar-upload .avatar-edit .elabe:after {
+        content: "\f040";
+        font-family: 'FontAwesome';
+        color: #757575;
+        position: absolute;
+        top: 10px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        margin: auto;
+    }
+    .avatar-upload .avatar-preview {
+        width: 120px;
+        height: 120px;
+        position: relative;
+        border: 6px solid #F8F8F8;
+        box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+    }
+    .avatar-upload .avatar-preview > div {
+        width: 100%;
+        height: 100%;
+        max-width:190px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+    .avatar-edit .parsley-errors-list{position: relative!important;}
+    .form-group label {
+
+        font-size: 16px;
+    }
+
+    .form-group {
+        margin-bottom: 0.7rem;
+    }
+</style>
+
+
+<style>
+    td.details-control {
+        background: url('./assets/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+
+    tr.shown td.details-control {
+        background: url('./assets/images/details_open.png') no-repeat center center;
+    }
+
+    .parsley-errors {
+        color: rgb(225, 88, 88);
+        font-size: 0.9em;
+        margin-top: 3px;
+    }
+
+    #main-content {
+        margin-top: 1.5rem !important;
+    }
+
+    .BtnActive {
+        background-color: #187ebe;
+        border: 2px solid #187ebe;
+        color: white;
+        font-weight: 500;
+    }   
+    .prev{
+        float: initial !important;       
+    }
+</style>
+{% endblock %}
+
+{% block main_content %}
+
+<div class="container-fluid">
+
+    {% include 'payroll/organization/header.html' with t5=True %}
+
+    <div class="row">
+        <div class="col-md-4 col-sm-12">
+            <div class="block-header">
+                <h1 class="ico_head font-20"><i class="icon-grid"></i> Designation </h1>
+            </div>
+        </div>
+    
+        <div class="col-md-8 col-sm-12 text-right">
+            <!-- <button type="button" class="btn addBtn mr-2" data-toggle="modal" data-target="#addDesignation">Add Department</button>                         -->
+            <!-- <a href="javascript:void(0);" class="full-screen"><i class="icon-frame"></i></a> -->
+        </div>
+        <div class="col-md-6 col-sm-12 text-right hidden-xs"></div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-lg-12 mx-auto">
+            
+                
+            
+            <div class="card">
+
+                <div class="body shadow border-0 pt-3 pb-2">
+                    <div class="text-right">
+                        <button type="button" class="btn addBtn mr-2" data-toggle="modal" data-target="#addDesignation"><i class="fa fa-plus mr-1" aria-hidden="true"></i> Add Designation</button>    
+                    </div>
+                    <div class="tab-content mt-0">
+                        <div class="tab-pane show active" id="l_departtypes">
+                            <select class="form-control form-control NofEntriesShowSel" id="NofEntriesSel" name="NofEntriesSel" data-live-search="true">
+
+                                <option value="10" selected>10</option>
+                            
+                                <option value="25" >25</option>
+                            
+                                <option value="50" >50</option>
+                            
+                                <option value="100" >100</option>
+                            
+                                <option value="10000" >All</option>
+                            
+                            </select>
+                            <div class="table-responsive">
+                                <table class="display table table-hover table-custom spacing5 mb-0" id="sortingtable">
+
+                                    <thead>
+                                    <tr>
+                                        <th>S.No</th>
+                                        <th>Designation Name</th>
+                                        <th>Emp Count</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                                                       
+                                    </tbody>
+                                </table>                                                                
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-6">
+                                    <div>Showing <span class="currentRecord"><span class="lastRecord"></span> of
+                                            <span class="totalRecord"></span> entries</div>
+                                </div>
+                                <div class="col-6 text-right">
+                                    <div class="btnGroup">
+                                        <button type="button"
+                                            class="btn btn-secondary btn-sm nav-btn prev disabled">Previous</button>
+                                        <button type="button" class="btn btn-sm cpage"></button>
+                                        <button type="button"
+                                            class="btn btn-secondary btn-sm nav-btn nxt disabled">Next</button>
+                                    </div>
+                                </div>
+                            </div>                            
+
+                        </div>
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="getCodeModal" tabindex="-1" Desigantion="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog_box">
+            <div class="modal-content">
+                <div class="modal-header_box">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="javascript:load_close()"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body text-center" id="getCode"></div>
+                <div class="text-center mb-3">
+                    <button type="button" class="btn btn-primary modal2" data-dismiss="modal" onclick="javascript:load_close()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Department Modal -->
+    <div class="modal fade" id="addDesignation" tabindex="-1" aria-labelledby="addDepartmentModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-md ">
+            <div class="modal-content border-0">
+                <div class="modal-header bg-my-primary">
+                    <h5 class="modal-title font-20" id="addDepartmentModalLabel">Add Designation </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
+                </div>
+                <div class="modal-body pb-0">
+                    <div class="row justify-content-center px-4">
+                        <div class="card mutt-card px-0 w-100 pb-3">
+                            <form id="addNewDesignationFormUd"  >
+                                <fieldset>
+                                    <div class="form-card">
+                                        <label class="font-16 AddDeptFieldLabel font_weight_500">Designation * </label>
+                                        <div class="mb-2">
+                                            <input type="text" class="addNewDesignationNameInput form-control" name="addDesignationUd" id="addDesignationUd" placeholder="New Designation Name" pattern="[a-zA-Z]+" maxlength="30" required/>
+                                            <small class="cust_err" id="addDesignation_Err">Error Message</small>
+                                        </div>
+                                    </div>
+                                    <div class="row clearfix pt-4">
+                                        
+                                        <div class="col-6">
+                                            <button type="button" class="btn btn-primary btn-sm modal2 addBtn btn-block" value="Cancel"  data-dismiss="modal" aria-label="Close"><i class="fa fa-times mr-1" aria-hidden="true"></i> Cancel</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="submit" class="btn btn-primary btn-sm modal2 addBtn btn-block"><i class="fa fa-floppy-o mr-1" aria-hidden="true"></i> Save</button>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Add Designation Modal -->
+
+    <!-- Add New Designation Success Modal -->
+    <div class="modal fade py-5" id="addDeptSuccessModalToggle" tabindex="-1" aria-labelledby="addDeptSuccessModalToggleDataLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered py-5">
+            <div class="modal-content border py-5">
+                <div class="modal-body py-5">
+                    <div class="py-4 text-center">
+                        <span class=" user-bg-success d-inline-block"><img src="./assets/images/user.svg" width="100" height="60" class="d-inline-block " alt="user-icon"></span>
+                    </div>
+                    <h4 class="text-center user-text-success">New Designation Added Successfully</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Add New Designation Success Modal -->
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="dep_edit" tabindex="-1" aria-labelledby="dep_editLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content border-0">
+                <div class="modal-header bg-my-primary">
+                    <h5 class="modal-title font-20">Edit Designation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editDesignaionUd" method="post" novalidate="novalidate" action="">
+                        <input id="desig_id" type="hidden" />
+
+                        <div class="massage"></div>
+                        <div class="row clearfix">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="dep-name" class="form-field-label font_weight_500">Designation <span class="asterisk"> *</span>
+                                    </label>
+                                    <input id="editDesignation" type="text" name="editDesignation" class="form-control" required minlength="4" maxlength="20" aria-required="true" />
+                                    <span id="editDesignation_Err" style="color:#E15858; font-size:0.9em;"></span>
+                                    <span class="parsley-errors" id="duplicate_code1"></span>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="row clearfix pt-3">
+                            <div class="col-12">
+                                <input type="hidden" name="con_mode" value="edit" />
+                            </div>
+                            <div class="col-6">
+                                <button type="reset" value="Reset" class="btn btn-primary btn-sm modal2 addBtn btn-block"  data-dismiss="modal" aria-label="Close"><i class="fa fa-times mr-1" aria-hidden="true"></i> Cancel</button>
+                            </div>
+                            <div class="col-6">
+                                <button type="submit" class="btn btn-primary btn-sm modal2 addBtn btn-block"><i class="fa fa-floppy-o mr-1" aria-hidden="true"></i> Update</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- /Edit Modal end-->
+
+ 
+    <!-- Assigne New Designation Success Modal -->
+    <div class="modal fade py-5" id="AssigneDesingationSuccessModalToggle" tabindex="-1" aria-labelledby="AssigneDesingationSuccessModalToggleDataLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered py-5">
+            <div class="modal-content border py-5">
+                <div class="modal-body py-5">
+                    <div class="py-4 text-center">
+                        <span class=" user-bg-success d-inline-block"><img src="./assets/images/user.svg" width="100" height="60" class="d-inline-block " alt="user-icon"></span>
+                    </div>
+                    <h4 class="text-center user-text-success">New Designation Added Successfully</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Assigne New Designation Success Modal -->
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+
+<script>
+    $(document).on( "ajaxSend", function() {
+      $("#AjaxCallOverlay").fadeIn(300);
+    });
+    let myResponseStatus;
+  </script>
+
+<script type="text/javascript">
+    
+    function deleteDesignationUd(deg_id) {
+
+        conf =  confirm("Are you sure and want to delete this?");
+        if(conf){
+            console.log(deg_id);  
+            $.ajax({
+                type: "DELETE",
+                url: "/api/company/update/designation/"+deg_id+"/",
+                dataType: 'json',
+                headers: {
+                    "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                },
+                data: {
+                    "deg_id":deg_id,            
+                    "csrfmiddlewaretoken": '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    swal({   
+                        title:"Data Deleted!!",
+                        type: "success",
+                        confirmButtonColor: "#007bff",
+                        confirmButtonText: "Ok",
+                        closeOnConfirm: true  },
+                        function(isConfirm){
+                            window.location.replace("/qxbox/payroll/organization/designation/");
+                    });
+                }
+            });
+        }
+        
+    }
+
+    $(document).on('show.bs.modal','#dep_edit', function (event) {
+        var button = $(event.relatedTarget)
+        var desig_id = button.data('desig-id') 
+        var desig = button.data('desig') 
+        console.log(desig);
+        var modal = $("#dep_edit")        
+        console.log(modal);            
+        modal.find('.modal-body #editDesignaionUd #editDesignation').val(desig)            
+        modal.find('.modal-body #editDesignaionUd #desig_id').val(desig_id)
+    })
+
+  
+    function get_dataUd(page,page_size,apiurl) {
+        
+        let apiurl = "/qxbox/api/company/v2/designation/details/{{request.session.cmp_id}}/" 
+            if (apiurl){
+                apiUrl = apiurl
+            }else{                
+                apiUrl = apiUrl + '?page='+ page
+                apiUrl = apiUrl + '&page_size='+ page_size
+            }    
+
+        $.ajax({
+            type: "GET",
+            url: apiUrl,
+            dataType: 'json',            
+            headers: {
+                "Authorization": "Bearer "+localStorage.getItem('acc_token')
+            },
+            success: function (response) {               
+                $('#sortingtable').DataTable().clear().destroy()
+                
+                data = response['result'];             
+
+                for(var i=0;i<data['results'].length;i++){                                
+                        $("#sortingtable tbody").append(
+                            `
+                            <tr>
+                                <td>`+(i+1)+`</td>
+                                <td>`+(data['results'][i]['name'] ? data['results'][i]['name'] : '----')+`</td>
+                                <td>`+((data['results'][i]['noOfEmployees']) ? parseInt(data['results'][i]['noOfEmployees']) : '0')+`</td>
+                                <td>
+                                    
+                                        <button type="button" class="btn btn-sm btn-default" 
+                                                data-toggle="modal" 
+                                                data-desig="`+data['results'][i]['name']+`" 
+                                                data-desig-id="`+data['results'][i]['id']+`" 
+                                                data-target="#dep_edit"
+                                                >
+                                            <i class="fa fa-edit"></i>
+                                        </button>&nbsp;&nbsp;`
+                                        +(parseInt(data['results'][i]['noOfEmployees']) < 1 ? `<button type="button" onclick="deleteDesignationUd(`+data['results'][i]['id']+`)" class="btn btn-sm btn-default js-sweetalert" title="" data-toggle="tooltip" data-placement="top">
+                                            <i class="fa fa-trash-o text-danger"></i>
+                                        </button>` : '')+`
+                                </td>
+                            </tr>  
+                            `
+                        )
+                    }
+                
+                    $('#sortingtable').DataTable(
+                        {
+                            responsive: true,
+                            pageLength: 10,
+                            paginate: false,
+                            info: false,                           
+                            "order": [],                         
+                        }
+                    );
+    
+                    if (response['result'].previous) {
+                        $('.prev').removeClass('disabled')
+                        $('.prev').addClass('BtnActive')
+                        $('.prev').data('url', response['result'].previous)
+                    } else {
+                        $('.prev').addClass('disabled')
+                    }
+                    if (response['result'].next) {
+                        $('.nxt').removeClass('disabled')
+                        $('.nxt').addClass('BtnActive')
+                        $('.nxt').data('url', response['result'].next)
+                    } else {
+                        $('.nxt').addClass('disabled')
+                    }
+    
+                    $('.lastRecord').text(data['results'].length)
+                    $('.totalRecord').text(response['result'].count)
+                    $(".cpage").text(response['result'].currentPage)                                      
+
+                }
+        }).done(function() {
+                
+                if(myResponseStatus == true) {
+                    // setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    // },500);
+                } else {                    
+                    setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);
+                }
+                
+            }).fail(function (xhr, status, e) {                 
+                swal({   
+                    title: "Error",
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+                 setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);                
+            }); 
+    }
+
+    $(document).ready(function () {        
+        get_dataUd(1,10,false);
+    });
+
+    var page_size = 10;
+
+    $('#NofEntriesSel').on('change', function() {
+        page_size = this.value    
+
+        get_dataUd(1,page_size,false);
+
+    });
+
+    $('body').on('click','.nav-btn' ,function (e) {
+        e.preventDefault();
+        let apiurl = $(this).data('url');                           
+        get_dataUd(1,page_size,apiurl)        
+    })
+
+
+    $("#dept_name").keypress(function(event){
+        var keyCode = event.charCode;
+        if ((keyCode < 65 || keyCode > 90) && (keyCode < 97 || keyCode > 123) && keyCode != 32){
+        event.preventDefault();
+        }
+        if(event.target.value.length >= 3){
+        duplicate_code.innerHTML = "";
+            //$('#duplicate_code').hide();
+        }
+    });
+
+
+    $('#addNewDesignationFormUd').submit(function(e) {
+        e.preventDefault();
+        var designation = $('#addDesignationUd').val();  
+        
+        if(!designation){
+            $("#addDesignation_Err").text("Department field should not be blank");
+            return false;
+        }
+        
+        $.ajax({
+            type: "POST",
+            url: "/api/company/designation/",
+            data: {
+                "name":designation,
+                "company":"{{request.session.cmp_id}}",
+                "csrfmiddlewaretoken": '{{ csrf_token }}'
+            },
+            headers: {
+                "Authorization": "Bearer "+localStorage.getItem('acc_token')
+            },
+            success: function(response) {
+                swal({   
+                    title:"Data Saved!!",
+                    type: "success",
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: true  },
+                    function(isConfirm){
+                        window.location.replace("/qxbox/payroll/organization/designation/");
+                });
+
+                {% comment %} window.setTimeout(function () {
+                    window.location.replace("/qxbox/payroll/organization/designation/");
+
+                }, 500); {% endcomment %}
+            }
+        });        
+    });
+    {% comment %} }); {% endcomment %}
+
+
+
+
+
+    $('#editDesignaionUd').submit(function(e){
+        e.preventDefault();   
+        
+        if(!$('#editDesignation').val()){
+            {% comment %} $('#editDesignation_Err').text('Desigantion field should not be blank'); {% endcomment %}
+            /* swal({   
+                title: "Designation field should not be blank.",
+                type: "info",
+                showCancelButton: false,
+                confirmButtonColor: "#007bff",
+                confirmButtonText: "Ok",
+                closeOnConfirm: false,
+                closeOnCancel: true 
+            }); */
+            return false;
+        }
+
+        desig_id = $("#editDesignaionUd #desig_id").val();
+
+      $.ajax({
+        type: "PATCH",
+        url: "/api/company/update/designation/"+desig_id+"/",
+        dataType: 'json',
+        headers: {
+            "Authorization": "Bearer "+localStorage.getItem('acc_token')
+        },
+        data: {
+            "company":{{request.session.cmp_id}},
+            "name":$("#editDesignaionUd #editDesignation").val(),
+            "csrfmiddlewaretoken": '{{ csrf_token }}'
+        },
+        success: function(response) {
+            console.log(response);
+            
+            swal({   
+                title:"Updated",
+                type: "success",
+                confirmButtonColor: "#007bff",
+                confirmButtonText: "Ok",
+                closeOnConfirm: true  },
+                function(isConfirm){
+                    window.location.replace("/qxbox/payroll/organization/designation/");
+            });
+
+            {% comment %} window.setTimeout(function () {
+                window.location.replace("/qxbox/payroll/organization/designation/");
+
+            }, 500); {% endcomment %}
+            
+            
+        },
+        error: function(response){
+            console.log(response);
+            swal({   
+                title: response.responseJSON['message'],
+                type: "error",
+                showCancelButton: false,
+                confirmButtonColor: "#007bff",
+                confirmButtonText: "Ok",
+                closeOnConfirm: false,
+                closeOnCancel: true 
+            });
+        }
+      });
+    });
+    
+
+    // function JSalert(dept_id) {
+    //   swal({
+    //       title: "Are you sure you want to delete this!",
+    //       type: "warning",
+    //       showCancelButton: true,
+    //       confirmButtonColor: "#007bff",
+    //       confirmButtonText: "Delete",
+    //       cancelButtonText: "Cancel",
+    //       closeOnConfirm: true,
+    //       closeOnCancel: true
+    //     },
+    //     function(isConfirm) {
+    //       if (isConfirm) {
+    //         $.ajax({
+    //           type: "POST",
+    //           url: "./eim/departments/is_deleted/" + dept_id,
+    //           data: '',
+    //           success: function(response) {
+    //             $("#departlisttypes").click();
+    //             $("#l_departtypes").html(response);
+    //             swal("If this record is not used in any other module then it will be deleted successfully", "", "success"); //"Deleted successfully!"
+    //           }
+    //         });
+    //       }
+
+    //     });
+    // }
+
+
+    // function resetData() {
+    //   document.getElementById('#dept_name').value = '';
+    //   document.getElementById('description').value = '';
+    // }
+
+
+    $(document).ready(function() {
+      $("form").parsley();
+      $("#reset-validation").on('click', function() {
+          $("#basic-form").parsley().reset();
+          $('#error').text('');
+          $('#duplicate_code').text('');
+      });
+  });
+  </script>
+
+<!-- <script src="/qxbox/{% static 'assets/js/add_Department_Script.js' %}"></script>
+<script src="/qxbox/{% static 'assets/js/assigne_Department_Script.js' %}"></script>
+<script src="/qxbox/{% static 'assets/js/edit_Department_Script.js' %}"></script> -->
+
+
+{% endblock %}

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Editor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .code-editor {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f2f2f2;
+            border: 1px solid #ccc;
+        }
+
+        .code-area {
+            width: 100%;
+            min-height: 300px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+        }
+
+        .run-button {
+            display: block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #0074d9;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="code-editor">
+    <label for="language">Choose a language:</label>
+    <select name="language" id="language">
+      <option value="python">python</option>
+      <option value="javascript">javascript</option>
+      <option value="java">java</option>
+      <option value="c">c</option>
+      <option value="php">php</option>
+      <option value="go">go</option>
+    
+    </select>
+        <textarea class="code-area" id="code" placeholder="Enter your code here..."></textarea>
+        <button class="run-button" onclick="runCode()">Run</button>
+    </div>
+    
+
+</body>
+<div id="add_to_me">
+    <p>
+        output is 
+    </p>
+</div>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <script>
+        function runCode() {
+            // Get the code from the textarea
+            const code = document.getElementById('code').value;
+        
+        language = $("#language option:selected").text();
+        console.log("languag", language)
+        console.log("ccc", code)
+
+        var formdata = new FormData()
+
+        
+        formdata.append("code", code);
+        formdata.append("language", language);
+        
+        console.log("dddddddddddddd", formdata)
+        $.ajax({
+            type: "POST",
+            url: "/api/payroll/CodeGet",
+            contentType: false,
+            processData: false,
+            data: formdata,
+
+            success: function(result) {
+                document.getElementById("add_to_me")
+                .innerHTML += result
+                // swal({   title:"Updated",
+            //         type: "success",
+            //         confirmButtonColor: "#007bff",
+            //         confirmButtonText: "Ok",
+            //         closeOnConfirm: true  },
+            //         function(isConfirm){
+            //             window.location.replace("/payroll/manage-employees/");
+            //         });
+            },
+            error: function(result) {
+                console.log("eeroror", error)
+
+                //     swal({   title:"Error",
+            //             type: "warning",
+            //             confirmButtonColor: "#007bff",
+            //             confirmButtonText: "Ok",
+            //             closeOnConfirm: true  },
+            //             function(isConfirm){
+            //                 // location.reload();
+            //             });
+            
+            //     }
+            }
+        
+        });
+    }
+        
+
+
+    </script>
+
+</html>

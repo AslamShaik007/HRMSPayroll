@@ -1,0 +1,413 @@
+{% extends 'payroll/base/base.html' %}
+
+{% block css %}
+<style>
+    .avatar-upload {
+        position: relative;
+        max-width: 205px;
+        /* margin: 50px auto; */
+    }
+    .avatar-upload .avatar-edit {
+        position: absolute;
+        right: 12px;
+        z-index: 1;
+        top: 10px;
+    }
+    .avatar-upload .avatar-edit input {
+        display: none;
+    }
+    .avatar-upload .avatar-edit .elabe {
+        display: inline-block;
+        width: 34px;
+        height: 34px;
+        margin-bottom: 0;
+        border-radius: 100%;
+        background: #FFFFFF;
+        border: 1px solid transparent;
+        box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
+        cursor: pointer;
+        font-weight: normal;
+        transition: all 0.2s ease-in-out;
+    }
+    .avatar-upload .avatar-edit .elabe:hover {
+        background: #f1f1f1;
+        border-color: #d6d6d6;
+    }
+    .avatar-upload .avatar-edit .elabe:after {
+        content: "\f040";
+        font-family: 'FontAwesome';
+        color: #757575;
+        position: absolute;
+        top: 10px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        margin: auto;
+    }
+    .avatar-upload .avatar-preview {
+        width: 120px;
+        height: 120px;
+        position: relative;
+        border: 6px solid #F8F8F8;
+        box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+    }
+    .avatar-upload .avatar-preview > div {
+        width: 100%;
+        height: 100%;
+        max-width:190px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+    .avatar-edit .parsley-errors-list{position: relative!important;}
+    .form-group label {
+
+        font-size: 16px;
+    }
+
+    .form-group {
+        margin-bottom: 0.7rem;
+    }
+</style>
+{% endblock %}
+
+{% block main_content %}
+
+<div class="ColorChangeSettingPanelContainer" id="ColorChangeSettingPanelContainer">
+    <button type="button" class="btn btn-primary bg_dark_blue" id="ColorChangeSettingPanelCall" onclick="ColorChangeSettingPanelCall()"><i class="fa fa-cog" aria-hidden="true"></i></button>
+    <div class="ColorChangeSettingPanel" id="ColorChangeSettingPanel">
+        <div class="ColorChangeSettingPanelBlock">
+            <button class="ColorChangeSettingPanelBtn BgColorBtn" id="bgcolor_1" type="button"></button>
+            <button class="ColorChangeSettingPanelBtn BgColorBtn" id="bgcolor_2" type="button"></button>
+            <button class="ColorChangeSettingPanelBtn BgColorBtn" id="bgcolor_3" type="button"></button>
+        </div>
+        <div class="ColorChangeSettingPanelBlock">
+            <button class="ColorChangeSettingPanelBtn BgColorBtn" id="bgcolor_4" type="button"></button>
+            <button class="ColorChangeSettingPanelBtn BgColorBtn" id="bgcolor_5" type="button"></button>
+            <button class="ColorChangeSettingPanelBtn BgColorBtn" id="bgcolor_6" type="button"></button>
+        </div>
+        <div class="ColorChangeSettingPanelBlock">
+            <button class="ColorChangeSettingPanelBtn BgColorBtn" id="bgcolor_7" type="button"></button>
+            <button class="ColorChangeSettingPanelBtn BgColorBtn" id="bgcolor_8" type="button"></button>
+            <button class="ColorChangeSettingPanelBtn BgColorBtn" id="bgcolor_9" type="button"></button>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <!-- {% include 'payroll/organization/header.html' with t1=True %} -->
+
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+                <h1 class="ico_head"><i class="icon-grid"></i> Organization Setup</h1>
+            </div>
+        </div>
+    </div>
+    <form id="basic-form" class="add-form" novalidate="" enctype="multipart/form-data" class="form-horizontal"  name="FmCategory" >
+        <div class="row clearfix">
+            <div class="col-lg-10 mx-auto">
+                <div class="card ">
+                    <article class="media body shadow border-0">
+                        <div class="row w-100">
+
+
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 imagePreviewWatermarkUdHide">
+                                <div class="avatar-upload">             
+                                    <p>Watermark</p>                      
+                                    <div class="avatar-preview shadow">
+                                        <div id="imagePreviewWatermarkUd" ></div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 signatureimagecl">
+                                <div class="avatar-upload">                                   
+                                    <p>Digital Signature</p>                      
+                                    <div class="avatar-preview shadow">
+                                        <div id="signatureimage" ></div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-3 col-12 watermarkStatusUdHide">
+                                <div class="content">
+                                    <label for="watermarkStatusUd" class="font-weight-bold font-18 mb-1"> Watermark Status:</label>
+                                    <span class="font-weight-light font-18 mb-1" id="watermarkStatusUd"></span>
+                                </div>                                
+                            </div>
+
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-3 col-12 signatureStatusHide">
+                                <div class="content">
+                                    <label for="signatureStatus" class="font-weight-bold font-18 mb-1"> Signature Status:</label>
+                                    <span class="font-weight-light font-18 mb-1" id="signatureStatus"></span>
+                                </div>                                
+                            </div>
+                            
+                            
+                            <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 decimalStatusHide">
+                                <div class="content">
+                                    <label for="decimalStatus" class="font-weight-bold font-18 mb-1"> Decimals:</label>
+                                    <span class="font-weight-light font-18 mb-1" id="decimalStatus"></span>
+                                </div>                                
+                            </div>
+
+                            <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 roundoffStatusHide">
+                                <div class="content">
+                                    <label for="roundoffStatus" class="font-weight-bold font-18 mb-1"> RoundOffs:</label>
+                                    <span class="font-weight-light font-18 mb-1" id="roundoffStatus"></span>
+                                </div>                                
+                            </div>   
+                            
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 mt-2">
+                                <!-- <div class="dpmaster "> -->
+                                    <!-- <div class="avatar-upload"> -->
+                                        <label for="o-name">HR Email ID</label>
+                                        <!-- <div class="avatar-edit"> -->
+                                            <input type="text" class="form-control" id="hr_email_id" disabled/>
+                                        <!-- </div> -->
+                                    <!-- </div> -->
+
+                                <!-- </div> -->
+                            </div>
+
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 mt-2">
+                                <div class="dpmaster ">
+                                    <!-- <div class="avatar-upload"> -->
+                                        <label for="o-name">HR Phone No.</label>
+                                        <!-- <div class="avatar-edit"> -->
+                                            <input type="text" class="form-control" id="hr_phone_no" disabled/>
+                                        <!-- </div> -->
+                                    <!-- </div> -->
+
+                                </div>
+                            </div>
+
+                            <div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 text-right">
+                                <a href="/qxbox{% url 'organization_setup_edit' %}" class="btn btn-sm btn-primary text-uppercase addBtn rounded-circle p-0"><i class="fa fa-edit p-2"></i></a>
+                            </div>
+
+                            <!-- <div class="col-12  pt-4">
+                                <small><i>"Note: Please upload the Logo without empty spaces. "</i></small>
+                            </div> -->
+                        </div>
+
+                    </article>
+                </div>
+            </div>
+       
+        </div>
+
+    </form>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+
+
+
+<script>
+    $(document).ready(function(){
+
+        $.ajax({
+            type: 'GET',
+            url: "/qxbox/{% url 'update_company_details' id=request.session.cmp_id %}",
+            dataType: 'json',
+            headers: {
+                "Authorization": "Bearer "+localStorage.getItem('acc_token')
+            },
+            success: function (data,textStatus) {
+
+                                
+                $("#org_name").val(data.companyName)
+                $("#brandName").val(data.companyName)  
+                
+                if(data.companyImage){
+                    let cimg = (data.companyImage).replace("media", "qxbox/media");
+
+                    $("#imagePreview").html(
+                        `
+                        <img src="`+cimg+`" style="width: -webkit-fill-available;" />
+                        `
+                        );
+                }else{
+                    $(".imagePreviewHide").hide();
+                }
+                        
+                
+                if(data.payslipWatermark){
+                    let cimg = (data.payslipWatermark).replace("media", "qxbox/media");
+
+                    $("#imagePreviewWatermarkUd").html(
+                        `
+                    <img src="`+cimg+`" style="width: -webkit-fill-available;" />
+                    `
+                    );
+                }else{
+                    $(".imagePreviewWatermarkUdHide").hide();
+                }
+
+
+                if(data.payslipSignature){
+                    let cimg = (data.payslipSignature).replace("media", "qxbox/media");
+
+                    $("#signatureimage").html(
+                        `
+                    <img src="`+cimg+`" style="width: -webkit-fill-available;" />
+                    `
+                    );
+                }else{
+                    $(".signatureimagecl").hide();
+                }
+
+
+                if(data.watermarkStatus == 1){
+                    $("#watermarkStatusUd").html("Show"); 
+                    document.getElementById("watermarkStatusUd").style.color = "green"; 
+                }else if(data.watermarkStatus == 2){
+                    $("#watermarkStatusUd").html("Hide"); 
+                    document.getElementById("watermarkStatusUd").style.color = "red";  
+                }else{
+                    $(".watermarkStatusUdHide").hide();
+                }
+
+                if(data.signatureStatus == 1){
+                    $("#signatureStatus").html("Show"); 
+                    document.getElementById("signatureStatus").style.color = "green"; 
+                }else if(data.signatureStatus == 2){
+                    $("#signatureStatus").html("Hide"); 
+                    document.getElementById("signatureStatus").style.color = "red";  
+                }else{
+                    $(".signatureStatus").hide();
+                }
+                
+                if(data.decimals == true){
+                    $("#decimalStatus").html("Enabled"); 
+                    document.getElementById("decimalStatus").style.color = "green"; 
+                }else if(data.decimals == false){
+                    $("#decimalStatus").html("Diabled"); 
+                    document.getElementById("decimalStatus").style.color = "red";  
+                }else{
+                    $(".decimalStatus").hide();
+                }
+                 
+                
+                if(data.roundOffs == true){
+                    $("#roundoffStatus").html("Enabled"); 
+                    document.getElementById("roundoffStatus").style.color = "green"; 
+                }else if(data.roundOffs == false){
+                    $("#roundoffStatus").html("Disabled"); 
+                    document.getElementById("roundoffStatus").style.color = "red";  
+                }else{
+                    $(".roundoffStatus").hide();
+                }
+
+
+                
+                $("#address").val(data.registeredAdressLine1 + data.registeredAdressLine2 + data.registeredCity + data.registeredPincode)
+                $("location_id").val(data.registeredState)                
+                $("#address_1").val(data.registeredAdressLine1)
+                $("#address_2").val(data.registeredAdressLine2)
+                $("#city_id").val(data.registeredCity)
+                $("#state_id").val(data.registeredState)
+                $("#pin_code").val(data.registeredPincode)  
+                
+                $("#hr_email_id").val(data.payslipHrEmail) 
+                $("#hr_phone_no").val(data.payslipHrPhone) 
+                // let resp = data[0];
+                // let epfId = resp['id'];
+                // $("#epf_number").val(resp['epfNumber'])
+                // $("#is_pf_contribution_in_ctc").prop("checked", resp['isEmployerContributionInCtc']);
+
+            }
+                            
+            }).done(function() {
+                    
+                    if(myResponseStatus == true) {
+                        // setTimeout(function(){
+                            $("#AjaxCallOverlay").fadeOut('slow');
+                        // },500);
+                    } else {                    
+                        setTimeout(function(){
+                            $("#AjaxCallOverlay").fadeOut('slow');
+                        },3000);
+                    }
+                    
+                }).fail(function (xhr, status, e) {                 
+                    swal({   
+                        title: "Error",
+                        type: "info",
+                        showCancelButton: false,
+                        confirmButtonColor: "#007bff",
+                        confirmButtonText: "Ok",
+                        closeOnConfirm: false,
+                        closeOnCancel: true 
+                    });
+                    setTimeout(function(){
+                            $("#AjaxCallOverlay").fadeOut('slow');
+                        },3000);                
+                });
+    
+    })
+</script>
+
+<script>
+    $(document).ready(function(){
+       let existingBgColor = localStorage.getItem("p_background");
+       console.log("existingBgColor is ")
+       console.log(existingBgColor)
+       $(".theme1").css("background",existingBgColor);
+       $(".curv_hea").css("background",existingBgColor);
+       $(".metismenu a").css("color","#fff");
+       $(".theme-blush .nav.nav-tabs2>li>a.active").css("background",existingBgColor)
+   })
+</script>
+
+<script>
+    function ColorChangeSettingPanelCall() {
+        console.log("Call change color")
+        let displayStatus = $("#ColorChangeSettingPanel").css("display")
+        console.log(displayStatus)
+        if(displayStatus === "block") {
+            $("#ColorChangeSettingPanel").css("display","none")
+        } else {
+            $("#ColorChangeSettingPanel").css("display", "block")
+        }
+    }
+
+    $( ".BgColorBtn" ).click(function() {
+        var BgColor = $(this).css( "background" );
+        var BgImgColor = $(this).css("background-image");
+        if($(this).css('background-image') != 'none') {
+            console.log(BgImgColor)
+            $(".theme1").css("background-image",BgImgColor);
+            $(".curv_hea").css("background-image",BgImgColor);
+            $(".metismenu a").css("color","#fff");
+            $(".curv_hea").css("background-image",BgImgColor)
+            $(".theme-blush .nav.nav-tabs2>li>a.active").css("background-image",BgImgColor)
+            localStorage.setItem("p_background", BgImgColor);
+        } else if($(this).css( "background" ) != 'none') {
+            console.log(BgColor)
+            $(".theme1").css("background",BgColor)
+            $(".curv_hea").css("background",BgColor);
+            $(".metismenu a").css("color","#fff");
+            $(".curv_hea").css("background",BgColor)
+            $(".theme-blush .nav.nav-tabs2>li>a.active").css("background",BgColor)
+            localStorage.setItem("p_background", BgColor);
+        }
+    });
+
+</script>
+
+<script>
+    $(document).on( "ajaxSend", function() {
+      $("#AjaxCallOverlay").fadeIn(300);
+    });
+    let myResponseStatus = true;
+
+  </script>
+  
+{% endblock %}

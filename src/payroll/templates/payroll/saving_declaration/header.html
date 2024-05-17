@@ -1,0 +1,13 @@
+<div class="header w-100 pt-2">
+    <ul class="nav nav-tabs2 text-center">
+        <li class="nav-item px-0" style="width: 20%; margin-left: 20px; margin-right: 20px;"><a class="nav-link show pt-3 pb-3 pl-4 {% if t3 %}active{% endif %}"
+            id="EPF_listtypes" href="/qxbox{% url 'saving_declaration_setup' %}">
+            Declarations Re-submit</a>
+        </li>
+        <li class="nav-item px-0" style="width: 20%; margin-left: 20px; margin-right: 20px;"><a class="nav-link show pt-3 pb-3 pl-4 {% if t1 %}active{% endif %}"
+                id="EPF_listtypes" href="/qxbox{% url 'saving_all_employee_forms' %}">Newly Submitted Declarations
+                </a></li>
+        <li class="nav-item px-0" style="width: 20%; margin-left: 20px; margin-right: 20px;"><a class="nav-link  pt-3 pb-3  pl-4 {% if t2 %}active{% endif %}" id="ESI_listtypes"
+                href="/qxbox{% url 'approve_employee_form' %}">Approved Declarations</a></li>      
+    </ul>
+</div>

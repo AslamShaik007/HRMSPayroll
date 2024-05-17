@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body class="fontFamily">
+    <p>Hello {{reporting_manager_name}} [{{tag}}]</p>
+
+    <p>Kindly refer to the attendance report below, which is dated {{date}}</p>
+    <br>
+    <p>Please refer the link for more information {{domain}}.</p>
+    <br>
+    <table>
+        <thead>
+            <tr>
+                <th style="text-align:left; padding-right:100px;">Name</th>
+                <th style="text-align:left; paddin-left: 10px;">Department</th>
+                <th style="text-align:left; padding-right:100px;">Check In</th>
+                <th style="text-align:left; paddin-left: 10px;">Check Out</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in recds %}
+            <tr>
+                <td style="text-align:left; padding-right:100px;">{{item.Name}}</td>
+                <td style="text-align:left; padding-right:100px;">{{item.Department}}</td>
+                <td style="text-align:left; padding-right:100px;">{{item.Check_In}}</td>
+                <td style="text-align:left; padding-right:100px;">{{item.Check_Out}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <p><b>Thanks &amp; Regards,</b></p>
+    <p class="textItalic font120 fontWeightBolder">{{company_name}}.</p>
+</body>
+</html>

@@ -1,0 +1,486 @@
+{% extends 'payroll/base/base.html' %}
+
+
+{% block css %}
+<style>
+    .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    }
+
+    .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    }
+
+    .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+
+    .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+
+    .sliderchecked {
+    background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+    border-radius: 34px;
+    }
+
+    .slider.round:before {
+    border-radius: 50%;
+    }
+
+    div.dataTables_wrapper div.dataTables_length label {
+    color: #000 !important;
+    }
+</style>
+{% endblock %}
+
+{% block main_content %}
+
+<div class="container-fluid">
+
+
+
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+                <h1 class="ico_head"><i class="icon-users"></i>Employee Salary Details</h1>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12 d-flex mt-3 align-items-center">
+                <!--<div><img src="./assets/images/xs/avatar2.jpg"   title="" alt="" class="w35 h35 rounded" ></div>-->
+                <!-- <div class="ml-2">
+                    <h5 class="mb-0"><strong>admintest 1 admin1 admin2</strong> </h5>
+                    <span>Development Team<span class="badge badge-warning">EMP ID:-0000</span></span>
+                </div> -->
+            </div>
+        </div>
+    </div>
+    <div class="row clearfix mb-3">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div id="emp_det"></div>
+
+                <div class="header">
+                    <ul class="nav nav-tabs2">
+                        <li class="nav-item mr-3"><a class="nav-link active show" data-toggle="tab" href="#salary_details">Salary Components</a></li>
+                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tds_tab">TDS</a></li>
+                    </ul>
+                </div>
+                <div class="body shadow border-0 py-0">
+                    <div class="tab-content">
+                        <div class="tab-pane show active" id="salary_details">
+                            <div class="tab-pane show active" id="salary_details">                                
+                                <form id="basic-form" class="add-form" method="post" novalidate="">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="w-100 mb-3 text-right">
+                                                <a  href="/qxbox{% url 'employee_salary_edit' id=emp_id %}" class="btn btn-sm btn-primary text-uppercase addBtn rounded-circle p-0"><i class="fa fa-edit p-2"></i></a>
+                                            </div>
+                                            <table class="table table-bordered table-hover">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Gross Per Month</td>
+                                                        <td class="text-right" id="gross_per_month"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Gross Per Year</td>
+                                                        <td class="text-right" id="gross_per_year"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Montly CTC</td>
+                                                        <td class="text-right" id="monthly_ctc"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>CTC Per Year</td>
+                                                        <td class="text-right" id="ctc_per_year"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Basic</td>
+                                                        <td class="text-right" id="basic"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>HRA</td>
+                                                        <td class="text-right" id="hra"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Conveyance</td>
+                                                        <td class="text-right" id="conveyance"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Special Allowance</td>
+                                                        <td class="text-right" id="sp_allowance"></td>
+                                                    </tr>
+
+                                                </tbody>
+                                                <tbody id="additions">
+                                            
+                                                
+                                                </tbody>
+                                                <tbody id="deduction">
+                                                  
+                                                </tbody>
+                                                
+                                                
+                                            </table>
+                                        </div>
+                                        <input type="hidden" name="emp_id" id="emp_id" value="2" />
+                                        <input type="hidden" name="con_mode" value="edit" />
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <style>
+                            #additions tr:first-child:hover td,
+                            #deduction tr:first-child:hover td{
+                                color: initial !important; 
+                            }
+                        </style>
+                        <div class="tab-pane show" id="tds_tab">
+                            <table cellpadding="8" class="mt-3">
+                                <tr >
+                                    <td></td>
+                                    <td></td>
+                                    <td >Gross Per Year:</td>
+                                    <td>&nbsp;&nbsp;</td>
+                                    <td>
+                                        <input type="text" id="tds_gpy" name="gross_per_year" readonly class="form-control" />
+                                    </td>
+                                </tr>
+                                <tr >
+                                    <td></td><td></td>
+                                    <td >Approved amount:</td>
+                                    <td>&nbsp;&nbsp;</td>
+                                    <td><input type="text" id="tds_approved" name="approved_amount" readonly class="form-control" value="" /></td>
+                                </tr>
+                                <tr >
+                                    <td></td><td></td>
+                                    <td >After saving salary:</td>
+                                    <td>&nbsp;&nbsp;</td>
+                                    <td><input type="text" id="tds_aftersavingsalary" name="aftersavingsalary" readonly class="form-control" value="288000" /></td>
+                                </tr>
+                                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                                <tr>
+                                    <th>&nbsp;</th>
+                                    <th>&nbsp;</th>
+                                    <th><h5> <u>Old Regime</u></h5></th>
+                                    <th></th>
+                                    <th><h5><u>New Regime</u></h5></th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>0 to 2.5 Lakhs /0%</td>
+                                    <td><input type="textbox" class="form-control" readonly value="0" /></td>
+                                    <td>0 to 3 Lakhs /0%</td>
+                                    <td><input type="textbox" class="form-control" readonly value="0" /></td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>2.5 to 5 lakhs /5%</td>
+                                    <td><input id="old_t5" type="textbox" class="form-control" readonly /></td>
+                                    <td>3 to 6 lakhs/5%</td>
+                                    <td><input id="new_t5" type="textbox" class="form-control" readonly /></td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>5 lakhs  to 10 lakhs /20% </td>
+                                    <td><input id="old_t20" type="textbox" class="form-control" readonly value="" /></td>
+                                    <td>6 lakhs  to 9 lakhs /10%</td>
+                                    <td><input id="new_t10" type="textbox" class="form-control" readonly value="" /> </td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>10 and above /30% </td>
+                                    <td><input id="old_t30" type="textbox" class="form-control" readonly value="" /></td>
+                                    <td>9 to 12 lakhs /15%</td>
+                                    <td><input id="new_t15" type="textbox" class="form-control" readonly value="" /> </td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>12 to 15 lakhs /20%</td>
+                                    <td><input id="new_t20" type="textbox" class="form-control" readonly value="" /> </td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>15 lakhs above /30%</td>
+                                    <td><input id="new_t30" type="textbox" class="form-control" readonly value="" /> </td>
+                                </tr>
+
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr >
+                                    <td></td>
+                                    <td></td>
+                                    <td >Sum of above</td>
+                                    <td><input id="sum_old" type="text" name="oldtax" readonly class="form-control" value="0" /></td>
+                                    <td></td>
+                                    <td><input id="sum_new" type="text" name="newtax" readonly class="form-control" value="0" /></td>
+                                </tr>
+                                <tr >
+                                    <td></td><td></td>
+                                    <td >Health & Education Cess 4%</td>
+                                    <td><input id="old_hec" type="text" name="oldothertax" readonly class="form-control" value="0" /></td>
+                                    <td></td>
+                                    <td><input id="new_hec" type="text" name="newothertax" id="sumofapproved1" readonly class="form-control" value="0" /></td>
+                                </tr>
+                                <tr >
+                                    <td></td><td></td>
+                                    <td >Total tax</td>
+                                    <td><input id="old_tot_tax" type="text" name="finaloldtax" id="sumofapproved1" readonly class="form-control" value="0" /></td>
+                                    <td></td>
+                                    <td><input id="new_tot_tax" type="text" name="finalnewtax" id="sumofapproved1" readonly class="form-control" value="0" /></td>
+                                </tr>
+                                <tr >
+                                    <td></td><td></td>
+                                    <td >Taxable amount</td>
+                                    <td>&nbsp;</td>
+                                    <td><input id="fin_taxable" type="text" name="taxable_amount" id="sumofapproved1" readonly class="form-control" value="0" /></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <!------End tab2-------->
+                    </div>
+                    <div class="tab-content">
+                        <div class="row clearfix" >
+                            <div class="col-md-12">
+                                <button class="btn btn-primary" style="display:none;">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(async function(){
+
+        set_employee_info('{{emp_id}}')
+
+            var tdsId = "";
+
+            await $.ajax({
+                    type: "GET",
+                    url: "/qxbox/{% url 'employee_view_salary' id=emp_id %}",
+                    dataType: 'json',
+                    headers: {
+                        "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                    },
+                    success: async function (response) {
+
+                    if (response && response != 0) {
+
+                        employeeSalaryBreakup = response['data']
+
+                        tds_details = employeeSalaryBreakup['tdsDetails']
+
+                        $("#gross_per_month").text(employeeSalaryBreakup['grossPerMonth']);
+                        $("#gross_per_year").text(employeeSalaryBreakup['grossPerYear']);
+                        $("#monthly_ctc").text(employeeSalaryBreakup['monthlyCtc']);
+                        $("#ctc_per_year").text(employeeSalaryBreakup['ctc']);
+                        $("#basic").text(employeeSalaryBreakup['Basic']);
+                        $("#hra").text(employeeSalaryBreakup['HRA']);
+                        $("#conveyance").text(employeeSalaryBreakup['Conveyance']);
+                        $("#sp_allowance").text(employeeSalaryBreakup['spAllowance']);
+
+
+                        $('#additions').html("")
+                        $('#deduction').html("")
+
+                        $("#additions").append(
+                            `
+                            <tr>
+                                <td colspan="2" class="bg-light">
+                                        <h6 class="m-0">Additions</h6>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Montly Incentive</td>
+                                    <td class="text-right">`+ employeeSalaryBreakup['monthlyIncentive'] + `</td>
+                                </tr>
+                                <tr>
+                                    <td>Arrears</td>
+                                    <td class="text-right">`+ employeeSalaryBreakup['arrears'] + `</td>
+                                </tr>
+                            `
+                        )
+
+                        $("#deduction").append(
+                            `
+                            <tr>
+                                <td colspan="2" class="bg-light">
+                                        <h6 class="m-0">Deductions</h6>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Special Deductions</td>
+                                    <td class="text-right">`+ employeeSalaryBreakup['specialDeductions'] + `</td>
+                                </tr>
+                                <tr>
+                                    <td>Montly TDS</td>
+                                    <td class="text-right">`+ employeeSalaryBreakup['monthlyTds'] + `</td>
+                                </tr>
+                                <tr>
+                                    <td>Advance Deductions</td>
+                                    <td class="text-right">`+ employeeSalaryBreakup['advanceDeductions'] + `</td>
+                                </tr>
+                            `
+                        )
+
+
+                        if (employeeSalaryBreakup['custom']?.['Earning']) {
+                            for (const [key, value] of Object.entries(employeeSalaryBreakup['custom']['Earning'])) {
+                                $('#additions').append(
+                                    `
+                                        <tr>
+                                            <td>`+ key + `</td>
+                                            <td class="text-right">`+ value + `</td>
+                                        </tr>
+                                        `
+                                )
+                            }
+                        }
+                        if (employeeSalaryBreakup['custom']?.['Employee Deduction']) {
+                            for (const [key, value] of Object.entries(employeeSalaryBreakup['custom']['Employee Deduction'])) {
+                                $('#deduction').append(
+                                    `
+                                        <tr>
+                                            <td>`+ key + `</td>
+                                            <td class="text-right">`+ value + `</td>
+                                        </tr>
+                                        `
+                                )
+                            }
+                        }
+                        if (employeeSalaryBreakup['custom']?.['Employer Deduction']) {
+                            for (const [key, value] of Object.entries(employeeSalaryBreakup['custom']['Employer Deduction'])) {
+                                $('#deduction').append(
+                                    `
+                                        <tr>
+                                            <td>`+ key + `</td>
+                                            <td class="text-right">`+ value + `</td>
+                                        </tr>
+                                        `
+                                )
+                            }
+                        }
+
+
+                        $("#tds_gpy").val(employeeSalaryBreakup['grossPerYear']);
+
+                        $("#tds_approved").val(tds_details[0]["finalApprovedAmount"]);
+                        $("#tds_aftersavingsalary").val(tds_details[0]["afterSavingSalary"]);
+
+                        var old_tax = 0;
+                        var new_tax = 0;
+
+                        for (var i = 0; i < tds_details.length; i++) {
+                            if (tds_details[i]?.["regimeName"]) {
+                                if (tds_details[i]["regimeName"] == "old") {
+                                    $("#old_t5").val(tds_details[i]["salaryCuttings"]["0.05"]);
+                                    $("#old_t20").val(tds_details[i]["salaryCuttings"]["0.2"]);
+                                    $("#old_t30").val(tds_details[i]["salaryCuttings"]["0.3"]);
+                                    $("#sum_old").val(tds_details[i]["salaryCuttingsSum"]);
+                                    $("#old_hec").val(tds_details[i]["healthCessCuttings"]);
+                                    $("#old_tot_tax").val(tds_details[i]["totalTax"]);
+                                    old_tax = tds_details[i]["totalTax"];
+
+                                }
+                                if (tds_details[i]["regimeName"] == "new") {
+                                    $("#new_t5").val(tds_details[i]["salaryCuttings"]["0.05"]);
+                                    $("#new_t10").val(tds_details[i]["salaryCuttings"]["0.1"]);
+                                    $("#new_t15").val(tds_details[i]["salaryCuttings"]["0.15"]);
+                                    $("#new_t20").val(tds_details[i]["salaryCuttings"]["0.2"]);
+                                    $("#new_t30").val(tds_details[i]["salaryCuttings"]["0.3"]);
+
+                                    $("#sum_new").val(tds_details[i]["salaryCuttingsSum"]);
+                                    $("#new_hec").val(tds_details[i]["healthCessCuttings"]);
+                                    $("#new_tot_tax").val(tds_details[i]["totalTax"]);
+
+                                    new_tax = tds_details[i]["totalTax"];
+
+
+                                }
+                            }
+                        }
+
+                        $("#fin_taxable").val(old_tax);
+
+                        if (employeeSalaryBreakup['regime']=="new"){
+                            $("#fin_taxable").val(new_tax);
+                        }
+
+
+
+
+                    }
+                },
+                    error:function(xhr, status, e) {
+                        alert('Error');
+                    }
+                });
+
+        
+        });
+          
+
+</script>
+<script>
+    if(window.location.href.indexOf("/qxbox/payroll/active-employees/")) {
+        $("#employeeNavItem").addClass("active")
+    }
+</script>
+
+{% endblock %}

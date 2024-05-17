@@ -1,0 +1,605 @@
+
+{% extends 'payroll/base/base.html' %}
+{% load static %}
+
+{% block css %}
+
+    <style>
+        td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        }
+
+        .parsley-errors {
+            color: rgb(225, 88, 88);
+            font-size: 0.9em;
+            margin-top: 3px;
+        }
+        .redb{
+            background-color: lightcoral !important;
+        }
+        .greenb{
+            background-color: lightgreen !important;
+        }
+    </style>
+
+    <style>
+        #menuBtn:active {
+            border: 2px solid #30239f;
+        }
+        #menuBtn:visited {
+            border: 2px solid #30239f;
+        }
+
+        #menuBtn:focus {
+            border: 2px solid #30239f;
+            outline: 1px dotted !important;
+        }
+    </style>
+
+    <style type="text/css">
+        .has-search .form-control-feedback {
+        position: absolute;
+        z-index: 2;
+        display: block;
+        width: 2.375rem;
+        height: 2.375rem;
+        line-height: 2.075rem; right:15px;
+        text-align: center;
+        cursor: pointer;
+        color: #aaa;
+        }
+       
+    </style>
+
+    <style>
+      .select2-container .select2-selection--single {
+         height: 34px;
+         padding-top: 2px;
+         border-color: #9c9c9c;
+         color: #000;
+      }
+      
+    </style>
+<style>
+    td.details-control {
+        background: url('./assets/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+
+    tr.shown td.details-control {
+        background: url('./assets/images/details_open.png') no-repeat center center;
+    }
+
+    .parsley-errors {
+        color: rgb(225, 88, 88);
+        font-size: 0.9em;
+        margin-top: 3px;
+    }
+
+    #main-content {
+        margin-top: 1.5rem !important;
+    }
+
+    .BtnActive {
+        background-color: #187ebe;
+        border: 2px solid #187ebe;
+        color: white;
+        font-weight: 500;
+    }   
+    .prev{
+        float: initial !important;       
+    }
+</style>
+{% endblock %}
+
+{% block main_content %}    
+
+                <div class="container-fluid">
+                {% include 'payroll/saving_declaration/header.html' with t3=True %}
+                    
+                    <div class="block-header">
+                        <div class="row clearfix">
+                            <div class="col-md-6 col-sm-12">                              
+                                <h1 class="ico_head"><i class="fa fa-bar-chart" aria-hidden="true"></i> <b>Declaration Setup</b></h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                
+
+                                <!-- <div class="body shadow mb-3 border-0">
+                                    <div class="tab-content">
+                                        <form id="search_form">
+                                            <div class="row pt-4">                                              
+                                                <div class="col-lg-3 col-md-3 col-sm-6">
+                                                    <div class="form-group">
+                                                        <div class="multiselect_div">
+                                                            <select id="dept_id" class="form-control selectpicker w-100" data-live-search="true">
+                                                                <option value="">--All Department -- </option>                                             
+                                                               
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-sm-6">
+                                                    <div class="form-group">
+                                                        <div class="multiselect_div">
+                                                            <select class="form-control selectpicker w-100" id="employee_id" data-live-search="true">                                            
+                                                                <option value="">All Employee</option>
+                                                                                                          
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="w-auto ml-2">
+                                                    <button type="submit"
+                                                        class="btn btn-primary empbutton addBtn" ><i
+                                                            class="fa fa-search mr-1"></i> Search</button>
+                                                </div>
+                                                <div class="w-auto ml-2">
+                                                    <button onclick="window.location.href=window.location.href" class="btn btn-success addBtn"><i
+                                                            class="fa fa-refresh mr-1"></i> Refresh</button>
+                                                </div>
+                                                <div class="w-auto ml-2">
+                                                    <button id="download_records" class="btn btn btn-info"
+                                                        title=""><i class="fa fa-download"></i> Download</a>
+                                                </div>  
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div> -->
+                                <div class="body top_sp border-0 pt-2 shadow" id="summary_id">
+                                    <div class="tab-content ">
+                                        <!-- <div class="w-auto ml-2">
+                                            <button id="download_records" class="btn btn btn-info"
+                                                title=""><i class="fa fa-download"></i> Download</a>
+                                        </div>  -->
+                                        <div class="tab-pane show active pt-4" id="e_employees">
+                                            <!-- 
+                                            <select class="form-control form-control NofEntriesShowSel" id="NofEntriesSel" name="NofEntriesSel" data-live-search="true">
+
+                                                <option value="10" selected>10</option>
+                                            
+                                                <option value="25" >25</option>
+                                            
+                                                <option value="50" >50</option>
+                                            
+                                                <option value="100" >100</option>
+                                            
+                                                <option value="10000" >All</option>
+                                            
+                                            </select> -->
+                                            
+                                            <div class="table-responsive">
+                
+                                                <table class="display table table-hover table-custom spacing5 mb-0" id="sortingtable">
+                                                        <thead>
+                                                            <tr class="text-center">
+                                                                <th>S. No</th>
+                                                                <th>First Name</th>
+                                                                <th>Middle Name</th>
+                                                                <th>Last Name</th>                                                                
+                                                                <th>Date of joining</th>
+                                                                <th>Regime</th>
+                                                                <th>Last Date to submit</th>
+                                                                <th>Actions</th>                                                               
+                                                            </tr>	
+                                                        </thead>
+                                                        <tbody>	                                                            
+                                                                                                                                           
+                                                        </tbody>	
+                                                        <!-- <tr>
+                                                            <td></td>
+                                                            <td><b>Total</b></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td class="text-right"><b>{{total_payroll_report.total_monthly_ctc|floatformat:"0"}}</b></td>                                                           
+                                                            <td class="text-right"><b>{{total_payroll_report.total_earned_gross|floatformat:"0"}}</b></td>
+                                                        </tr> -->
+                                                    </table>
+                                            </div>
+                                            <!-- <div class="row mt-3">
+                                                <div class="col-6">
+                                                    <div>Showing <span class="currentRecord"><span class="lastRecord"></span> of
+                                                            <span class="totalRecord"></span> entries</div>
+                                                </div>
+                                                <div class="col-6 text-right">
+                                                    <div class="btnGroup">
+                                                        <button type="button"
+                                                            class="btn btn-secondary btn-sm nav-btn prev disabled">Previous</button>
+                                                        <button type="button" class="btn btn-sm cpage"></button>
+                                                        <button type="button"
+                                                            class="btn btn-secondary btn-sm nav-btn nxt disabled">Next</button>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="modal fade viewTax" tabindex="-1" role="dialog" aria-labelledby="viewTax" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title h4">Select Last Submission Date</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="table-responsive">
+                               <form id="act_form">
+                                    <input type="hidden" id="empid" value="">
+                                    <input type="hidden" id="type" value="">
+
+                                    <input type="text" placeholder="yyyy-mm-dd" id="lsd" required>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                               </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       
+
+{% endblock %}
+
+{% block js %}	
+
+
+<script type="text/javascript">
+
+        $('#lsd').datepicker({
+            format: "yyyy-mm-dd",  
+            startDate: new Date()
+            });
+
+            $('#lsd').on("show", function(e){
+                e.preventDefault();
+                e.stopPropagation();
+            }).on("hide", function(e){
+                e.preventDefault();
+                e.stopPropagation();
+            });
+
+    $(".selectpicker").select2();
+
+    $(document).on('show.bs.modal','.viewTax', function (event) {
+                var button = $(event.relatedTarget)
+                var type = button.data('type')             
+                var empid = button.data('empid')                 
+                var modal = $(".viewTax")        
+                
+                console.log(empid,type);
+                modal.find('input[id="empid"]').val(empid)
+                modal.find('input[id="type"]').val(type)
+                
+    })
+
+    // function set_filters(filtersData){
+        
+    //     var empid = []
+    //     var depId = []
+    //     filtersData.forEach(function(item) {
+
+    //         if(!depId.includes(item['deptId'])){
+    //             depId.push(item['deptId'])
+    //             $('#dept_id').append("<option value='"+item['deptId']+"' >"+item['deptName']+"</option>")
+    //         }
+    //         if(!empid.includes(item['empId'])){
+    //             empid.push(item['empId'])
+    //             $('#employee_id').append("<option value='"+item['empId']+"' >"+item['empName']+"</option>")                    
+    //         }               
+    //         });
+    
+    // }
+
+
+        function setTable(results){            
+             
+            var rescounter = 0;
+            results.forEach(function(item) {
+                rescounter ++;
+
+                datetc = new Date(item.dateOfJoin)
+                datetc = datetc.getDate() + `-` + (datetc.getMonth()+1) + `-` + datetc.getFullYear()
+                lsd = ""
+                if(item.lastSubmissionDate){
+                    lsd = new Date(item.lastSubmissionDate)
+                    lsd = lsd.getDate() + `-` + (lsd.getMonth()+1) + `-` + lsd.getFullYear()                
+                }
+                
+
+                let regime_type = ""
+                let activate_regime = "Unfreeze"
+                // let freezeFinalDeclaredStatus = "Unfreezed Final Declared Amount"
+                // let freezeDeclaredStatus = "Unfreezed Declared Amount"
+
+                let badge1 = "redb"
+                // let badge2 = "redb"
+                // let badge3 = "redb"
+
+                let data_target_cd1 = '.viewTax';
+                // let data_target_cd2 = '.viewTax';
+                // let data_target_cd3 = '.viewTax';
+                
+                if(item.regimeType){
+                    regime_type =  "Old"
+
+                    if(item.regimeType==20){
+                        regime_type = "New"
+                    }
+                }
+                if(item.adminResubmitStatus){
+                    if(item.adminResubmitStatus==30){
+                        activate_regime = "ON"
+                        badge1 = "greenb"
+                        data_target_cd1 = ""
+                    }                    
+                    
+                }
+                // if(!item.freezeFinalDeclaredStatus){
+                //     freezeFinalDeclaredStatus = "Unfreezed Final Declared Active"
+                //     badge2 = "greenb"
+                //     data_target_cd2 = ""
+                // }
+                // if(!item.freezeDeclaredStatus){
+                //     freezeDeclaredStatus = "Unfreezed Declared Active"
+                //     badge3 = "greenb"
+                //     data_target_cd3=""
+                // }
+                
+                $('#sortingtable tbody').append(
+                    `
+                    <tr>                                            
+                        <td>`+rescounter+`</td>                        
+
+                        <td>`+item.firstName+`</td>
+                        <td>`+item.middleName+`</td>
+                        <td>`+item.lastName+`</td>
+
+                        <td>`+datetc+`</td>
+                        <td>`+regime_type+`</td>
+                        <td>`+lsd+`</td>
+                        <td>
+                            <span class="dis_in" title="" data-toggle="tooltip" data-placement="top" data-original-title="view">
+                                <button data-toggle="modal" data-type="regime" data-empid="`+item['id']+`" data-target="`+data_target_cd1+`" class="btn btn-sm btn-default `+badge1+`">
+                                    `+activate_regime+`
+                                </button>
+                            </span>
+                        </td>
+    
+                    </tr>
+                    `
+                )
+                
+               
+            });
+        
+        }
+
+
+  
+
+//    
+        function get_employees_list(page,page_size,is_filter,apiurl){        
+
+            let apiUrl = "/qxbox/{% url 'get_employee_saving_list' %}" 
+          
+            $.ajax({
+                type: 'GET',
+                url: apiUrl,
+                headers: {
+                                "Authorization": "Bearer "+localStorage.getItem('acc_token'),                            
+                            },                
+                contentType: "application/json",
+                dataType:"json",            
+                success: function (response) {
+                    $('#sortingtable tbody').html('')
+
+
+                    // let filtersData = response['result']['filtersData'];
+                    // let paginatedData = response['result']['paginatedData'];
+                    let results = response['result']['data'];
+                    
+                    // if(is_filter){
+                    //     set_filters(filtersData);
+                    // }
+                    
+                    // var oTable = $('#sortingtable').DataTable().destroy();
+                    $('#sortingtable').DataTable().clear().destroy()
+
+
+                    setTable(results);
+
+                    
+
+                    $('#sortingtable').DataTable(
+                        {
+                            destroy: true,
+                            responsive: true,
+                            pageLength: 10,
+                            // paginate: false,
+                            // info: false,
+                            order: [],
+                            // dom: 'Bfrtip',
+                            // buttons: [
+                            //     'copy', 'csv', 'excel', 'pdf'
+                            // ]
+                        }
+                    );
+
+                  
+
+
+                }
+            }).done(function() {
+                
+                if(myResponseStatus == true) {
+                    // setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    // },500);
+                } else {                    
+                    setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);
+                }
+                
+            }).fail(function (xhr, status, e) {                 
+                swal({   
+                    title: "Error",
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+                 setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);                
+            }); 
+
+        }
+
+
+        function post_employee_status(emp_id,to_check,lsd){
+            
+            console.log(emp_id,to_check,lsd);
+
+            let apiUrl = "/qxbox/{% url 'update_employee_saving_resubmit' %}" 
+            apiUrl = apiUrl + "?id="+ emp_id
+                      
+            let payloadData = {}
+            
+            payloadData =  JSON.stringify({                                
+                "last_submission_date":lsd
+            })                          
+
+            $.ajax({
+                type: 'PATCH',
+                url: apiUrl,
+                data:payloadData,
+                headers: {
+                                "Authorization": "Bearer "+localStorage.getItem('acc_token'),                            
+                            },                
+                contentType: "application/json",
+                dataType:"json",            
+                success: function (response) {
+                 
+                    swal({   title:"Updated",
+                                type: "success",
+                                confirmButtonColor: "#007bff",
+                                confirmButtonText: "Ok",
+                                closeOnConfirm: true  },
+                                function(isConfirm){
+                                    window.location.replace("/qxbox/payroll/saving/declaration/setup/");
+                                }); 
+
+                }
+            }).done(function() {
+                
+                if(myResponseStatus == true) {
+                    // setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    // },500);
+                } else {                    
+                    setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);
+                }
+                
+            }).fail(function (xhr, status, e) {                 
+                swal({   
+                    title: "Error",
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+                setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);                
+            }); 
+
+            }
+
+        $(document).ready(function() {
+            
+            get_employees_list(1,10,true,false)                                 
+
+        });
+    
+    
+    function load_close() {
+        window.location.replace("./payroll/reports/employeesalarystatement");
+    }
+</script>
+
+
+<script>
+    $('body').on('click', '#download_records', function (e) {
+            e.preventDefault();
+
+            download_employees_list()
+        })
+
+    var page_size = 10;
+
+    $('#NofEntriesSel').on('change', function() {
+        page_size = this.value 
+
+        get_employees_list(1,page_size,false,false)
+    });
+            
+    $("#search_form").on('submit',function(e){
+        e.preventDefault()
+
+        get_employees_list(1,page_size,false,false)
+
+    })
+
+
+    $("#act_form").on('submit',function(e){
+        e.preventDefault()
+
+        var emp_id = $("#empid").val();
+        var type = $("#type").val();
+        var lsd = $("#lsd").val();
+
+        post_employee_status(emp_id,type,lsd)
+
+    })
+
+    $('body').on('click','.nav-btn' ,function (e) {
+        e.preventDefault();
+        let apiurl = $(this).data('url');                       
+        get_employees_list(1,page_size,false,apiurl)        
+    })
+</script>
+
+<script>
+    $(document).on( "ajaxSend", function() {
+      $("#AjaxCallOverlay").fadeIn(300);
+    });
+    let myResponseStatus = true;
+
+  </script>
+
+
+{% endblock %}

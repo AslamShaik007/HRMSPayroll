@@ -1,0 +1,2141 @@
+{% extends 'payroll/base/base.html' %}
+{% load static %}
+
+{% block css %}
+
+    <link rel="stylesheet" href="/qxbox/{% static 'assets/css/common.css' %}">
+    <link rel="stylesheet" href="/qxbox/{% static 'assets/css/stylenew.css' %}">
+    <link rel="stylesheet" href="/qxbox/{% static 'assets/css/emp.css' %}">
+
+    <style>
+        td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        }
+
+        .parsley-errors {
+            color: rgb(225, 88, 88);
+            font-size: 0.9em;
+            margin-top: 3px;
+        }
+    </style>
+
+    <style>
+        #menuBtn:active {
+            border: 2px solid #30239f;
+        }
+        #menuBtn:visited {
+            border: 2px solid #30239f;
+        }
+
+        #menuBtn:focus {
+            border: 2px solid #30239f;
+            outline: 1px dotted !important;
+        }
+    </style>
+
+    <style>
+        .light_version .btn.btn-default {
+            background-color: #ded3cd !important;
+            border-radius: 25px;
+        }
+
+        .btn-success:not(:disabled):not(.disabled):active, .btn-success:not(:disabled):not(.disabled).active, .show > .btn-success.dropdown-toggle {
+            /* background: linear-gradient(to right, #0e527d, #1a87cb) !important; */
+            background-image: linear-gradient( 73.1deg, rgba(34,126,34,1) 8%, rgba(99,162,17,1) 86.9% );
+        }
+    </style>
+
+    <style>
+
+            input::file-selector-button {
+            width: 0;
+            opacity: 0;
+            
+            }
+            .pdfimage {
+                background-image: url('./assets/images/thumbnail.png');
+                background-size: contain;
+                background-repeat: no-repeat;
+                min-width: 100px;
+                min-height: 100px;
+            }
+
+            .preview1 {
+                max-width: 100px;
+                height: 100px;
+            }
+
+            .preview11 {
+                max-width: 100px;
+                height: 100px;
+            }
+
+            .preview12 {
+                max-width: 100px;
+                height: 100px;
+            }
+
+        .btn_upload {
+            cursor: pointer;
+            display: inline-block;
+            overflow: hidden;
+            position: relative;
+            color: #fff;
+            background-color: #2a72d4;
+            border: 1px solid #166b8a;
+            padding: 5px 10px;
+        }
+
+        .btn_upload:hover,
+        .btn_upload:focus {
+            background-color: #7ca9e6;
+        }
+
+        .yes {
+            margin-bottom: 10px !important;
+        }
+
+        .btn_upload input {
+            cursor: pointer;
+            height: 100%;
+            position: absolute;
+            filter: alpha(opacity=1);
+            -moz-opacity: 0;
+            opacity: 0;
+        }
+
+        .it {
+            height: 100px;
+            margin-left: 10px;
+        }
+
+        .btn-rmv1,
+        .btn-rmv11,
+        .btn-rmv12,
+        .btn-rmv2,
+        .btn-rmv3,
+        .btn-rmv4,
+        .btn-rmv5 {
+            display: none;
+            position: absolute;
+        }
+
+        .rmv {
+            cursor: pointer;
+            color: #fff;
+            border-radius: 30px;
+            border: 1px solid #fff;
+            display: inline-block;
+            background: rgba(255, 0, 0, 1);
+            margin: -5px -10px;
+        }
+
+        .rmv:hover {
+            background: rgba(255, 0, 0, 0.5);
+        }
+
+        .f800 {
+            width: 80%;
+        }
+
+        .chfi .custom-file-input {
+            width: 80%;
+        }
+
+        #add-att {
+            position: absolute;
+            z-index: 999;
+            right: 0;
+        }
+
+        #maindiv {
+            width: 960px;
+            margin: 10px auto;
+            padding: 10px;
+
+        }
+
+        #formdiv {
+            width: 500px;
+            float: left;
+            text-align: center
+        }
+
+        #file {
+            color: green;
+            padding: 5px;
+            border: 1px dashed #123456;
+            background-color: #f9ffe5
+        }
+
+
+        /* #img {
+            width: 35px;
+            border: none;
+            height: 35px;
+            margin-left: -20px;
+            margin-bottom: 91px;
+        } */
+
+
+        #img {
+            width: 25px;
+            border: none;
+            height: 20px;
+            margin-left: -8px;
+            margin-bottom: 10px;
+            float:left;
+            margin-top:-12px;
+        }
+
+        .abcd {
+            text-align: center;
+        }
+        .prvimg{
+        float: left !important;
+            margin-left: 213px !important;
+            width: 50px !important;
+            height: 50px !important;
+            margin-top: 0px !important;
+        }
+        .abcd img {
+            height: 100px;
+            width: 100px;
+            padding: 5px;
+            border: 1px solid #e8debd;
+            float: left;
+        }
+
+        b {
+            color: red
+        }
+
+        .fileinput-button {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fileinput-button input {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 0;
+            opacity: 0;
+            -ms-filter: "alpha(opacity=0)";
+            font-size: 200px;
+            direction: ltr;
+            cursor: pointer;
+        }
+
+        .thumb {
+            height: auto;
+            width: 100px;
+            border: 1px solid #000;
+        }
+
+        ul.thumb-Images li {
+            width: 120px;
+            float: left;
+            display: inline-block;
+            vertical-align: top;
+            height: auto;
+        }
+
+        .img-wrap {
+            position: relative;
+            display: inline-block;
+            font-size: 0;
+        }
+
+        .img-wrap .close {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            z-index: 100;
+            background-color: #d0e5f5;
+            padding: 5px 2px 2px;
+            color: #000;
+            font-weight: 500;
+            cursor: pointer;
+            opacity: 0.5;
+            font-size: 23px;
+            line-height: 10px;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+        }
+
+        .img-wrap:hover .close {
+            opacity: 1;
+            background-color: #ff0000;
+        }
+
+        .FileNameCaptionStyle {
+            font-size: 12px;
+        }
+
+        .avatar-upload {
+            position: relative;
+            max-width: 150px;
+            margin-right: 50px;
+            margin-left: 25px;
+        }
+
+        .avatar-upload .avatar-edit {
+            position: absolute;
+            right: 12px;
+            z-index: 1;
+            top: 10px;
+            text-align: right;
+        }
+
+        .avatar-upload .avatar-edit input {
+            display: none;
+        }
+
+        .avatar-upload .avatar-edit .elabe {
+            display: inline-block;
+            width: 34px;
+            height: 34px;
+            margin-bottom: 0;
+            border-radius: 100%;
+            background: #FFFFFF;
+            border: 1px solid transparent;
+            box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
+            cursor: pointer;
+            font-weight: normal;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .avatar-upload .avatar-edit .elabe:hover {
+            background: #f1f1f1;
+            border-color: #d6d6d6;
+        }
+
+        .avatar-upload .avatar-edit .elabe:after {
+            content: "\f040";
+            font-family: 'FontAwesome';
+            color: #757575;
+            position: absolute;
+            top: 7px;
+            left: 0;
+            right: 10px;
+            text-align: right;
+            margin: auto;
+        }
+
+        .avatar-upload .avatar-preview {
+            width: 192px;
+            height: 192px;
+            position: relative;
+            border: 6px solid #F8F8F8;
+            box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .avatar-upload .avatar-preview>div {
+            width: 100%;
+            height: 100%;
+            background-size: 100%;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .avatar-edit .parsley-errors-list {
+            position: relative !important;
+        }
+
+        #userfile-error,
+        #pannumberphoto-error,
+        #anumberphoto-error {
+            width: 100%;
+            position: inherit;
+            min-width: 500px;
+            margin-top: 65px;
+            margin-left: -78%;
+        }
+
+        .newtitlecls {
+            width: 50%;
+            float: left;
+            display: inline !important;
+        }
+
+        .docread {
+            width: 64px;
+            height: 43px;
+            background-color: #ef4036;
+            text-align: center;
+            align-content: center;
+            margin-left: 213px;
+            margin-bottom: -27px;
+            color: #fff;
+            float:left;
+            border: 2px solid #001a33;
+            text-transform: uppercase;
+        }
+
+
+        .errordemo{
+                background-color: #F2DEDE !important;
+            border: 1px solid #EED3D7 !important;
+        color: #B94A48;
+        }
+
+    </style> 
+
+{% endblock %}
+
+{% block main_content %}
+<div class="container-fluid">
+    
+    {% include 'payroll/base/emp-block-header.html' with t2=True %}
+
+            <div class="block-header">
+                <div class="row clearfix">
+                    <div class="col-md-6 col-sm-12">
+                        <h1 class="ico_head"><i class="icon-grid"></i>Employee /<small id="leavesCurrentActiveTabTitle">Edit Employee</small></h1>
+                    </div>
+                    <div class="col-md-6 col-sm-12 text-right hidden-xs">
+                        <button type="button" onclick="window.location.href = '{% url 'manage_employees_view' %}';" class="backBtn py-1 px-2"><i class="fa fa-arrow-left mr-1" aria-hidden="true"></i> to Employee</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="card">
+                        <div class="header ">
+                            <div class="stepwizard">
+                                <div class="stepwizard-row setup-panel row" id="manageEmployeeNavTab">
+                                    <div class="stepwizard-step col-3 col-xs-3 nav-item px-0 ml-3 position-relative text-center">
+                                        <a href="#step-1" type="button" class="btn btn-success nav-link active show py-2 step1 border-0" style="font-size: 17px !important; font-weight: 900 !important;">Personal Details</a>
+                                    </div>
+                                    <div class="stepwizard-step col-3 col-xs-3 position-relative text-center">
+                                        <a href="#step-2" type="button" class="btn btn-default nav-link active show py-2 step2 border-0" disabled="disabled" style="font-size: 17px !important; font-weight: 900 !important;">Employment Details</a>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="body shadow border-0 mb-3">
+                        <!-- <div class="body shadow border-0"> -->
+                            <!------ Include the above in your HEAD tag ---------->
+                            <div class="container--">
+                                <form id="basic-form" novalidate="" enctype="multipart/form-data" class="form-horizontal add-form" method="post" name="FmCategory">{% csrf_token %}
+                                    <div class="panel panel-primary setup-content" id="step-1">
+                                        <div class="panel-heading">
+                                            <h5 class="panel-title mb-20">Personal Details</h5>
+                                        </div>
+                                        <div class="panel-body">
+                                            <fieldset>
+                                                <div class="row clearfix"> 
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="emp_first_name">Employee Name <span class="asterisk"> * </span></label>
+                                                            <input id="emp_first_name" type="text" name="emp_first_name" class="form-control errorbox" minlength="0" maxlength="20" value="{{emp_obj.first_name}}" required />
+                                                            <span id="error" style='color:#E15858; font-size:0.9em;'></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="emp_middle_name">Middle Name</label>
+                                                            <input id="emp_middle_name" type="text" name="emp_middle_name" class="form-control" minlength="0" maxlength="20" value="{{emp_obj.middle_name}}" />
+                                                            <span id="error1" style='color:#E15858; font-size:0.9em;'></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="emp_last_name">Last Name <span class="asterisk"> * </span></label>
+                                                            <input id="emp_last_name" type="text" name="emp_last_name" class="form-control errorbox" minlength="0" maxlength="20" value="{{emp_obj.last_name}}" required />
+                                                            <span id="error2" style='color:#E15858; font-size:0.9em;'></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="emp_ctc">C.T.C <span class="asterisk"> * </span></label>
+                                                            <input id="ctc" type="number" name="ctc" class="form-control errorbox" minlength="0" maxlength="20" value="{{emp_obj.salary_details.ctc}}" required />
+                                                            <span id="error2" style='color:#E15858; font-size:0.9em;'></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="dob">Date of Birth<span class="asterisk"> *</span></label>
+                                                            <input type="text" id="dob"  value="{{emp_obj.date_of_birth|date:'Y-m-d'}}" name="dob" class="form-control errorbox" placeholder="yyyy-mm-dd" required />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="gender">Gender<span class="asterisk"> *</span></label>
+                                                            <select id="gender" name="gender" class="form-control errorbox" required>
+                                                                <option value="">-- Select Gender --</option> {{emp_obj.gender}}
+                                                                <option value="MALE" {% if emp_obj.gender == 'MALE' %}selected{% endif %}>Male</option>
+                                                                <option value="FEMALE" {% if emp_obj.gender == 'FEMALE' %}selected{% endif %}>Female</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                   
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="personal_email">Personal Email id<span class="asterisk"> * </span></label>
+                                                            <input id="office_email" type="email" style="text-transform:lowercase" name="personal_email" value="{{emp_obj.personal_email}}" class="form-control" required />
+                                                        </div>
+                                                        <span id="errorpernonal"></span>
+                                                    </div> 
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="userfile">Upload Photograph <span class="asterisk"> * </span></label>
+                                                            <span class="">
+                                                                <div class="input-group mb-3">
+                                                                    
+                                                                    <div class="custom-file rounded" style="border:1px solid #9E9E9E !important;">
+                                                                        <input type="file" id="userfile" name="employee_image" class="custom-file-input input-img" style="margin:0px 0px 0px 0px; min-width: 78%;" accept=".jpeg, .jfif, .jpg, .png, .gif, .doc, .pdf" />
+                                                                        <label class="custom-file-label border-0" for="userfile" style="color: white;"></label>
+                                                                        <label class="custom-file-label border-0" for="userfile" style="color: white;"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </span>
+                                                            
+                                                        </div>
+                                                        Current Image - <img src='{% if emp_obj.employee_image %}{{emp_obj.employee_image.url}}{% endif %}'  style="width:20%"/>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="emp_mother_name">Mother's Name<span class="asterisk"> * </span></label>
+                                                            <input id="emp_mother_name" type="text" name="emp_mother_name" class="form-control" value="{% for rel in emp_obj.employee_family_details.all %}{% if rel.relationship.relationship_type == 20 %}{{rel.name}}{% endif %}{% endfor %}" required />
+                                                            <span id="error3" style='color:#E15858; font-size:0.9em;'></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="emp_father_name">Father's Name<span class="asterisk"> * </span></label>
+                                                            <input id="emp_father_name" type="text" name="emp_father_name" class="form-control errorbox" required value="{% for rel in emp_obj.employee_family_details.all %}{% if rel.relationship.relationship_type == 10 %}{{rel.name}}{% endif %}{% endfor %}" required/>
+                                                            <span id="error4" style='color:#E15858; font-size:0.9em;'></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="mstatus">Marital Status<span class="asterisk"> * </span></label>
+                                                            <select id="mstatus" name="marital_status" class="form-control errorbox" value="Married" required>
+                                                                <option value="">-- Select Marital Status --</option>
+                                                                <option value="Married" {% if emp_obj.marital_status == 'Married' %}selected{% endif %}>Married</option>                                                                
+                                                                <option value="Single" {% if emp_obj.marital_status == 'Single' %}selected{% endif %}>Single</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>                                                  
+                                                    <div class="col-md-3 mdate" id="Married" style="display:block">
+                                                        <div class="form-group">
+                                                            <label for="married_date">Married Date</label>
+                                                            <input type="text" data-provide="datepicker" name="married_date" id="married_date" value="{{emp_obj.anniversary_date|date:'Y-m-d'}}" data-date-autoclose="true" class="form-control married_datecss" placeholder="mm/dd/yyyy" />
+                                                        </div>
+                                                    </div>
+                                                 
+                                                  
+                                                </div>
+                                                <div class="row clearfix"> 
+                                                    <!-- chandu -->
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="pnumber">PAN Number<span class="asterisk"> * </span></label>                                                            
+                                                            <input id="pnumber" type="text" style="text-transform: uppercase;" maxlength="10" name="pan_number" class="form-control errorbox" value="{% for doc in emp_obj.employee_document_ids.all %}{% if doc.document_type|slugify == 'pan-card' %}{{doc.document_number}}{% endif %}{% endfor %}" required/>
+                                                            <span id="errorpan" style='color:#E15858; font-size:0.9em;'></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="userfile">Upload PAN card</label>
+                                                            <span class="">
+                                                                <div class="input-group mb-3">
+                                                                    <div class="custom-file rounded" style="border:1px solid #9E9E9E !important;">
+                                                                        <input type="file" id="userfile" name="pan_doc" title="" class="custom-file-input input-img border-0 " style="margin:0px 0px 0px 0px; min-width: 78%;" accept=".jpeg, .jfif, .jpg, .png, .gif, .doc, .pdf"  />
+                                                                        <label class="custom-file-label border-0" for="userfile" style="color: white;"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </span>
+                                                            <span>
+                                                                Current
+                                                                {% for doc in emp_obj.employee_document_ids.all %}
+                                                                {% if doc.document_type|slugify == 'pan-card' and doc.select_file %}
+                                                                    <a href="/qxbox/{{doc.select_file.url}}">View</a>                                                        
+                                                                {% endif %}
+                                                            {% endfor %}                                                            
+                                                            </span>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="userfile">Upload PAN card</label>
+                                                            <span class="">
+                                                                <div class="input-group mb-3">
+                                                                    <div class="custom-file rounded" style="border:1px solid #9E9E9E !important;">
+                                                                        <input type="file" id="userfile" name="pan_doc" title="" class="custom-file-input input-img border-0 " style="margin:0px 0px 0px 0px; min-width: 78%;" accept=".jpeg, .jfif, .jpg, .png, .gif, .doc, .pdf"  />
+                                                                        <label class="custom-file-label border-0" for="userfile" style="color: white;"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </span>
+                                                            <span>
+                                                                Current
+                                                                {% for doc in emp_obj.employee_document_ids.all %}
+                                                                {% if doc.document_type|slugify == 'pan-card' and doc.select_file %}
+                                                                    <a href="/qxbox/{{doc.select_file.url}}">View</a>                                                        
+                                                                {% endif %}
+                                                            {% endfor %}                                                            
+                                                            </span>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group" >
+                                                            <label for="anumber">Aadhaar<span class="asterisk"> * </span></label>
+                                                            <input id="anumber" type="number" min='0' name="anumber" class="form-control errorbox" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==12) return false;" maxlength="12" minlength="12" value="{% for doc in emp_obj.employee_document_ids.all %}{% if doc.document_type|slugify == 'aadhaar-card' %}{{doc.document_number}}{% endif %}{% endfor %}"  required/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="userfile">Upload Aadhar card</label>
+                                                            <span class="">
+                                                                <div class="input-group mb-3">
+                                                                    <div class="custom-file rounded" style="border:1px solid #9E9E9E !important;">
+                                                                        <input type="file" id="userfile" name="aadhar_doc" title="" class="custom-file-input input-img" style="margin:0px 0px 0px 0px; min-width: 78%;" accept=".jpeg, .jfif, .jpg, .png, .gif, .doc, .pdf"  />
+                                                                        <label class="custom-file-label border-0" for="userfile" style="color: white;"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </span>
+                                                        
+                                                            <span>
+                                                                Current - 
+                                                                {% for doc in emp_obj.employee_document_ids.all %}
+                                                                    {% if doc.document_type|slugify == 'aadhaar-card' and doc.select_file %}
+                                                                        <a href="/qxbox/{{doc.select_file.url}}">View</a> 
+                                                                        {% endif %}                                                           
+                                                                {% endfor %}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="userfile">Upload Aadhar card</label>
+                                                            <span class="">
+                                                                <div class="input-group mb-3">
+                                                                    <div class="custom-file rounded" style="border:1px solid #9E9E9E !important;">
+                                                                        <input type="file" id="userfile" name="aadhar_doc" title="" class="custom-file-input input-img" style="margin:0px 0px 0px 0px; min-width: 78%;" accept=".jpeg, .jfif, .jpg, .png, .gif, .doc, .pdf"  />
+                                                                        <label class="custom-file-label border-0" for="userfile" style="color: white;"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </span>
+                                                        
+                                                            <span>
+                                                                Current - 
+                                                                {% for doc in emp_obj.employee_document_ids.all %}
+                                                                    {% if doc.document_type|slugify == 'aadhaar-card' and doc.select_file %}
+                                                                        <a href="/qxbox/{{doc.select_file.url}}">View</a> 
+                                                                        {% endif %}                                                           
+                                                                {% endfor %}
+
+                                                            </span>
+
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    <div class="col-md-3" >
+                                                        <div class="form-group">
+                                                            <label for="mobile_no">Mobile no.<span class="asterisk"> * </span></label>
+                                                            <input id="mobile_no"  name="mobile_no" min='0' value="{{emp_obj.phone}}" type="number" minlength="10" maxlength="10" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==10) return false;" class="form-control" required />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="alternate_mobile_no">Alternate Mobile no.</label>
+                                                            <input id="alternate_mobile_no" min='0' type="number" pattern="/^-?\d+\.?\d*$/" minlength="10" maxlength="10" onKeyPress="if(this.value.length==10) return false;" value="{{emp_obj.alternate_phone}}" name="alternate_mobile_no" class="form-control" />
+                                                        </div>
+                                                    </div>                                                      
+                                                </div>
+                                            </fieldset>
+                                            <br>
+                                            <div class="panel-body">
+                                                <fieldset>
+                                                    <div class="panel-heading">
+                                                        <h5 class="mb-20">Bank Details</h5>
+                                                    </div>
+                                                    <div class="row clearfix">
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="pnumber">Bank Name <span class="asterisk"> * </span></label>
+                                                                <input  type="text"   id="bank_name" name="bank_name" class="form-control" value="{{emp_obj.salary_details.bank_name}}" autocomplete="off" maxlength="50" required=""  data-parsley-required-message="Please Enter Valid Bank Name (i.e. SBI)."/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="pnumber">Bank Account number <span class="asterisk"> * </span></label>
+                                                                <input maxlength="16" minlength="9"  type="number" name="bank_ac_number" id="bank_ac_number" class="form-control" value="{{emp_obj.salary_details.account_number}}" required="" onkeypress="return event.charCode != 32" pattern="/^-?\d+\.?\d*$/" data-parsley-required-message="Please Enter Valid Bank Account(i.e. 234567890)" />
+                                                                <span id="errors_bank"  style="color: #E15858 !important;font-size: 0.8em !important;font-weight: 500 !important;"></span>
+                                                            </div>
+                                                        </div> 
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="pnumber">IFSC Code <span class="asterisk"> * </span></label>
+                                                                <input  type="text"  name="bank_ifsc_code" id="bank_ifsc_code" class="form-control " value="{{emp_obj.salary_details.ifsc_code}}" onkeypress="return event.charCode != 32" required=""  data-parsley-required-message="Please Enter Valid IFSC Code (i.e. SBIN0001361)." />
+                                                                <span id="errors_ifsc_code"  style="color: #E15858 !important;font-size: 0.8em !important;font-weight: 500 !important;"></span>
+                                                            </div>
+                                                        </div>        
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="pnumber">Branch <span class="asterisk"> * </span></label>
+                                                                <input  type="text"  name="bank_branch" id="bank_branch" class="form-control " value="{{emp_obj.salary_details.branch_name}}" required=""  maxlength="50" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="pnumber">PF Account Number</label>
+                                                                {% if emp_obj.emp_compliance_detail.pf_num %}
+                                                                    <input type="text"  name="pf_no"  id="pf_no" class="form-control " value="{{emp_obj.emp_compliance_detail.pf_num}}" style="text-transform: uppercase;" maxlength="22" />
+                                                                {% else %}
+                                                                    <input type="text"  name="pf_no"  id="pf_no" class="form-control " value="" style="text-transform: uppercase;" maxlength="22" />
+                                                                {% endif %}
+                                                            </div>
+                                                        </div> 
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="pnumber">UAN Number</label>
+                                                                {% if emp_obj.emp_compliance_detail.uan_num %}
+                                                                    <input  type="text" name="uan_no" id="uan_no" class="form-control " value="{{emp_obj.emp_compliance_detail.uan_num}}" onkeypress="return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57" maxlength="12" />
+                                                                {% else %}
+                                                                    <input  type="text" name="uan_no" id="uan_no" class="form-control " value="" onkeypress="return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57" maxlength="12" />
+                                                                {% endif %}
+                                                            </div>
+                                                        </div> 
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="pnumber">ESI Number</label>
+                                                                {% if emp_obj.emp_compliance_detail.esi_num %}
+                                                                    <input  type="text"  name="emp_esi_no" id="emp_esi_no" class="form-control" value="{{emp_obj.emp_compliance_detail.esi_num}}" autocomplete="off"   maxlength="17" />
+                                                                {% else %}
+                                                                    <input  type="text"  name="emp_esi_no" id="emp_esi_no" class="form-control" value="" autocomplete="off"   maxlength="17" />
+                                                                {% endif %}                                                                
+                                                            </div>
+                                                        </div> 
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="pnumber">Nominee Name </label>
+                                                                <input  type="text"  name="nominee_name" id="nominee_name" class="form-control" value="{{emp_obj.emp_compliance_detail.nominee_name}}" maxlength="50" />
+                                                            </div>
+                                                        </div> 
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="pnumber">Nominee Relationship </label>
+                                                                <input  type="text"  name="nominee_relationship" id="nominee_relationship" class="form-control" value="{{emp_obj.emp_compliance_detail.nominee_rel}}" maxlength="50"/>
+                                                            </div>
+                                                        </div>   
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="pnumber">Nominee Date of Birth (minimum Age 18 yrs.) </label>
+                                                                <input id="nominee_dob" type="text"  name="nominee_dob" class="form-control" value="{{emp_obj.emp_compliance_detail.nominee_dob|date:'Y-m-d'}}" data-date-format="yyyy-mm-dd" data-provide="datepicker"  />
+                                                            </div>
+                                                        </div>   
+                                                    </div>         
+                                                <fieldset>
+                                            </div>
+                                            <br>     
+                                            <div class="panel-body">                   
+                                                <fieldset>
+                                                    <div class="panel-heading">
+                                                        <h5 class="mb-20">Contact Details</h5>
+                                                    </div>
+                                                    <div class="row clearfix">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <h6>
+                                                                    Permanent Address
+                                                                </h6>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="curr_street">Address 1 <span class="asterisk"> * </span></label>
+                                                                        <input id="curr_street" name="curr_street" value="{{emp_obj.address_details.current_address_line1}}" type="text" class="form-control" required />
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="curr_street1">Address 2</label>
+                                                                        <input id="curr_street1" name="curr_street1" value="{{emp_obj.address_details.current_address_line2}}" type="text" class="form-control" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    <div class="form-group">
+                                                                        <label for="per_pincode">Pincode<span class="asterisk"> * </span></label>
+                                                                        <input id="per_pincode" name="per_pincode" oninput="resetPincode()" pattern="/^-?\d+\.?\d*$/" onkeypress="if(this.value.length==6) return false;" min='0' type="number" value="{{emp_obj.address_details.permanent_pincode}}" class="form-control" required  style="width: 48%;" />
+                                                                    </div>
+                                                                    <span style="font-size:13px;">Note:Please enter the area pincode in order to populate the City and State</span>
+                                                                </div>
+
+                                                                <!-- state cur -->
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="single-selection">State</label>
+                                                                        <div class="multiselect_div">
+                                                                            <input id="state_id" name="per_state" value="{{emp_obj.address_details.permanent_state}}" readonly class="form-control" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!--city cur  -->
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="single-selection">City</label>
+                                                                        <div class="multiselect_div">
+                                                                            <input id="city_id" name="per_city" value="{{emp_obj.address_details.permanent_city}}" readonly class="form-control" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <h6>
+                                                                    <input id="address_type_id1" name="address_type_id1" value="2" type="checkbox" /> Current Address
+                                                                </h6>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="per_street">Address 1<span class="asterisk"> * </span></label>
+                                                                        <input id="per_street" value="{{emp_obj.address_details.permanent_address_line1}}" name="per_street" type="text" class="form-control" required />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="per_street1">Address 2<span class="asterisk"> * </span></label>
+                                                                        <input id="per_street1" name="per_street1" value="{{emp_obj.address_details.permanent_address_line2}}" type="text" class="form-control" required />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    <div class="form-group ">
+                                                                        <label for="per_pincode">Pincode<span class="asterisk"> * </span></label>
+                                                                        <input id="per_pincode" name="per_pincode" oninput="resetPincode()" pattern="/^-?\d+\.?\d*$/" onkeypress="if(this.value.length==6) return false;" min='0' type="number" value="{{emp_obj.address_details.permanent_pincode}}" class="form-control" required  style="width: 48%;"/>
+                                                                    </div>
+                                                                    <span style="font-size:13px;">Note:Please enter the area pincode in order to populate the City and State</span>
+                                                                </div>
+
+                                                                <!-- state per-->
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="single-selection">State </label>
+                                                                        <div class="multiselect_div">
+                                                                            <input id="state_id1" name="curr_state" value="{{emp_obj.address_details.current_state}}" readonly class="form-control" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!--city per  -->
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="single-selection">City</label>
+                                                                        <div class="multiselect_div">
+                                                                            <input id="city_id1" name="curr_city" value="{{emp_obj.address_details.current_city}}" readonly class="form-control" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                                                        
+                                                       
+                                                    </div>
+                                                </fieldset>
+                                                <script type="text/javascript"></script>                                                
+                                                <div class="row text-right">
+                                                    <div class="col-md-12">                                                      
+                                                        <button class="btn btn-primary addBtn nextBtn" id="Next1" type="button">Next</button>
+                                                    </div>
+                                                </div>
+                                            </div>                      
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-primary setup-content" id="step-2">
+                                        <div class="panel-heading">
+                                            <h5 class="mb-20">Employment Details</h5>
+                                        </div>
+                                        <div class="panel-body">
+                                            <fieldset>
+                                                <div class="row clearfix">
+                                                    <div class="col-md-3" >
+                                                        <div class="form-group">
+                                                            <label for="organ_id">Company Name <span class="asterisk"> * </span></label>                                                            
+                                                            <input id="organ_idd" name="organ_idd" value="{{emp_obj.company.company_name}}"  class="form-control" readonly />
+                                                        </div>
+                                                    </div>
+                                                                
+                                                  
+                                                    <div class="col-md-3" >
+                                                        <div class="form-group">
+                                                            <label for="dept_id">Department Name<span class="asterisk"> * </span></label>
+                                                            <select id="dept_id" name="dept_id" class="form-control" required style="border:1px solid #9E9E9E !important;">
+                                                                {% for i in dept_list %}
+                                                                    <option value="{{i.id}}" {% if emp_obj.work_details.department.id == i.id %}selected{% endif %}>{{i.name}}</option>
+                                                                {% endfor %}
+                                                                
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3" >
+                                                        <div class="form-group">
+                                                            <label for="designation_id">Designation Name<span class="asterisk"> * </span></label>
+                                                            <select id="designation_id" name="designation_id" class="form-control errorbox" required>
+                                                                <option value="">-- Select Designation --</option>
+                                                                {% for i in desig_list %}
+                                                                    <option value="{{i.id}}" {% if emp_obj.work_details.designation.id == i.id %}selected{% endif %}>{{i.name}}</option>
+                                                                {% endfor %}
+
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3" >
+                                                        <div class="form-group">
+                                                            <label for="manager_id">Reporting Manager</label>                                                            
+                                                            <select id="manager_id" name="manager_id" class="form-control">
+                                                                <option value="">-- Select Manager --</option>
+                                                                {% for i in employee_list %}
+                                                                    <option value="{{i.id}}" {% if emp_obj.employee.first.manager.id == i.id %}selected{% endif %}>{{i.first_name}} {{i.middle_name}} {{i.last_name}}</option>
+                                                                {% endfor %}                                                            
+                                                            </select>
+                                                        </div>
+                                                    </div>                                                  
+                                     
+                                                    <div class="col-md-3" >
+                                                        <div class="form-group">
+                                                            <label for="official_email">Official Email id<span class="asterisk"> * </span></label>
+                                                            <input id="official_email"  type="email" name="official_email" style="text-transform:lowercase" value="{{emp_obj.official_email}}" class="form-control" required />
+                                                        </div>
+                                                        <span id="errorpernonal"></span>
+                                                    </div>
+                                                    <div class="col-md-3" >
+                                                        <div class="form-group">
+                                                            <label for="joining_date">Date of Joining<span class="asterisk"> * </span></label>
+                                                            <input type="text"  data-provide="datepicker" id="joining_date" value="{{emp_obj.date_of_join|date:'Y-m-d'}}" name="joining_date" class="form-control" placeholder="yyyy-mm-dd" required />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="active">Status <span class="asterisk"> *</span></label>
+                                                            <div class="multiselect_div">
+                                                                <select id="isactive" name="is_active"  class="form-control" required>                                                                    
+                                                                    <option value="" >-- Select --</option>
+                                                                    <option value="Active" {% if emp_obj.work_details.employee_status == "Active" %}selected{% endif %}>Active</option>
+                                                                    <option value="Inactive" {% if not emp_obj.work_details.employee_status == "Inactive" %}selected{% endif %}>Inactive</option>
+                                                                    <option value="YetToJoin" {% if not emp_obj.work_details.employee_status == "YetToJoin" %}selected{% endif %}>Yet To Join</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- By Uday Start -->                           
+                                                    <div class="col-md-3" id="payrollhide">
+                                                        <div class="form-group">
+                                                            <label for="active">Payroll Active/Inactive <span class="asterisk"> *</span></label>
+                                                            <div class="multiselect_div">
+                                                                <select id="payroll_on_of" name="payroll_on_of"  class="form-control" required>
+                                                                    <option value="" >-- Select --</option>
+                                                                    <option value="1" {% if emp_obj.payroll_status %}selected{% endif %}>Active</option>
+                                                                    <option value="2" {% if not emp_obj.payroll_status %}selected{% endif %}>Inactive</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3" id="lastworkingday">
+                                                        <div class="form-group">
+                                                            <label for="active">Resignation Date: </label>
+                                                            <input id="resignation_date" type="text" value="" name="resignation_date" class="form-control" data-date-format="yyyy-mm-dd" data-provide="datepicker" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3" >
+                                                        <div class="form-group">
+                                                            <label for="notice_period">Notice Period (in Days)<span class="asterisk"> * </span></label>
+                                                            <input type="number"  id="notice_period" value="{{emp_obj.date_of_join}}" name="notice_period" class="form-control" placeholder="0" min="0"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3" id="commentsh">
+                                                        <div class="form-group">
+                                                            <label for="active">Comments: </label>
+                                                            <textarea id="comments" type="text" name="comments" class="form-control"  /></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3" id="lastworkingday">
+                                                        <div class="form-group">
+                                                            <label for="active">Termination Date: </label>
+                                                            <input id="termination_date" type="text" name="termination_date" class="form-control" value="" data-date-format="yyyy-mm-dd" data-provide="datepicker" />
+                                                        </div>
+                                                    </div>
+                                                    <!-- By Uday End   -->
+                                                </div>
+                                            </fieldset>
+                                            <br>
+                                            <fieldset>
+                                            <div class="panel-body">
+                                                <div class="panel-heading">
+                                                    <h5 class="mb-20">Attachments</h5>
+                                                </div>  
+                                                <div class="row clearfix">                                                    
+                                                    <div class="col-md-12" id="attachmentdoc">
+                                                    
+                                                    <div>                             
+                                                        <ul>
+                                                            <li> Allowed only files with extension (jpg, png, gif, doc, pdf). </li>
+                                                            <li>Maximum number of allowed files 10 with 1MB for each.</li>
+                                                        </ul>
+                                                        <!--To give the control a modern look, I have applied a stylesheet in the parent span.-->
+                                                        
+                                                        <div id="filediv" class=" btn  mb-3 col-md-12" style="width:100%">
+                                                            <input type="text" id="filetitle" name="attachment_titles" class="newtitlecls form-control" placeholder="Title" />
+                                                            <input name="attachment_files" type="file" id="files" style="margin-left: -8%;cursor: pointer;" />                                                          
+                                                            <button class="deleter ui-link col-md-1 btn btn-primary " href="javascript:void(0);" onclick="$(this).parent().remove()">Delete</button>                                                                
+                                                            <br />
+                                                        </div>
+
+                                                        {% for attachment in emp_obj.employee_documentation_work.all %}                                                             
+                                                            <div id="filediv" class=" btn  mb-3 col-md-12 border border-danger" style="width:100%">
+                                                                <input type="hidden" value="{{attachment.id}}" name="attachment_id" />
+                                                                <input type="text" id="filetitle" name="attachment_titles_id" class="newtitlecls form-control" placeholder="Title" value="{{attachment.document_title}}" />
+                                                                <input name="attachment_files_id" type="file" id="files" style="margin-left: -8%;cursor: pointer;" />
+                                                                View - <a href='{{attachment.select_file.url}}'>View</a>
+                                                                <button class="deleter ui-link col-md-1 btn btn-primary " href="javascript:void(0);" onclick="$(this).parent().remove()">Delete</button>                                                                
+                                                                <br />
+                                                            </div>
+                                                           
+                                                        {% endfor %}
+                                                        
+
+                                                        <div id="add_more" class="upload addBtn border-0" style="color: #fff; background-color: #007bff;  border-color: #007bff; font-size: 14px; font-weight: 300; border: 1px solid transparent; padding: 0.375rem 0.75rem;font-size: 1rem;line-height: 1.5; width: 135px; margin-bottom: 30px;">Add More Files</div>
+                                                        <div class="clearfix"></div>
+                                                            <output id="Filelist"></output>
+                                                        </div>
+                                                    </div>
+                                                </div> 
+                                                    
+                                                </fieldset>  
+                                                <div class="row text-right">
+                                                    <div class="col-md-12">                                                        
+                                                        <button class="btn btn-success pull-right"  type="submit">Update</button>
+                                                    </div>
+                                                </div>                      
+                                            </div>
+                                        </div>  
+                                    </div>
+                                
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+    <script src="/qxbox/{% static 'assets/js/emp.js' %}"></script>
+
+
+
+    <script>
+        $(document).ready(function() {
+           
+
+            $('#address_type_id').change(function() {
+                var check = $('#address_type_id').prop('checked');
+                if (check) {
+                    $('#per_street').val($('#curr_street').val());
+                    $('#per_street1').val($('#curr_street1').val());
+                    $('#per_pincode').val($('#curr_pincode').val());
+                    $('#state_id').val($('#state_id1').val());
+                    $('#city_id').val($('#city_id1').val());  
+                    
+                    $('#per_street').attr("readonly","readonly");
+                    $('#per_street1').attr("readonly","readonly");
+                    $('#per_pincode').attr("readonly","readonly");
+                    $('#state_id').attr("readonly","readonly");
+                    $('#city_id').attr("readonly","readonly");
+                }else{
+                    $('#per_street').removeAttr("readonly");
+                    $('#per_street1').removeAttr("readonly");
+                    $('#per_pincode').removeAttr("readonly");
+                    $('#state_id').removeAttr("readonly");
+                    $('#city_id').removeAttr("readonly");
+                }                
+
+            });
+
+
+
+
+        });
+
+     
+        $('#emp_code').keypress(function(e) {
+            var regex = new RegExp("^[a-zA-Z ]+$");
+            var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+            if (regex.test(strigChar)) {
+            return true;
+            }
+            return false
+        });
+
+        $('#last_working_day').keypress(function(e) {
+            var regex = new RegExp("^[a-zA-Z0-9 ]+$");
+            var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+            if (regex.test(strigChar)) {
+            return true;
+            }
+            return false
+        });
+
+        $('#emp_first_name').keypress(function(e) {
+            var regex = new RegExp("^[a-zA-Z ]+$");
+            var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+            if (regex.test(strigChar)) {
+            return true;
+            }
+            return false
+        });
+
+        $('#emp_middle_name').keypress(function(e) {
+            var regex = new RegExp("^[a-zA-Z ]+$");
+            var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+            if (regex.test(strigChar)) {
+            return true;
+            }
+            return false
+        });
+
+        $(document).ready(function() {
+            $('#emp_last_name').keypress(function(e) {
+            var regex = new RegExp("^[a-zA-Z ]+$");
+            var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+            if (regex.test(strigChar)) {
+                return true;
+            }
+            return false
+            });
+
+            $('#emp_mother_name').keypress(function(e) {
+            var regex = new RegExp("^[a-zA-Z ]+$");
+            var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+            if (regex.test(strigChar)) {
+                return true;
+            }
+            return false
+            });
+
+            $('#emp_spouse_name').keypress(function(e) {
+            var regex = new RegExp("^[a-zA-Z ]+$");
+            var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+            if (regex.test(strigChar)) {
+                return true;
+            }
+            return false
+            });
+
+            $("#office_email").change(function() {
+            var email = $(this).val();
+            //var regex = /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/;
+            var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            
+            if (email.match(regex)) {
+                //swal(" Valid PAN number");
+                erroremail.innerHTML = "";
+            } else {
+                $("#office_email").val("");
+                erroremail.innerHTML = "<span style='color:#E15858; font-size:0.9em;float:right;'>" + "Invalid Email!</span>"
+                //swal("Invalid PAN number");                
+            }
+            });
+
+            $("#personal_email").change(function() {
+            var personal_email = $(this).val();
+            var regex = /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/;
+            if (personal_email.match(regex)) {
+                //swal(" Valid PAN number");
+                errorpernonal.innerHTML = "";
+            } else {
+                $("#personal_email").val("");
+                errorpernonal.innerHTML = "<span style='color:#E15858; font-size:0.9em;float:right;'>" + "Invalid Email!</span>"
+                //swal("Invalid PAN number");                
+            }
+            });
+            $('#emp_father_name').keypress(function(e) {
+            var regex = new RegExp("^[a-zA-Z ]+$");
+            var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+            if (regex.test(strigChar)) {
+                return true;
+            }
+            return false
+            });
+
+            $("#pnumber").change(function() {
+            var pannumber = $(this).val();
+            var regex = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
+            if (pannumber.match(regex) && (pannumber[3]=="P" || pannumber[3]=="p")) {
+                errorpan.innerHTML = "";
+                //swal(" Valid PAN number");
+            } else {
+                //errorpan.innerHTML = "<span style='color:#E15858; font-size:0.9em;float:right;'>" + "Invalid PAN number!</span>"
+                swal("Please Input valid PAN i.e. (HJHPH7845U)");
+                return false;
+            }
+            });
+
+            $('#dob').datepicker({
+            format: "yyyy-mm-dd",
+            endDate: '-18y'
+            });
+
+            $('#huswife').datepicker({
+            endDate: '-18y'
+            });
+
+            $('#nominee_dob').datepicker({
+            endDate: '-18y'
+            });
+
+            $('#termination_date').datepicker({
+            startDate: new Date()
+            });
+
+            $('#resignation_date').datepicker({
+            startDate: new Date()
+            });
+
+        
+            $('#nationality').keypress(function(e) {
+            var regex = new RegExp("^[a-zA-Z ]+$");
+            var strigChar = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+            if (regex.test(strigChar)) {
+                return true;
+            }
+            return false
+            });
+        });
+
+       </script>
+
+    <script>
+        function lettersOnly() {
+            var charCode = event.keyCode;
+            if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || charCode == 8)
+                return true;
+            else
+                return false;
+        }
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            //  To add new input file field dynamically, on click of "Add More Files" button below function will be executed.
+            $('.deletedocuments').on('click', function() {
+            var id = $(this).attr('id');
+            var status = 'delete';
+            $.ajax({
+                type: 'POST',
+                url: './' + 'emp/employees/deletedocuments',
+                data: {
+                id: id
+                },
+                success: function(response) {
+                if (response == 'success') {
+                    //alert($("#img-wrapcount img").length);
+                    if ($("#img-wrapcount img").length == 0) {
+                    //  $("#document_type").removeAttr('selected');
+                    $("#document_type").find('option:selected').removeAttr('selected');             
+                    }            
+                    return true;
+                } else {
+                    swal('Error!', 'Please try again..)', 'error');
+                }
+                }
+            });
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#joining_date').datepicker({
+            format: "yyyy-mm-dd",
+            startDate: new Date(new Date().getFullYear() - 17, 0, 1),
+            //endDate: new Date(new Date().getFullYear() + 1, 3, 0)
+            endDate: new Date(new Date().setMonth(new Date().getMonth() + 3))
+            });
+
+            $('#last_working_day').datepicker({
+                format: "yyyy-mm-dd",
+                startDate: new Date($('#joining_date').val()),
+                //startDate: new Date(new Date().getMonth() - 6, 0, 1),
+                endDate: new Date(new Date().setMonth(new Date().getMonth() + 6))
+            });
+
+            $('#married_date').datepicker({
+                format: "yyyy-mm-dd",
+                startDate: new Date('1950-01-01'),
+                endDate: new Date()
+            });
+        
+            var mstatuscheck = $('#mstatus').val();
+
+            if (mstatuscheck == '' || mstatuscheck == 'Single') {
+                // $('#married_date').val("");
+                // $('#emp_spouse_name').val("");
+                // $('#huswife').val("");
+                // $("#spousename").hide();
+                // $("#spousebirthday").hide();
+                // $("#hide1").hide();
+                // $("#hide2").hide();
+                $("#Married").hide();
+                $("#spousename").hide();
+                $("#spousebirthday").hide();
+            }
+
+            $('#mstatus').change(function() {
+            var mstatus = $('#mstatus').val();
+            if (mstatus == 'Single' || mstatus == '') {
+                // $('#married_date').val("");
+                // $('#emp_spouse_name').val("");
+                // $('#huswife').val("");
+                // $("#spousename").hide();
+                // $("#spousebirthday").hide();
+                // $("#hide1").hide();
+                // $("#hide2").hide();
+                $("#Married").hide();
+                $("#spousename").hide();
+                $("#spousebirthday").hide();
+            }
+
+            if (mstatus == 'Married') {
+                // $("#spousename").show();
+                // $("#spousebirthday").show();
+                // $("#hide1").show();
+                // $("#hide2").hide();
+                $("#Married").show();
+                $("#spousename").show();
+            }else if(mstatus == 'Widowed' || mstatus == 'Separated' || mstatus == 'Divorced'){
+                // $("#spousename").show();
+                // $("#spousebirthday").show();
+                // $("#hide1").show();
+                // $("#hide2").show();
+                $("#Married").show();
+                $("#spousename").show();  
+            }
+
+
+            });
+
+            $('#isactive').change(function() {  
+            var isactive = $('#isactive').val();
+
+            if (isactive == 0 ) {          
+                $("#last_working_day").attr('required', false);
+                $("#comments").attr('required', false);
+                $("#reason").attr('required', false); 
+                // By Uday End 
+                // $('#last_working_day').val(); 
+            }else if (isactive == 1 || isactive == "") {  
+                $("#commentsh").show();     
+                $("#reasonhide").show();
+                $("#lastworkingday").show();
+                $("#last_working_day").attr('required', false);
+                $("#comments").attr('required', false);
+                $("#reason").attr('required', false);
+                // By Uday End 
+            }
+            });
+        });
+        
+        $(document).ready(function() {
+
+            $("#per_pincode").blur1(function() {
+                var per_pincode1 = $("#per_pincode").val();
+                
+                $.getJSON("https://api.postalpincode.in/pincode/" + per_pincode1, function (data) {
+                    response = data[0]
+                    if (response['Status'] != 'Error') {                    
+                        
+                        $("#state_id").val(response['PostOffice'][0].State);
+                        $("#city_id").val(response['PostOffice'][0].District);
+                        // $("#state_id").val(getdata.state);
+                        // $('#address_type_id').prop('checked', false);
+                    } else {                    
+                        swal("Please enter the correct pincode");
+
+                    }
+                })           
+            });
+
+            $("#curr_pincode").blu1r(function() {
+
+                var curr_pincode = $("#curr_pincode").val();
+                
+                $.getJSON("https://api.postalpincode.in/pincode/" + curr_pincode, function (data) {
+                    response = data[0]
+                    if (response['Status'] != 'Error') {                    
+                        
+                        $("#state_id1").val(response['PostOffice'][0].State);
+                        $("#city_id1").val(response['PostOffice'][0].District);
+                        // $("#state_id").val(getdata.state);
+                        // $('#address_type_id').prop('checked', false);
+                    } else {                    
+                        swal("Please enter the correct pincode");
+
+                    }
+                })           
+            })
+        });
+
+        function resetPincode() {
+            document.getElementById('city_id').value = '';
+            document.getElementById('state_id').value = '';
+        }
+     
+
+        $(document).ready(function() {
+            $("#bank_ac_number").change(function() {
+                    var inputVal = $(this).val();
+                    var regg = /^\d{9,16}$/;
+                    if (regg.test(inputVal)) {
+                        errors_bank.innerHTML = "";
+                    } else {
+                        //$("#bank_ac_number").val("");		
+                //$("#bank_ac_number-error").hide();
+                return false;					
+                    }
+                });
+
+            $("#bank_ac_number").blur(function() { 
+            var bank_ac_number = $("#bank_ac_number").val();
+            var emp_id = 2;
+            var regg = /^\d{9,16}$/;
+
+            if(bank_ac_number!='' && regg.test(bank_ac_number)){      
+                $.ajax({
+                type: "POST",
+                url: './' + 'emp/employees/find_ac_number/',
+                data: {
+                bank_ac_number: bank_ac_number,
+                emp_id: emp_id
+                },
+                success: function(response) {
+                if (response != 0) {
+                    swal('This Bank Account Number already exists, try again!');
+                }
+                }
+            });
+            }else{      
+            //bank_ac_number-error.innerHTML = "Please Enter Valid Bank Account(i.e. 234567890)";      
+            //$("#bank_ac_number-error").remove();     
+            swal('Please Enter Valid Bank Account(i.e. 234567890)');
+            //$("#bank_ac_number").focus();
+            return false;
+            }
+            });
+
+            $("#bank_ifsc_code").blur(function() {
+                    var inputvalues = $(this).val(); 
+                    var reg = /[A-Z|a-z]{4}[0][a-zA-Z0-9]{6}$/;
+                    if (inputvalues.match(reg)) {
+                        error.innerHTML = "";
+                    } else {
+                //errors_ifsc_code.innerHTML ="Please Enter Valid IFSC Code (i.e. SBIN0001361).";
+                swal('Please Enter Valid IFSC Code (i.e. SBIN0001361).');  
+                    }
+                });
+
+            
+            // $("#pf_no").blur(function() {		 
+            //         var inputVal = $(this).val();      
+            //         var regg = /^[A-Z]{5}\d{17}$/gm;	
+            //             if (regg.test(inputVal)) {	
+            //                 var pf_no = $("#pf_no").val();
+            //                 var emp_id = 2;
+            //                 $.ajax({
+            //                     type: "POST",
+            //                     url: "./emp/employees/find_pfumber/",
+            //                     data: { pf_no: pf_no,	emp_id: emp_id },
+            //                     success: function(response) {
+            //                         if (response != 0) {								
+            //                             swal('This PF Number already exists, try again!');
+            //                         }
+            //                     }
+            //                 });
+            //             } else {
+            //     //$("#pf_no").val("");
+            //     swal('please enter valid PF Account Number!');
+            //         return false;				
+            //             }		
+            //     });
+
+
+                // $("#uan_no").blur(function() {		 
+                //     var inputVal = $(this).val();      
+                //     var regg = /^\d{12}$/;	
+                //         if (regg.test(inputVal)) {	
+                //             var uan_no = $("#uan_no").val();
+                //             var emp_id = 2;
+                //             $.ajax({
+                //                 type: "POST",
+                //                 url: "./emp/employees/find_unnumber/",
+                //                 data: { uan_no: uan_no,	emp_id: emp_id },
+                //                 success: function(response) {
+                //                     if (response != 0) {								
+                //                         swal('This UAN Number already exists, try again!');
+                //                     }
+                //                 }
+                //             });
+                //         } else {
+                //     //$("#uan_no").val("");
+                //     swal('please enter valid UAN Number!');
+                //         return false;				
+                //             }		
+                //     });
+
+                    // $("#emp_esi_no").blur(function() {		 
+                    // 		var inputVal = $(this).val();      
+                    // 		var regg = /^([1-9])([0-9]){16}?$/;
+                    // 			if (regg.test(inputVal)) {	
+                    // 				var emp_esi_no = $("#emp_esi_no").val();
+                    // 				 var emp_id = 2;
+                    // 				$.ajax({
+                    // 					type: "POST",
+                    // 					url: "<?//=site_url('emp/employees/find_esino/'); ?>",
+                    // 					data: { emp_esi_no: emp_esi_no,	emp_id: emp_id },
+                    // 					success: function(response) {
+                    // 						if (response != 0) {								
+                    // 							swal('This ESI Number already exists, try again!');
+                    // 						}
+                    // 					}
+                    // 				});
+                    // 			} else {
+                    //          $("#pf_no").val("");
+                    //          swal('please enter valid ESI Number!');
+                    //           return false;				
+                    // 			}		
+                    // 	});
+
+                });
+
+	            function resetPincode1() {
+                    document.getElementById('city_id1').value = '';
+                    document.getElementById('state_id1').value = '';
+                }
+            </script>
+
+            <script>
+                function readURL(input, imgControlName) {
+                    if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $(imgControlName).attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                    }
+                }
+
+                $("#userfile").change(function() {
+                    // add your logic to decide which image control you'll use
+                    var imgControlName = "#ImgPreview";
+                    readURL(this, imgControlName);
+                    $('.preview1').addClass('it');
+                    $('.btn-rmv1').addClass('rmv');
+                });
+
+                $("#removeImage1").click(function(e) {
+                    //alert("cross button clicked");
+                    $('.btn-rmv1').removeClass('rmv');
+                    e.preventDefault();
+                    $("#userfile").val("");
+                    $("#ImgPreview").attr("src", "");
+                    $('.preview1').removeClass('it');
+                    $('#ImgPreview').removeClass('pdfimage');
+                });
+
+                $("#pannumberphoto").change(function() {
+                    // add your logic to decide which image control you'll use
+                    var imgControlName = "#ImgPreview1";
+                    readURL(this, imgControlName);
+                    $('.preview11').addClass('it');
+                    $('.btn-rmv11').addClass('rmv');
+                });
+
+                $("#removeImage11").click(function(e) {
+                    //alert("cross button clicked");
+                    $('.btn-rmv11').removeClass('rmv');
+                    e.preventDefault();
+                    $("#pannumberphoto").val("");
+                    $("#ImgPreview1").attr("src", "");
+                    $('.preview11').removeClass('it');
+                    $('#ImgPreview1').removeClass('pdfimage');
+                });
+
+                $("#anumberphoto").change(function() {
+                    // add your logic to decide which image control you'll use
+                    var imgControlName = "#ImgPreview2";
+                    readURL(this, imgControlName);
+                    $('.preview12').addClass('it');
+                    $('.btn-rmv12').addClass('rmv');
+                });
+                $("#removeImage12").click(function(e) {
+                    //alert("cross button clicked");
+                    $('.btn-rmv12').removeClass('rmv');
+                    e.preventDefault();
+                    $("#anumberphoto").val("");
+                    $("#ImgPreview2").attr("src", "");
+                    $('.preview12').removeClass('it');
+                    $('#ImgPreview2').removeClass('pdfimage');
+                });
+            </script>
+
+            <script type="text/javascript">
+                $(document).ready(function() {
+                
+                    $("#bank_name").change(function() {
+                        var inputvalues = $(this).val();
+                        var reg = /^[a-zA-Z ]*$/;
+                        if (inputvalues.match(reg)) {
+                            error_bank.innerHTML = "";
+                        } else {
+                            $("#bank_name").val("");
+                            $('#error_bank').show();
+                            setTimeout(function() {
+                                $('#error_bank').hide().fadeOut('slow');
+                            }, 3000);
+                        }
+                    });
+
+                    $("#bank_branch").change(function() {
+                        var inputvalues = $(this).val();
+                        var reg = /^[a-zA-Z ]*$/;
+                        if (inputvalues.match(reg)) {
+                            error_branch.innerHTML = "";
+                        } else {
+
+                            //$("#bank_branch").val("");
+                        //	$('#error_branch').show();
+                            // setTimeout(function() {
+                            // 	$('#error_branch').hide().fadeOut('slow');
+                            // }, 3000);
+                        }
+                    });
+
+                    $("#nominee_name").change(function() {
+                        var inputvalues = $(this).val();
+                        var reg = /^[a-zA-Z ]*$/;
+                        if (inputvalues.match(reg)) {
+                            error_nominee_name.innerHTML = "";
+                        } else {
+                            $("#nominee_name").val("");
+                            $('#error_nominee_name').show();
+                            setTimeout(function() {
+                                $('#error_nominee_name').hide().fadeOut('slow');
+                            }, 3000);
+                        }
+                    });
+
+                    $("#nominee_relationship").change(function() {
+                        var inputvalues = $(this).val();
+                        var reg = /^[a-zA-Z ]*$/;
+                        if (inputvalues.match(reg)) {
+                            error_nominee_relationship.innerHTML = "";
+                        } else {
+                            $("#nominee_relationship").val("");
+                            $('#error_nominee_relationship').show();
+                            setTimeout(function() {
+                                $('#error_nominee_relationship').hide().fadeOut('slow');
+                            }, 3000);
+                        }
+                    });
+
+                    $('#nominee_dob').datepicker({
+                        endDate: '-1d'
+                    });
+            });
+
+            function validatePF() {
+                var inputVal = $("#pf_no").val();
+                if (!inputVal) {
+                    return true;
+                }
+                var regg = /^[A-Z]{5}\d{17}$/gm;
+                return regg.test(inputVal);
+            }
+
+            function validateUAN() {
+                var inputVal = $("#uan_no").val();
+                if (!inputVal) {
+                    return true;
+                }
+                var regg = /^\d{12}$/;
+                return regg.test(inputVal);
+            }
+
+            function validateESItest() {
+                var inputVal = $("#emp_esi_no").val();
+                if (!inputVal) {
+                    return true;
+                }
+                var regesi = /^([1-9])([0-9]){16}?$/;
+                return regesi.test(inputVal);
+            }  
+        </script>
+
+        
+    <!-- Javascript -->
+
+    <script>
+        var abc = 0; //Declaring and defining global increement variable
+        var xyz = 1;
+        $(document).ready(function() {
+            //To add new input file field dynamically, on click of "Add More Files" button below function will be executed
+            $('#add_more').click(function() {
+            if (xyz <= 9) {
+                $(this).before($("<div/>", {
+                id: 'filediv',
+                class: 'btn mb-3 col-md-12'
+                }).fadeIn('slow').append(
+                $("<input/>", {
+                    name: 'attachment_titles',
+                    type: 'text',
+                    id: 'filetitle',
+                    class: "newtitlecls form-control"
+                }),
+                $("<input/>", {
+                    name: 'attachment_files',
+                    type: 'file',
+                    id: 'files',
+                    class: 'files'+xyz,
+                    style:'cursor: pointer',
+                }),
+                $("<button class='deleter" + xyz + " ui-link col-md-1 btn btn-primary ' href='javascript:void(0);'>Delete</a>").click(function() {
+                    $(this).parent().remove();
+                    --xyz; 
+                }),
+                $("<br/>")
+                ));
+            } else {
+                document.getElementById('files').value = "";
+                swal('Maximum number of allowed files 10 only.');                
+            }
+            if(xyz < 10){ xyz += 1;}
+            });
+
+            //following function will executes on change event of file input to select different file	
+            $('body').on('change', '#files', function() {
+            if (this.files && this.files[0]) {
+                abc += 1; //increementing global variable by 1
+                var filesize1 = this.files[0].size / 1024;
+                if ((this.files[0].size / 1024) > 1099 || (this.files.size / 1024) > 1099) {
+                document.getElementById('files').value = "";
+                var classname2 =$(this).attr('class');
+                $('.'+classname2).val("");   
+                swal('The maximum file size for uploads should not exceed 1MB');
+                return false;
+                }                                
+                // var fileInput = document.getElementById('files');
+                var filePath = (this.files[0].name);                                    
+                var allowedExtensions = /(\.jpg|\.JPG|\.jfif|\.JFIF|\.jpeg|\.JPEG|\.gif|\.GIF|\.png|\.PNG|\.pdf|\.PDF|\.doc|\.DOC|\.docx|\.DOCX|\.xlsx|\.xlsm|\.xls|\.csv)$/;
+                // $.map($('#files').get(0).files[0], function(file) { 
+                if (filePath != "" && !allowedExtensions.exec(filePath)) {
+                document.getElementById('files').value = "";  
+                var classname1 =$(this).attr('class');
+                $('.'+classname1).val("");   
+                swal("Only jpeg, jfif, jpg, png, gif, doc, pdf file types are allowed!. Sorry we cannot upload the document of the format you trying to upload. Please upload the document of correct format and hit update button to upload the document");
+                return false;
+                }
+                //});
+                //alert(document.getElementById('files').value);
+                if (allowedExtensions.exec(filePath)) {
+                var z = abc - 1;
+                var x = $(this).parent().find('#previewimg' + z).remove();
+                var allowedExtensionspdf = /(\.pdf|\.PDF)$/;
+                var allowedExtensionsdoc = /(\.doc|\.DOC|\.docx|\.DOCX)$/;
+                                    var allowedExtensionsxls = /(\.xlsx|\.xlsm|\.xls|\.csv)$/;
+
+                if (allowedExtensionspdf.exec(filePath)) {
+                    $(this).before("<div id='abcd" + abc + "' class='abcd'>"+filePath+"</div>");
+                                    } else if (allowedExtensionsxls.exec(filePath)) {
+                    $(this).before("<div id='abcd" + abc + "' class='abcd'>"+filePath+"</div>");
+                } else if (allowedExtensionsdoc.exec(filePath)) {
+                    $(this).before("<div id='abcd" + abc + "' class='abcd'>"+filePath+"</div>");
+                } else {
+                    $(this).before("<div id='abcd" + abc + "' class='abcd'>"+filePath+"</div>");
+                }
+
+                var reader = new FileReader();
+                reader.onload = imageIsLoaded;
+                reader.readAsDataURL(this.files[0]);
+                $(this).hide();
+                $("#abcd" + abc).append($("<img/>", {
+                    id: 'img',
+                    src: './assets/images/x.png',
+                    alt: 'delete',
+                    style:'float: revert'
+                }).click(function() {
+                    $(this).parent().parent().remove();
+                }));
+                }
+            }
+            });
+
+            $(document).ready(function() {
+            var allowedExtensionstest = /(\.jpg|\.JPG|\.jfif|\.JFIF|\.jpeg|\.JPEG|\.gif|\.GIF|\.png|\.PNG|\.pdf|\.PDF|\.doc|\.DOC|\.docx|\.DOCX)$/;
+
+            $('#pannumberphoto').on('change', function(evt) {
+                if ((this.files[0].size / 1024) > 1099 || (this.files.size / 1024) > 1099) {
+                document.getElementById('pannumberphoto').value = "";
+                $(".pancheck").hide();                                                  
+                swal('The maximum file size for uploads should not exceed 1MB');
+                return false;
+                } else {
+                $(".pancheck").show();
+                $('#ImgPreview1').addClass('pdfimage');
+                }
+                var filePath1 = (this.files[0].name);
+                if (filePath1 != "" && !allowedExtensionstest.exec(filePath1)) {
+                document.getElementById('pannumberphoto').value = "";
+                $(".pancheck").hide();
+                $("#ImgPreview1").attr("src", "");
+                swal("Only jpeg, jfif, jpg, png, gif, doc, pdf file types are allowed!. Sorry we cannot upload the document of the format you trying to upload. Please upload the document of correct format and hit update button to upload the document");
+
+                return false;
+                } else {
+                $(".pancheck").show();
+                $('#ImgPreview1').addClass('pdfimage');
+                }
+            });
+
+            $('#anumberphoto').on('change', function(evt) {
+                if ((this.files[0].size / 1024) > 1099 || (this.files.size / 1024) > 1099) {
+
+                document.getElementById('anumberphoto').value = "";
+                $(".pancheck1").hide();
+                $("#ImgPreview2").attr("src", "");
+
+                swal('The maximum file size for uploads should not exceed 1MB');
+
+                return false;
+                } else {
+                $(".pancheck1").show();
+                $('#ImgPreview2').addClass('pdfimage');
+                }
+
+                var filePath11 = (this.files[0].name);
+                if (filePath11 != "" && !allowedExtensionstest.exec(filePath11)) {
+                document.getElementById('anumberphoto').value = "";
+                $(".pancheck1").hide();
+                $("#ImgPreview2").attr("src", "");
+
+                swal("Only jpeg, jfif, jpg, png, gif, doc, pdf file types are allowed!. Sorry we cannot upload the document of the format you trying to upload. Please upload the document of correct format and hit update button to upload the document");
+
+                return false;
+                } else {
+
+                $(".pancheck1").show();
+                $('#ImgPreview2').addClass('pdfimage');
+                }
+            });
+
+            $('#userfile').on('change', function(evt) {
+                if ((this.files[0].size / 1024) > 1099 || (this.files.size / 1024) > 1099) {
+                document.getElementById('userfile').value = "";
+                $(".pancheck2").hide();
+                $("#ImgPreview").attr("src", "");
+
+                swal('The maximum file size for uploads should not exceed 1MB');
+
+                return false;
+                } else {
+                $(".pancheck2").show();
+                $('#ImgPreview').addClass('pdfimage');
+                }
+
+                var filePath111 = (this.files[0].name);
+                if (filePath111 != "" && !allowedExtensionstest.exec(filePath111)) {
+                document.getElementById('userfile').value = "";
+                $(".pancheck2").hide();
+                $("#ImgPreview").attr("src", "");
+
+                swal("Only jpeg, jfif, jpg, png, gif, doc, pdf file types are allowed!. Sorry we cannot upload the document of the format you trying to upload. Please upload the document of correct format and hit update button to upload the document");
+                return false;
+                } else {
+                $(".pancheck2").show();
+                $('#ImgPreview').addClass('pdfimage');
+                }
+            });
+            });
+            //To preview image     
+            function imageIsLoaded(e) {
+            $('#previewimg' + abc).attr('src', e.target.result);
+            };
+
+            $('#upload').click(function(e) {
+            var name = $(":files").val();
+            if (!name) {
+                alert("First Image Must Be Selected");
+                e.preventDefault();
+            }
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            // bind change event handler
+            var documentcheck = $('#document_type').val();
+            if (documentcheck == '') {
+            $("#attachmentdoc").show();
+            } else {
+            $("#attachmentdoc").show();
+            }
+            $('#document_type').change(function() {
+            var documentcheck2 = $('#document_type').val();
+            if (documentcheck2 == '') {
+                $("#attachmentdoc").show();
+            } else {
+                $("#attachmentdoc").show();
+            }
+            }).change();
+        });
+        //I added event handler for the file upload control to access the files properties.
+        document.addEventListener("DOMContentLoaded", init, false);
+        //To save an array of attachments
+        var AttachmentArray = [];
+        //counter for attachment array
+        var arrCounter = 0;
+        //to make sure the error message for number of files will be shown only one time.
+        var filesCounterAlertStatus = false;
+        //un ordered list to keep attachments thumbnails
+        var ul = document.createElement("ul");
+        ul.className = "thumb-Images";
+        ul.id = "imgList";
+        function init() {
+            //add javascript handlers for the file upload event
+            document
+            .querySelector("#files")
+            .addEventListener("change", handleFileSelect, false);
+        }
+        //the handler for file upload event
+        function handleFileSelect(e) {
+            //to make sure the user select file/files
+            if (!e.target.files) return;
+            //To obtaine a File reference
+            var files = e.target.files;
+            // Loop through the FileList and then to render image files as thumbnails.
+            for (var i = 0, f;
+            (f = files[i]); i++) {
+            // alert("Filename " + files[i].name);
+            //instantiate a FileReader object to read its contents into memory
+            var fileReader = new FileReader();
+            // Closure to capture the file information and apply validation.
+            fileReader.onload = (function(readerEvt) {
+                return function(e) {
+                //Apply the validation rules for attachments upload
+                ApplyFileValidationRules(readerEvt);
+                //Render attachments thumbnails.
+                RenderThumbnail(e, readerEvt);
+                //Fill the array of attachment
+                FillAttachmentArray(e, readerEvt);
+                };
+            })(f);
+            // Read in the image file as a data URL. 
+            fileReader.readAsDataURL(f);
+            }
+            document
+            .getElementById("files")
+            .addEventListener("change", handleFileSelect, false);
+        }
+
+        //To remove attachment once user click on x button
+        jQuery(function($) {
+            $("div").on("click", ".img-wrap .close", function() {
+            // alert(arrCounter);
+            var id = $(this)
+                .closest(".img-wrap")
+                .find("img")
+                .data("id"); //to remove the deleted item from array
+            var elementPos = AttachmentArray.map(function(x) {
+                return x.FileName;
+            }).indexOf(id);
+            if (elementPos !== -1) {
+                AttachmentArray.splice(elementPos, 1);
+            }
+
+            //when we need to same image upload for single remove and upload
+            var numImgs = $("#imgList").find("img").length;
+            //alert(numImgs);                                                                                                                          
+            if (numImgs == 1 || numImgs == 0) {
+                reset_form_element($('#files'));
+            }
+
+            //to remove image tag
+            $(this)
+                .parent()
+                .find("img")
+                .not()
+                .remove();
+
+            //to remove div tag that contain the image
+            $(this)
+                .parent()
+                .find("div")
+                .not()
+                .remove();
+
+            //to remove div tag that contain caption name
+            $(this)
+                .parent()
+                .parent()
+                .find("div")
+                .not()
+                .remove();
+
+            //to remove li tag
+            var lis = document.querySelectorAll("#imgList li");
+            for (var i = 0;
+                (li = lis[i]); i++) {
+                if (li.innerHTML == "") {
+                li.parentNode.removeChild(li);
+                }
+            }
+            });
+        });
+
+        //after remove file form reset start
+        function reset_form_element(e) {
+            e.wrap('<form>').parent('form').trigger('reset');
+            e.unwrap();
+        }
+        //after remove file form reset end
+
+        //Apply the validation rules for attachments upload
+        function ApplyFileValidationRules(readerEvt) {                            
+            //To check files count according to upload conditions
+            if (CheckFilesCount(AttachmentArray) == false) {
+            if (!filesCounterAlertStatus) {
+                filesCounterAlertStatus = true;
+                swal(
+                "You have added more than 10 files. According to upload conditions you can upload 10 files maximum"
+                );
+            }
+            e.preventDefault();
+            return;
+            }
+        }
+
+        //To check file type according to upload conditions
+        function CheckFileType(fileType) {
+            if (fileType == "image/jpeg") {
+            return true;
+            } else if (fileType == "image/png") {
+            return true;
+            } else if (fileType == "image/gif") {
+            return true;
+            } else if (fileType == "application/msword") {
+            return true;
+            } else if (fileType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+            return true;
+            } else if (fileType == "application/pdf") {
+            return true;
+            } else {
+            return false;
+            }
+            return true;
+        }
+
+        //To check file Size according to upload conditions
+        function CheckFileSize(fileSize) {
+            if (fileSize < 300000) {
+            return true;
+            } else {
+            return false;
+            }
+            return true;
+        }
+
+        //To check files count according to upload conditions
+        function CheckFilesCount(AttachmentArray) {
+            //Since AttachmentArray.length return the next available index in the array,
+            //I have used the loop to get the real length
+            var len = 0;
+            for (var i = 0; i < AttachmentArray.length; i++) {
+            if (AttachmentArray[i] !== undefined) {
+                len++;
+            }
+            }
+            //To check the length does not exceed 10 files maximum
+            if (len > 9) {
+            return false;
+            } else {
+            return true;
+            }
+        }
+        //Fill the array of attachment
+        function FillAttachmentArray(e, readerEvt) {
+            AttachmentArray[arrCounter] = {
+            AttachmentType: 1,
+            ObjectType: 1,
+            FileName: readerEvt.name,
+            FileDescription: "Attachment",
+            NoteText: "",
+            MimeType: readerEvt.type,
+            Content: e.target.result.split("base64,")[1],
+            FileSizeInBytes: readerEvt.size
+            };
+            arrCounter = arrCounter + 1;
+        }
+    </script>
+
+<script>
+    $(document).ready(function() {
+        // $(".epfLink").attr("href","/qxbox/payroll/epf-details/"+localStorage.getItem('acc_token'))
+
+        var url = window.location;
+        console.log("chandu", url)
+        var element = $('ul.metismenu li a').filter(function(){
+            console.log(url.href,this.href,url.href.indexOf(this.href)); 
+            return this.href == url || url.href.indexOf(this.href) == 0; 
+        }).parent().next().addClass('active');
+        if (element.is('li')) {
+            element.addClass('active').parent().parent('li').addClass('active');
+        }
+    })
+</script>
+
+<script>
+    if(window.location.href.indexOf("/qxbox/payroll/active-employees/")) {
+        $("#employeeNavItem").addClass("active")
+    }
+</script>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

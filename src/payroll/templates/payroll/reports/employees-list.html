@@ -1,0 +1,19 @@
+<script>
+    //Need to change by onclick
+    $(document).ready(function(){
+        $.ajax({
+            type: "GET",
+            url: "/qxbox/{% url 'employee_list' %}",
+            data:{"company__company_name": localStorage.getItem("cname")},
+            headers: {
+                "Authorization": "Bearer "+localStorage.getItem('acc_token')
+            },
+            success: function (data,textStatus) {
+                console.log("employees response", data)
+                $.each(data, function(key, value) {   
+                    emp_element = $("#select-country");
+                    emp_element.append(new Option( value["name"], value["id"]));
+            });
+
+    }})})
+</script>

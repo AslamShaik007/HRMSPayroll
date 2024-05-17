@@ -1,0 +1,335 @@
+{% extends 'payroll/base/base.html' %}
+
+{% block main_content %}
+
+<div class="container-fluid">
+
+   {% include 'payroll/base/payroll-block-header.html' with t1=True %}
+
+   <style>
+    .table th, .table td {
+        padding-top: 0.5rem;
+        padding-bottom: 0rem;
+    }
+</style>
+
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+                <h1 class="ico_head"><i class="fa fa-list" aria-hidden="true"></i> Employee's Provident Fund</h1>
+            </div>
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-lg-10 mx-auto">
+            <!-- <div class="card">
+                <div class="body shadow-lg p-5"> -->
+            <form id="basic-form" class="add-form" novalidate="">
+                <div class="card">
+                    <div class="body shadow pt-3 pb-0 border-0">
+                        <div class="row clearfix">
+                            <div class="col-xl-3 col-md-6">
+                                <div class="form-group demo-masked-input">
+                                    <label for="epf" class="font-weight-bold font-16">EPF Number</label>
+                                    <input id="epf_number" name="epf_number" style="text-transform: uppercase;"   onkeypress="return event.charCode != 32"  value=""   type="text" class="form-control" required  data-parsley-required-message="Please Enter Valid EPF No. (i.e. AAAAA00000000000000)." />
+                                    <span id="error"></span>
+                                    <div><small>Ex EPF: AAAAA00000000000000</small></div>
+                                </div>
+                            </div>
+                            <div class="col-xl-9 col-md-6">
+                                <div class="form-group">                                    
+                                    <div class="col-md-12 text-right">
+                                        <label class="pb-3"></label>
+                                        <button class="btn btn-sm btn-primary text-uppercase addBtn"><i class="fa fa-floppy-o mr-1" aria-hidden="true"></i> Update</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="deduction" class="font-weight-bold font-16">Deduction Cycle</label>
+                                    <p>Monthly</p>                                    
+                                    
+                                </div>
+                            </div>                          -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="body shadow pb-1 border-0">
+                        <div class="row clearfix">
+                            <div class="col-md-12">
+                                <label class="font-weight-bold font-16">Contribution Details</label>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table class="table table-border table-hover space0 mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Sub Components</th>
+                                                <th>Employee's Contribution</th>
+                                                <th>Employer's Contribution</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><label>Employee's Provident Fund (EPF)</label></td>
+                                                <td>
+                                                    <label>12.00%</label>
+                                                    <label>of PF Wage</label>
+                                                </td>
+                                                <td>
+                                                    <label>3.67%</label>
+                                                    <label>of PF Wage</label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><label>Employee's Pension Scheme</label></td>
+                                                <td><label>NA</label></td>
+                                                <td>
+                                                    <label>8.33%</label>
+                                                    <label>of PF Wage</label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><label>EPF Admin Charges</label></td>
+                                                <td><label>NA</label></td>
+                                                <td>
+                                                    <label>0.50%</label>
+                                                    <label>of PF Wage</label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><label>EDLI Contribution</label></td>
+                                                <td><label>NA</label></td>
+                                                <td>
+                                                    <label>0.50%</label>
+                                                    <label>of PF Wage</label>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card my-3">
+                    <div class="body shadow border-0">
+                        <div class="row clearfix">
+                            <div class="col-md-6">
+                                <div class="form-group demo-masked-input">
+                                    <label for="contribution" class="font-weight-bold font-16">Employer Contribution Rate</label>
+                                    <div class="multiselect_div">
+                                        <p class="font-15">12% of Actual PF Wage</p> 
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group demo-masked-input">
+                                    <label for="econtribution" class="font-weight-bold font-16">Employee Contribution Rate</label>
+                                    <div class="multiselect_div">
+                                        <p class="font-15">12% of Actual PF Wage</p> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-md-6" style="border-right: dashed 1px #ddd;">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group demo-masked-input">
+                                            <label class="fancy-checkbox" >
+                                                <input type="checkbox" name="is_pf_contribution_in_ctc" id="is_pf_contribution_in_ctc"  name="checkbox" checked disabled />
+                                                <span class="font-weight-bold font-16">Include employer's contribution in the CTC</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group demo-masked-input">
+                                            <label class="fancy-checkbox mb-0" ><span  class="font-weight-bold font-16">Override PF contribution rate at employee level</span></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group demo-masked-input">
+                                            <label class="font-weight-bold mb-0 font-16" >PF Contribution when LOP Applied</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group demo-masked-input">
+                                            <label class="fancy-checkbox mb-0" >
+                                                <span  class="font-weight-bold font-16">PF-rate Restricted PF Wage
+                                                    <!-- <button type="button" class="btn p-0" data-toggle="tooltip" data-placement="top" title="PF contribution will be pro-rated based on the number of days worked by the employee."><i class="fa fa-info-circle text-primary font-16" aria-hidden="true"></i></button>  -->
+                                                </span>
+                                                <small class="d-block font-15" style="margin-left: 1.9rem;">PF contribution will be pro-rated based on the number of days worked by the employee.</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group demo-masked-input">
+                                            <label class="fancy-checkbox mb-0" >
+                                                <span class="font-weight-bold font-16">Consider all applicable PF components if PF wage is less then 15k after Loss of Pay
+                                                <!-- <button type="button" class="btn p-0" data-toggle="tooltip" data-placement="top" title="PF wage will be computed using the salary earned in that particular month (based on LOP) rather than the actual amount mentioned in the salary structure."><i class="fa fa-info-circle text-primary font-16" aria-hidden="true"></i></button> -->
+                                                </span>
+                                                <small class="d-block font-15" style="margin-left: 1.9rem;">PF wage will be computed using the salary earned in that particular month (based on LOP) rather than the actual amount mentioned in the salary structure.</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6"   style="border-left: dashed 1px #ddd;">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="p-3 mb-3 fs font-15">
+                                            <p>Let's assume the PF wage is ₹ 20,000. The breakup of contribution will be:</p>
+                                            <p class="font-weight-500 font-16">Employer's Contribution</p>
+                                            <p>EPS = 8.33% of PF Wage (Maximum of ₹ 15,000) = 8.33% of 15000 = ₹ 1250</p>
+                                            <p>EPF = 12% of PF Wage - EPS = ₹ 2400 (12% of 20000) - ₹ 1250 = ₹ 1150</p>
+                                            <p class="font-weight-500 font-16">Employee's Contribution</p>
+                                            <p>EPF = 12% of 20000 = ₹ 2400</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="row clearfix">
+                            <div class="col-md-12">
+                                <div class="form-group">                                    
+                                    <div class="col-md-12 text-right">
+                                        <label class="pb-3"></label>
+                                        <button class="btn btn-sm btn-primary text-uppercase addBtn">Update</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+                
+                
+                
+            </form>
+                <!-- </div>
+            </div> -->
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+    if(window.location.href.indexOf("/qxbox/payroll/epf-details/")) {
+        $("#payrollCompNavItem").addClass("active")
+    }
+</script>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        
+        $('#basic-form').submit(function(e){
+            e.preventDefault();
+
+            $('#error').hide();
+
+            var epf_number = $('#epf_number').val();            
+            // var is_pf_contribution_in_ctc = $('#is_pf_contribution_in_ctc').is(":checked") ? "true" : "false";
+
+            let acc_token = localStorage.getItem('acc_token');
+
+            if(epf_number!="" ) {
+                // console.log($('.add-form').serialize());
+                $.ajax({
+                        type: "PATCH",
+                        url: "/qxbox/{% url 'update_epf_details' id=epfId %}",
+                        headers: {
+                            "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                        },
+                        data: JSON.stringify({"epfNumber": epf_number}),
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        success: function (response) {
+
+                                swal({   title:"Updated",
+                                type: "success",
+                                confirmButtonColor: "#007bff",
+                                confirmButtonText: "Ok",
+                                closeOnConfirm: true  },
+                                function(isConfirm){
+                                    window.location.replace("/qxbox/payroll/epf-details/");
+                                });
+
+                                window.setTimeout(function () {
+                                    window.location.replace("/qxbox/payroll/epf-details/");
+
+                                    }, 500);
+                        },
+                        error:function(xhr, status, e) {
+                            
+                            swal({   
+                                title: "Error"+e,
+                                type: "error",
+                                showCancelButton: false,
+                                confirmButtonColor: "#007bff",
+                                confirmButtonText: "Ok",
+                                closeOnConfirm: false,
+                                closeOnCancel: true 
+                            });
+                        }
+                    });
+                }
+            });
+
+        });
+
+</script>
+
+<script>
+    $(document).ready(function(){
+
+        $.ajax({
+            type: 'GET',
+            url: "/qxbox/{% url 'get_epf_details' company_id=request.session.cmp_id %}",
+            dataType: 'json',
+            headers: {
+                "Authorization": "Bearer "+localStorage.getItem('acc_token')
+            },
+            success: function (data,textStatus) {
+                let resp = data[0];
+                let epfId = resp['id'];
+                $("#epf_number").val(resp['epfNumber'])
+                // $("#is_pf_contribution_in_ctc").prop("checked", resp['isEmployerContributionInCtc']);
+            },
+            error:function(xhr, status, e) {
+                
+                swal({   
+                    title: "Error"+e,
+                    type: "error",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+            }
+        })
+    })
+</script>
+
+ <!-- <script>
+    $(document).ready(function() {
+        // $(".epfLink").attr("href","/qxbox/payroll/epf-details/"+localStorage.getItem('acc_token'))
+
+        var url = window.location;
+        var element = $('ul.metismenu li a').filter(function(){
+            console.log(url.href,this.href,url.href.indexOf(this.href)); 
+            return this.href == url || url.href.indexOf(this.href) == 0; 
+        }).parent().addClass('active');
+        if (element.is('li')) {
+            element.addClass('active').parent().parent('li').addClass('active');
+        }
+    })
+</script> -->
+{% endblock %}

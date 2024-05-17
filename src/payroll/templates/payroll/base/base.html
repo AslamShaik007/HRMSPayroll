@@ -1,0 +1,446 @@
+
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>PAYROLL | Dashboard</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="HRMS, design by: vitelglobal.com">
+    <link rel="icon" type="image/png" href="/qxbox/{% static 'assets/images/hrms-logo.png' %}"/>
+
+    
+    {% block main_css %}
+        {% include 'payroll/base/css.html' %}
+    {% endblock main_css %}
+
+    {% block css %}
+    {% endblock css %}
+    
+
+</head>
+
+<body class="theme-blush font-roboto light_version">
+    <!-- Page Loader
+    <div class="page-loader-wrapper">
+        <div class="loader">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+        <div class="bar4"></div>
+        <div class="bar5"></div>
+        </div>
+    </div>-->
+<!-- Overlay For Sidebars -->
+<div class="ColorChangeSettingPanelContainer" id="ColorChangeSettingPanelContainer">
+    <button type="button" class="btn btn-primary bg_dark_blue" id="ColorChangeSettingPanelCall" onclick="ColorChangeSettingPanelCall()"><i class="fa fa-cog" aria-hidden="true"></i></button>
+    <div class="ColorChangeSettingPanel" id="ColorChangeSettingPanel">
+        <div class="ColorChangeSettingPanelBlock">
+            <button class="ColorChangeSettingPanelBtn BgColorBtn" id="bgcolor_1" type="button"></button>
+            <button class="ColorChangeSettingPanelBtn BgColorBtn" id="bgcolor_2" type="button"></button>
+            <button class="ColorChangeSettingPanelBtn BgColorBtn" id="bgcolor_3" type="button"></button>
+        </div>
+        <div class="ColorChangeSettingPanelBlock">
+            <button class="ColorChangeSettingPanelBtn BgColorBtn" id="bgcolor_4" type="button"></button>
+            <button class="ColorChangeSettingPanelBtn BgColorBtn" id="bgcolor_5" type="button"></button>
+            <button class="ColorChangeSettingPanelBtn BgColorBtn" id="bgcolor_6" type="button"></button>
+        </div>
+        <div class="ColorChangeSettingPanelBlock">
+            <button class="ColorChangeSettingPanelBtn BgColorBtn" id="bgcolor_7" type="button"></button>
+            <button class="ColorChangeSettingPanelBtn BgColorBtn" id="bgcolor_8" type="button"></button>
+            <button class="ColorChangeSettingPanelBtn BgColorBtn" id="bgcolor_9" type="button"></button>
+        </div>
+    </div>
+</div>
+    <div class="overlay"></div>
+    <div id="wrapper">
+
+        {% include 'payroll/base/navbar.html' %}
+        <div id="rightbar" class="rightbar"></div>
+        {% include 'payroll/base/left_sidebar.html' %}
+
+
+<div id="AjaxCallOverlay">
+    <div class="AjaxCallSpinner">
+        <span class="AjaxSpinner"></span>
+    </div>
+</div>
+
+
+        <div id="main-content">
+            {% block main_content %}
+            {% endblock %}
+        </div>
+
+        {% block main_js %}
+            {% include 'payroll/base/js.html' %}
+        {% endblock main_js %}
+
+        {% block js %}
+        {% endblock %}
+
+        <script>
+            console.log("myScript is loading")
+            document.querySelector("#menuBtn").addEventListener('click', function(evt) {
+                var menuStatus = document.querySelector("#left-sidebar");
+                if(menuStatus.style.left == "-240px") {
+                    document.querySelector("#left-sidebar").style.left = "0px";
+                    document.querySelector("#main-content").style.width = "calc(100% - 240px)";
+
+                    // document.querySelector("#openBtn").style.display = "none";
+                    // document.querySelector("#closeBtn").style.display = "block";
+                } else {
+                    document.querySelector("#left-sidebar").style.left = "-240px";
+                    document.querySelector("#main-content").style.width = "100%";
+                    // document.querySelector("#openBtn").style.display = "block";
+                    // document.querySelector("#closeBtn").style.display = "none";
+                }
+            })
+        </script>
+
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $("#epf_number").change(function () {
+                    var inputvalues = $(this).val();
+                    var reg = /([A-Z]){2}([A-Z]){3}([0-9]){7}([0-9]){7}$/;
+                    if (inputvalues.match(reg)) {
+                        error.innerHTML = "";
+                    }
+                    else {
+                            $("#epf_number").val("");
+                        // alert("You entered invalid IFSC code");
+                        //document.getElementById("txtifsc").focus();
+                        error.innerHTML = "<span style='color: red;'>"+
+                            "You entered wrong EPF Number</span>"
+                        // ("#bank_ifsc_code").html("You entered invalid IFSC code");
+                    }
+                });
+            });
+        </script>
+
+<script>
+    $(function() {
+        // initialize after multiselect
+        $('#basic-form').parsley();
+    });
+</script>
+
+
+<script>
+    $(document).ready(function() {
+        $(".dashLink").attr("href","/qxbox/payroll/dashboard/{{request.session.cmp_id}}/"+localStorage.getItem('acc_token'))
+
+    var url = window.location;
+    var element = $('ul.metismenu li a').filter(function(){
+        console.log(url.href,this.href,url.href.indexOf(this.href)); 
+        return this.href == url || url.href.indexOf(this.href) == 0; 
+    }).parent().addClass('active');
+    if (element.is('li')) {
+    element.addClass('active').parent().parent('li').addClass('active');
+    }
+
+
+    var cname = localStorage.getItem('cname')
+    var cimg = localStorage.getItem('cimg')
+
+    if (!(cname && cimg)){
+        $.ajax({
+                    type : 'GET',
+                    url: "/qxbox/{% url 'cname_cimg' company_id=request.session.cmp_id %}",
+                    dataType: 'json',
+                    headers: {
+                        "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                    },
+                    success: function (response) {
+                        
+                        if (response[0]['companyImage']){
+                            $(".user_image").attr('src',(response[0]['companyImage']).replace("media",'qxbox/media'))
+                        }
+                        // $("#user_image").attr('src',response['companyImage'])
+                        $(".comp-name").text(response[0]['companyName'])
+                        localStorage.setItem('cname',response[0]['companyName'])
+                    }
+                    // ,
+                    // error:function(xhr,status,e){
+                    //     alert('company image not found')
+                    // }
+            })
+    }
+
+    $.ajax({
+            url: "/qxbox/{% url 'check_can_payroll_run' company_id=request.session.cmp_id %}",
+            type: "GET",
+            dataType: 'json',
+            headers: {
+                "Authorization": "Bearer "+localStorage.getItem('acc_token')
+            },
+            success: function(response) {
+
+                if (response && response != 0) {
+                    // localStorage.setItem('app_plan',response['appPlan']['currentPlan']);
+                    if(response['esiConfig'] && response['epfConfig'] && response['ptConfigStatus'] && response['department'] && response['bank'] && response['salary'] && response['lop'] && response['gender']){
+                        $("#runPayrollBtn").addClass('addBtn');
+                        $("#runPayrollBtn").removeClass('disabled');
+                        $("#runPayrollBtn").attr('href',"/qxbox/{% url 'run_payroll' %}");                     
+                    }
+                    else{
+                        $("#runPayrollBtn").removeClass('addBtn');
+                        $("#runPayrollBtn").addClass('disabled');
+                        $("#runPayrollBtn").removeAttr('href',"/qxbox/{% url 'run_payroll' %}");
+                        $("#runPayrollBtn").attr('data-toggle',"tooltip");
+                        $("#runPayrollBtn").attr('data-placement',"bottom");
+                        // $('#runPayrollBtn').attr("disabled","");
+                        var titleText = ""
+                        if(!response['esiConfig']){
+                            titleText = titleText + "ESI Number Missing | "
+                        }
+                        if(!response['epfConfig']){
+                            titleText = titleText + "EPF Number Missing | "
+                        }
+                        if(!response['ptConfigStatus']){
+                            titleText = titleText + "States Tax config Missing | "                            
+                        }
+                        if(!response['department']){
+                            titleText = titleText + "Employee Department Missing | "                            
+                        }
+                        if(!response['bank']){
+                            titleText = titleText + "Bank Details Missing | "                            
+                        }
+                        if(!response['salary']){
+                            titleText = titleText + "Salary CTC  Missing | "                            
+                        }
+                        if(!response['lop']){
+                            titleText = titleText + "Leaves Data not completed | "                            
+                        }
+                        if(!response['gender']){
+                            titleText = titleText + "Employees gender not specified"                            
+                        }
+                        
+                        $("#runPayrollBtn").attr('title',titleText);                         
+
+                    }                 
+
+                }
+            }
+        });
+
+
+    });
+
+    function changeDateFormatToMonthYear(dateText){        
+        
+        // Create a Date object from the original date string
+        var originalDate = new Date(dateText);
+        
+        // Define an array of month names
+        var monthNames = [
+            "January", "February", "March", "April",
+            "May", "June", "July", "August",
+            "September", "October", "November", "December"
+        ];
+        
+        // Extract the year and month components
+        var year = originalDate.getFullYear();
+        var month = originalDate.getMonth();
+        
+        // Format the date as "Month-year"
+        return monthNames[month] + " " + year;                
+        
+    }
+
+    function changeToDDMMYYYY(datetc){  
+        if (datetc){
+            datetc = new Date(datetc);
+        
+        datetc = datetc.getDate() + `-` + (datetc.getMonth()+1) + `-` + datetc.getFullYear()
+                
+        // Format the date as "Month-year"
+        return datetc;    
+        }                           
+    }
+
+    function changeToNA(rtext){
+        
+        if ((rtext==undefined) || (rtext == "undefined")){
+            return "N/A"
+        }
+        return rtext;
+        // return rtext !== undefined ? rtext : "N/A"
+    }
+    function changeToBlank(rtext){        
+        if (Object.is(rtext,null) || Object.is(rtext,undefined)){
+            return ""
+        }        
+        return "("+rtext+")"        
+    }
+    function changeToBlankwoBracket(rtext){        
+        if (Object.is(rtext,null) || Object.is(rtext,undefined)){
+            return ""
+        }        
+        return rtext
+    }
+</script>
+
+<script>
+    function log_out(){
+        console.log("in script execute")
+        // Add a click event listener
+                // localStorage.removeItem('keyName'); Remove an item from local storage
+        // localStorage.clear();// don't clear for previus UI color storing
+        localStorage.removeItem('acc_token');
+        localStorage.removeItem('app_plan');
+        sessionStorage.clear();
+        var urlObj = new URL(window.location.href);
+        var newURL = urlObj.protocol + '//' + urlObj.hostname;
+        console.log('newURL', newURL)
+        window.location.replace(newURL)
+};
+</script>
+
+<script>
+    $(document).ready(function(){
+       let existingBgColor = localStorage.getItem("p_background");
+       console.log("existingBgColor is ")
+       console.log(existingBgColor)
+       $(".theme1").css("background",existingBgColor);
+       $(".curv_hea").css("background",existingBgColor);
+       $(".metismenu a").css("color","#fff");
+       $(".theme-blush .nav.nav-tabs2>li>a.active").css("background",existingBgColor)
+   })
+</script>
+
+<script>
+    function ColorChangeSettingPanelCall() {
+        console.log("Call change color")
+        let displayStatus = $("#ColorChangeSettingPanel").css("display")
+        console.log(displayStatus)
+        if(displayStatus === "block") {
+            $("#ColorChangeSettingPanel").css("display","none")
+        } else {
+            $("#ColorChangeSettingPanel").css("display", "block")
+        }
+    }
+
+    $( ".BgColorBtn" ).click(function() {
+        var BgColor = $(this).css( "background" );
+        var BgImgColor = $(this).css("background-image");
+        if($(this).css('background-image') != 'none') {
+            console.log(BgImgColor)
+            $(".theme1").css("background-image",BgImgColor);
+            $(".curv_hea").css("background-image",BgImgColor);
+            $(".metismenu a").css("color","#fff");
+            $(".curv_hea").css("background-image",BgImgColor)
+            $(".theme-blush .nav.nav-tabs2>li>a.active").css("background-image",BgImgColor)
+            localStorage.setItem("p_background", BgImgColor);
+        } else if($(this).css( "background" ) != 'none') {
+            console.log(BgColor)
+            $(".theme1").css("background",BgColor)
+            $(".curv_hea").css("background",BgColor);
+            $(".metismenu a").css("color","#fff");
+            $(".curv_hea").css("background",BgColor)
+            $(".theme-blush .nav.nav-tabs2>li>a.active").css("background",BgColor)
+            localStorage.setItem("p_background", BgColor);
+        }
+    });
+
+</script>
+
+
+<script>
+    function set_employee_info(empId){
+        $.ajax({
+                    type: "GET",
+                    url: "/qxbox/api/payroll/get_employee_few_info/?emp_id="+empId,
+                    dataType: 'json',
+                    headers: {
+                        "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                    },
+                    success: function (response) {
+
+                        if (response) {
+                            if (response) {
+                            $("#emp_det").html(
+                                `
+                                <div class="row clearfix">
+
+                                    <div class="col-md-6">
+
+                                        <div class="form-group mb-2">
+
+                                            <div class="row">
+
+                                                <div class="col-4"><label for="Employee_name" class="font-16 mb-0">Employee Name </label></div>
+
+                                                <div class="col-8"> : <label class="font-18 font_weight_500 mb-0">`+changeToBlankwoBracket(response['name'])+`</label></div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group mb-2">
+
+                                            <div class="row">
+
+                                                <div class="col-4"><label for="Employee_Id" class="font-16 mb-0">Employee Id</label></div>
+
+                                                <div class="col-8">  : <label class="font-18 font_weight_500 mb-0">`+changeToBlankwoBracket(response['emp_id'])+`</label></div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <div class="form-group mb-2">
+
+                                            <div class="row">
+
+                                                <div class="col-4"><label for="Department" class="font-16 mb-0">Department</label></div>
+
+                                                <div class="col-8"> : <label class="font-18 font_weight_500 mb-0">`+changeToBlankwoBracket(response['department'])+`</label></div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group mb-2">
+
+                                            <div class="row">
+
+                                                <div class="col-4"><label for="Designation" class="font-16 mb-0">Designation</label></div>
+
+                                                <div class="col-8"> : <label class="font-18 font_weight_500 mb-0">`+changeToBlankwoBracket(response['designation'])+`</label></div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    </div>
+                                `                                
+                            )
+                        }
+                        }
+                    }
+                })
+    }
+</script>
+
+<script>
+    $(document).ready(function() {
+        var app_plan = localStorage.getItem("app_plan");
+        if(app_plan != "premium") {
+            $(".manage_emp, .imp_exp_leaves", ).hide();
+        }        
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body class="fontFamily">
+    <p>Hello {{manager_name}} [{{rp_emp_code}}]</p>
+
+    <p>I wanted to bring to your attention that employees are submitted Comp Off requests through the HRMS portal.</p>
+    <p>Kindly review the request at your earliest convenience and provide the necessary updates.</p>
+
+    <p>Comp Off Approvals are pending for the below mentioned employees.</p>
+    <br>
+    <p>Please refer the link for more information {{domain}}.</p>
+    <br>
+    <table>
+        <thead>
+            <tr>
+                <th style="text-align:left; padding-right:100px;">Name</th>
+                <th style="text-align:left; paddin-left: 10px;">Department</th>
+                <th style="text-align:left; paddin-left: 10px;">Date Of Checked In</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in recds %}
+            <tr>
+                <td style="text-align:left; padding-right:100px;">{{item.Name}}</td>
+                <td style="text-align:left; padding-right:100px;">{{item.Department}}</td>
+                <td style="text-align:left; padding-right:100px;">{{item.Date}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p><b>Thanks &amp; Regards</b></p>
+    <p class="textItalic font120 fontWeightBolder">{{company_name}}.</p>
+</body>
+</html>

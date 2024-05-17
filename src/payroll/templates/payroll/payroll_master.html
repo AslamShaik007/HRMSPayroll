@@ -1,0 +1,200 @@
+{% extends 'payroll/base/base.html' %}
+
+{% block main_content %}
+
+<div class="container-fluid">
+
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+                <h1 class="ico_head"><i class="icon-grid"></i> Payroll Master</h1>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body shadow-lg">
+            <div class="row clearfix">
+                <div class="col-lg-7 font-16">
+                    <h4>Get started Payroll</h4>
+                    Complete the following steps to have a hassle-free payroll experience
+                </div>
+                <div class="col-lg-5">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <!-- <div class="progress progress-xs">
+                                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 100%;"></div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="table-responsive">
+                        <table class="table table-custom spacing5">
+                            <tbody class="font-16">
+                                <tr>
+                                    <th class="w60">1</th>
+                                    <td>Add Organization Details</td>
+                                    <td>
+                                        <!-- <a href="/qxbox{% url 'organization_view' %}" class="btn btn-success addBtn PayrollCompBtn"><i class="fa fa-check mr-1" aria-hidden="true"></i> Complete</a> -->
+                                        <a href="" class="btn btn-success addBtn PayrollCompBtn org_url"><i class="fa fa-check mr-1" aria-hidden="true"></i> Complete</a>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>2</th>
+                                    <td>Provide Your Tax Details</td>
+                                    <td>
+                                        <a href="" class="btn btn-success addBtn PayrollCompBtn org_url" id="td_status" ></a>
+                                        <!-- <a href="/qxbox{% url 'tax_details' %}" class="btn btn-success addBtn PayrollCompBtn" id="td_status" ></a> -->
+                                    </td>
+                                </tr>
+
+                        <tr>
+                            <th>3</th>
+                            <td>Set up Statutory Components
+                                <ul>
+                                    <li>Employee's Provident Fund
+                                        <a  href="/qxbox{% url 'epf_details' %}" id="epf_status"></a>
+                                    </li>
+                                    <li>Employee's State Insurance
+                                        <a href="/qxbox{% url 'esi_details' %}" id="esi_status"></a>
+                                    </li>                                
+                                    <li>Professional Tax
+                                        <a href="/qxbox{% url 'professional_taxes' %}" id="pt_status"></a>
+                                    </li>
+                                </ul>
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-success addBtn PayrollCompBtn" id="eep"><i class="fa fa-check mr-1" aria-hidden="true"></i> Complete</a>
+                            </td>
+                           
+                        </tr>
+                        <tr>
+                            <th>4</th>
+                            <td>Set up Salary Components</td>
+                            <td>
+                                <a href="/qxbox{% url 'salary_component' %}" class="btn btn-success addBtn PayrollCompBtn"><i class="fa fa-check mr-1" aria-hidden="true"></i> Complete</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>5</th>
+                            <td>Add Employee details (e:g Department, Bank details, Salary details, lop, Gender)</td>
+                            <td>
+                                <!-- <a href="/qxbox{% url 'manage_employees_view' %}" class="btn btn-success addBtn PayrollCompBtn" id="checkEmpDet"></a>                                 -->
+                                <a href="" class="btn btn-success addBtn PayrollCompBtn dir_url" id="checkEmpDet"></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>6</th>
+                            <td>To Run Payroll, complete all the above points</td>                            
+                        </tr>
+                        <!-- <tr>
+                            <th>7</th>
+                            <td>Configure Prior Payroll</td>
+                            <td><a href="" class="btn btn-primary">Complete Now</a></td>
+                        </tr>-->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+
+<script>
+    $(document).on( "ajaxSend", function() {
+      $("#AjaxCallOverlay").fadeIn(300);
+    });
+    let myResponseStatus;
+    
+  </script>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+
+        var currentHostname = window.location.hostname;
+
+        // Construct the new href value based on the current hostname
+        var newHref = 'https://' + currentHostname ;
+
+        // Update the href attribute of the anchor tag with the newHref
+        $('.org_url').attr('href', newHref+ '/organization');
+        $('.dir_url').attr('href', newHref+ '/directory');
+
+        // $(".epfLink").attr("href","/qxbox/payroll/epf-details/{{request.session.cmp_id}}/"+localStorage.getItem('acc_token'))
+
+        $.ajax({
+                    type: "GET",
+                    url: "/qxbox/api/payroll/check_payroll_master?cmp_id={{request.session.cmp_id}}",
+                    dataType: 'json',
+                    headers: {
+                        "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                    },                  
+                    success: function (response) {
+            
+                        if (response['epfStatus']){
+                                $("#epf_status").html('<font color="#28a745" ><i class="fa fa-check mr-1" aria-hidden="true"></i> Complete</font>')                                
+                        }else{
+                            $("#epf_status").html('<font color="red" >In-complete</font>')
+                            $("#eep").html("<i class='fa fa-spinner mr-1' aria-hidden='true'></i> In-complete");
+                        }
+                        if (response['esiStatus']){
+                                $("#esi_status").html('<font color="#28a745" ><i class="fa fa-check mr-1" aria-hidden="true"></i> Complete</font>')
+                        }else{
+                            $("#esi_status").html('<font color="red" >In-complete</font>')
+                            $("#eep").html("<i class='fa fa-spinner mr-1' aria-hidden='true'></i> In-complete");
+                        }
+                        if (response['ptStatus']){
+                                $("#pt_status").html('<font color="#28a745" >Complete</font>')
+                        }else{
+                            $("#pt_status").html('<font color="red" ><i class="fa fa-spinner mr-1" aria-hidden="true"></i>In-complete</font>')
+                            $("#eep").html("<i class='fa fa-spinner mr-1' aria-hidden='true'></i> In-complete");
+                        }
+                        if (response['tdStatus']){
+                                $("#td_status").html("<i class='fa fa-check mr-1' aria-hidden='true'></i> Complete");
+                        }else{
+                            $("#td_status").html("<i class='fa fa-spinner mr-1' aria-hidden='true'></i> In-complete");
+                        }
+                    }
+                }); 
+
+
+        $.ajax({
+            url: "/qxbox/{% url 'check_can_payroll_run' company_id=request.session.cmp_id %}",
+            type: "GET",
+            dataType: 'json',
+            headers: {
+                "Authorization": "Bearer "+localStorage.getItem('acc_token')
+            },
+            success: function(response) {
+
+                if (response && response != 0) {                  
+                    if(response['esiConfig'] && response['epfConfig'] && response['ptConfigStatus'] && response['bank'] && response['salary'] && response['lop'] && response['gender']){
+                        $("#checkEmpDet").html("<i class='fa fa-check mr-1' aria-hidden='true'></i> Complete");                        
+                    }
+                    else{
+                        $("#checkEmpDet").html("<i class='fa fa-spinner mr-1' aria-hidden='true'></i> In-complete");                        
+                    }   
+                    myResponseStatus = true;              
+                }else{
+                    myResponseStatus = false;
+                }
+            }
+        }).done(function() {            
+            if(myResponseStatus == true) {
+               
+                    $("#AjaxCallOverlay").fadeOut('slow');
+               
+            }
+            
+        });
+   
+   })        
+</script>
+{% endblock %}

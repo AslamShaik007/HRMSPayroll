@@ -1,0 +1,174 @@
+{% extends 'payroll/base/base.html' %}
+
+{% block main_content %}
+<div class="container-fluid">
+
+    {% include 'payroll/base/payroll-block-header.html' with t2=True %}
+
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+                <h1 class="ico_head"><i class="fa fa-list" aria-hidden="true"></i> Employee's State Insurance</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="row clearfix">
+        <div class="col-lg-10 mx-auto">
+            <div class="card">
+                <div class="body shadow mb-3 border-0">
+                    <form id="basic-form"  class="add-form" enctype="multipart/form-data" method="post" novalidate="">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <a href="" id="editBtn" class="btn btn-sm btn-primary text-uppercase addBtn rounded-circle p-0"><i class="fa fa-edit p-2"></i></a>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-md-3">
+                                <div class="form-group demo-masked-input">
+                                    <label for="epf" class="font-weight-bold font-16">ESI Number</label>
+                                    <div class="input-group mb-3">
+                                        <input id="esi_no" name="esi_no" type="text" class="form-control" disabled />
+                                    </div>
+                                    <span id="errors"></span>
+                                </div>
+                            </div>
+                            <!-- <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="deduction" class="font-weight-bold font-16">Deduction Cycle</label>
+                                    <p>Monthly</p> 
+                                </div>
+                            </div> -->
+                            
+                        <!-- </div>
+                        <div class="row clearfix"> -->
+                            <div class="col-md-4">
+                                <div class="form-group demo-masked-input">
+                                    <label for="epf" class="font-weight-bold font-16">Employee's Contribution</label>
+                                    <div class="input-group mb-3">
+                                        <input id="employee_contribution_pct" name="employee_contribution_pct" style="pointer-events: none;" type="text"  class="form-control" />
+                                        <span class="ml-1 mt-2 font-16"> % of Gross Pay</span>
+                                    </div>
+                                    <span id="error_employee"></span>
+                                </div>
+                            </div>
+                        <!-- </div>
+                        <div class="row clearfix"> -->
+                            <div class="col-md-4">
+                                <div class="form-group demo-masked-input">
+                                    <label for="epf" class="font-weight-bold font-16">Employer's Contribution</label>
+                                    <div class="input-group mb-3">
+                                        <input id="employer_contribution_pct" name="employer_contribution_pct" style="pointer-events: none;" type="text" class="form-control" />
+                                        <span class="ml-1 mt-2 font-16"> % of Gross Pay</span>
+                                    </div>
+                                    <span id="error_employer"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row clearfix">
+                            <div class="col-md-12">
+                                <div class="form-group demo-masked-input">
+                                    <label class="fancy-checkbox mb-0" ><input disabled type="checkbox" id="is_included_ctc" name="is_included_ctc" checked disabled />
+                                        <span class="font-16">Include employer's contribution in the CTC</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="p-3 mb-3 fs d-none" style="background:#fff7f7;">
+                                    <p ><strong>Note:</strong> ESI deductions will be made only if the employee’s monthly salary is less than or equal to ₹21,000. If the employee gets a salary revision which increases their monthly salary above ₹21,000, they would have to continue making ESI contributions till the end of the contribution period in which the salary was revised (April-September or October-March).</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix d-none">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <input type="hidden" name="con_mode" value="add" />
+                                    <input type="hidden" name="org_id" value="1" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- <div class="col-lg-12">
+        <div class="card">
+            <div class="row clearfix">
+                <div class="body shadow-lg p-5 w-100">
+                    
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <div class="row clearfix">
+        <div class="col-lg-10 mx-auto">
+            <div class="card">
+                <div class="card-body shadow border-0 p-4 ">
+                    <p class="font-16" style="letter-spacing: 1px;"><strong>Note:</strong> ESI deductions will be made only if the employee’s monthly salary is less than or equal to ₹21,000. If the employee gets a salary revision which increases their monthly salary above ₹21,000, they would have to continue making ESI contributions till the end of the contribution period in which the salary was revised (April-September or October-March).</p>                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    
+        function edit(org_id){
+            $.ajax({
+                type: "POST",
+                url: "./payroll/esi_details/edit/"+ org_id,
+                data: "",
+                success: function (response) {
+                    $(".displaycontent").html(response);
+                }
+            });
+        }
+    </script>
+
+
+<script>
+    $(document).ready(function(){
+
+        $.ajax({
+            type: 'GET',
+            url: "/qxbox/{% url 'get_esi_details' company_id=request.session.cmp_id %}",
+            dataType: 'json',
+            headers: {
+                "Authorization": "Bearer "+localStorage.getItem('acc_token')
+            },
+            success: function (data,textStatus) {       
+                
+//                 {
+//     "id": 2,
+//     "company": 29,
+//     "esiNo": "12345678941234560",
+//     "employeeContributionPct": 0.76,
+//     "employerContributionPct": 3.25,
+//     "isEmployerContributionInCtc": true
+//   }
+                let resp = data[0];
+                $("#esi_no").val(resp['esiNo']);
+                $("#employee_contribution_pct").val(resp['employeeContributionPct']);
+                $("#employer_contribution_pct").val(resp['employerContributionPct']);
+                // $("#is_included_ctc").attr('checked',resp['isEmployerContributionInCtc']);
+                $("#editBtn").attr("href",'/payroll/esi-details-edit/'+resp['id'])
+            },
+            error:function(xhr, status, e) {
+                alert('Error');
+            }
+        })
+    })
+</script>
+
+<script>
+    if(window.location.href.indexOf("/qxbox/payroll/epf-details/")) {
+        $("#payrollCompNavItem").addClass("active")
+    }
+</script>
+{% endblock %}

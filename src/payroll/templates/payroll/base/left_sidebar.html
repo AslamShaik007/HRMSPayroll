@@ -1,0 +1,88 @@
+<style>
+    .break-word {
+        word-wrap: break-word;
+}
+</style>
+
+<div id="left-sidebar" class="sidebar theme1">
+    <div class="sidebar-scroll">
+        <div class="user-account">
+            <div class="user_div">             
+            </div>
+            <div class="dropdown">
+                <a href="javascript:void(0);" class="dropdown-toggle user-name" data-toggle="dropdown" style="font-size: 16px;">
+                    Welcome
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right account vivify flipInY">
+                    <strong class="comp-name break-word w-100"></strong>
+                    <li><a href="#"  onclick="log_out()"><i class="icon-power"></i>Logout</a></li>
+                </ul>
+                <div class="user_div pb-1 pt-2" id="user_img_div">                    
+                </div>
+            </div>
+        </div>
+        <nav id="left-sidebar-nav" class="sidebar-nav">
+            <ul id="main-menu" class="metismenu">
+                <li><a class="dashLink" href=""><i class="icon-speedometer"></i><span>Dashboard</span></a></li>
+                <li><a href="/qxbox{% url 'payroll_master' %}">
+                    <i class="fa fa-inr" aria-hidden="true"></i>
+                    <span>Payroll Master</span></a>
+                </li>
+                
+                <!-- <li id="orgSetupNavItem"><a href="/qxbox{% url 'organization_view' %}"><i class="icon-grid"></i><span>Organization Setup</span></a></li> -->
+                <li id="orgSetupNavItem"><a href="/qxbox{% url 'organization_view' %}"><i class="icon-grid"></i><span>Payslip Setup</span></a></li>
+
+
+                <li id="payrollCompNavItem"><a href="/qxbox{% url 'epf_details' %}">
+                    <i class="fa fa-list" aria-hidden="true"></i>
+                    <span>Payroll Component</a>
+                </li>
+                <li id="employeeNavItem"><a href="/qxbox{% url 'active_employees_view' %}"><i class="icon-users"></i><span>Employees</span></a></li>  
+                                  
+                <li id="SavingDeclartion"><a href="/qxbox{% url 'saving_all_employee_forms' %}">                    
+                    <i class="fa fa-money" aria-hidden="true"></i>
+                    <span>Saving Declarations</span></a>
+                </li>    
+                
+                <li><a href="/qxbox{% url 'reimbursement' %}" class="has-arrow">                   
+                    <i class="fa fa-table" aria-hidden="true"></i>
+                    <span>Reimbursement</span></a>
+                </li>
+                
+                <li id="MainMenu">
+                    <a href="#demo6" class="list-gre" data-toggle="collapse" data-parent="#MainMenu">                  
+                        <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                        <span>Reports</span><i class="fa fa-caret-down"></i>
+                    </a>
+                    <div class="collapse pl-3" id="demo6">
+                        <a href="/qxbox{% url 'rep_payroll_overview' %}" class="has-arrow">
+                            <i class="fa fa-suitcase" aria-hidden="true"></i>
+                            <span>Statutory Reports</span>
+                        </a>
+                        <a href="/qxbox{% url 'repAllMonthTDSReport' %}" class="has-arrow"><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i><span>Monthly TDS Reports</span></a>
+                        <a href="/qxbox{% url 'gratuty_report' %}" class="has-arrow"><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i><span>Gratuty Reports</span></a>
+                      
+                        <a href="/qxbox{% url 'missing_info_report' %}" class="has-arrow"><i class="fa fa-user-secret" aria-hidden="true"></i><span>Missing Info Reports</span></a>
+                        <a href="/qxbox{% url 'salary_info_report' %}" class="has-arrow"><i class="fa fa-pie-chart" aria-hidden="true"></i><span>Salary Info Reports</span></a>
+                        
+                        <a href="/qxbox{% url 'variance_report' %}" class="has-arrow"><i class="fa fa-tasks" aria-hidden="true"></i><span>Variance Reports</span></a>
+                        <a href="/qxbox{% url 'audit_report' %}" class="has-arrow"><i class="fa fa-list-ol" aria-hidden="true"></i><span>Audit Reports</span></a> 
+                      
+                        <a href="/qxbox{% url 'leave_report' %}" class="has-arrow"><i class="fa fa-plane" aria-hidden="true"></i><span>Leave Report</span></a> 
+                        <a href="/qxbox{% url 'repHoldSalary' %}" class="has-arrow"><i class="fa fa-plane" aria-hidden="true"></i><span>Hold Salary Report</span></a> 
+                    </div>
+                </li>
+              
+
+                <li><a href="/qxbox{% url 'compliance_govt_report' %}" class="has-arrow"><i class="icon-calculator"></i><span>EPF Compliance Report</span></a></li>
+                <li><a href="/qxbox{% url 'esi_compliance_report' %}" class="has-arrow"><i class="icon-calculator"></i><span>ESI Compliance Report</span></a></li>
+                
+                <!-- <li><a href="{% url 'billing:view' %}" class="has-arrow"><i class="icon-calculator"></i><span>Billing</span></a></li>
+                <li><a href="{% url 'support:ticketapi' %}" class="has-arrow"><i class="icon-calculator"></i><span>Support</span></a></li>
+                           
+                 -->
+            </ul>
+        </nav>
+    </div>
+</div>
+

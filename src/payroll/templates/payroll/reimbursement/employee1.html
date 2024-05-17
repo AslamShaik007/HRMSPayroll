@@ -1,0 +1,641 @@
+{% extends 'payroll/base/base.html' %}
+
+{% block css %}
+
+    <style>
+        td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        }
+
+        .parsley-errors {
+            color: rgb(225, 88, 88);
+            font-size: 0.9em;
+            margin-top: 3px;
+        }
+
+        #menuBtn:active {
+            border: 2px solid #30239f;
+        }
+        #menuBtn:visited {
+            border: 2px solid #30239f;
+        }
+
+        #menuBtn:focus {
+            border: 2px solid #30239f;
+            outline: 1px dotted !important;
+        }
+
+    </style>
+
+    <style>
+        td.details-control {
+            background: url('assets/images/details_open.png') no-repeat center center;
+            cursor: pointer;
+        }
+
+        tr.shown td.details-control {
+            background: url('assets/images/details_close.png') no-repeat center center;
+        }
+
+        .table.table-custom tbody tr {
+            background: none;
+            border-radius: 0;
+        }
+
+        #dept_id,
+        #desi_id {
+            color: #4a4c4e;
+            border-color: #9E9E9E;
+            font-weight: 400;
+            padding: 6px 18px;
+            border-radius: 0.25rem;
+            display: inline-block;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 35px !important;
+
+        }
+
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #9E9E9E !important;
+            padding: 6px 18px !important;
+            border-radius: 0.25rem !important;
+        }
+    </style>
+    <style>
+        .select2-container {
+            max-width: 100% !important;
+        }
+    </style>
+
+    <style>
+        .select2-container .select2-selection--single {
+            height: 34px !important;
+        }
+
+        .light_version .table tr td, .light_version .table tr th {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+    </style>
+
+{% endblock %}
+
+{% block main_content %}
+
+<div class="container-fluid">
+ 
+
+        <div class="block-header">
+            <div class="row clearfix">
+                <div class="col-md-6 col-sm-12">
+                    <h1 class="ico_head"><i class="icon-grid"></i>Reimbursement</h1>
+                </div>
+                <div class="col-md-6 col-sm-12 text-right hidden-xs"></div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="body shadow border-0 pt-0 pb-2">
+                        <div class="tab-content">
+            
+                            <form name="search_form" id="search_form">
+                                <div class="row">                                                                               
+                                    <div class="col-lg-3 col-md-3 col-sm-6">
+                                        <div class="form-group">
+                                            <div class="multiselect_div">
+                                                <label>Status</label>
+                                                <select class="form-control selectpicker11 w-100 form-control status_list" name="status"  data-live-search="true">                                                                                                                                          
+                                                    
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-6">
+                                        <div class="form-group">
+                                            <div class="multiselect_div">
+                                                <label>Type</label>
+                                                <select class="form-control selectpicker11 w-100 form-control types_list"  name="type" data-live-search="true">                                                        
+                                                    
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                 
+                                    <div class="w-auto ml-2 mt-4 pt-1">
+                                        <button type="submit" class="btn btn-primary empbutton"><i class="fa fa-search mr-1"></i> Search</button>
+                                    </div>
+                                    <div class="w-auto ml-2 mt-4 pt-1">
+                                        <button onclick="window.location.href=window.location.href" class="btn btn-success"><i class="fa fa-refresh mr-1"></i> Refresh</button>
+                                    </div>                                  
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="header newhead" style="position:absolute;">
+                        <ul class="header-dropdown dropdown">
+                            <li><a href="javascript:void(0);" class="full-screen"><i class="icon-frame"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+
+                <div class="card mt-3">
+                    <div class="body shadow border-0">
+                        <div class="table-responsive">
+                            <table class="table" id="ReimbursementTableView">
+                                <thead>
+                                    <tr>                                                                                            
+                                        <th>ID</th>
+                                        <th>Expense Date</th>
+                                        <th>Approval Date</th>
+                                        <th>Type</th>
+                                        <th>Reason</th>
+                                        <th>Amount </th>
+                                        <th>Attachment(s)</th>                                               
+                                        <th>Status</th> 
+                                        <th>Action</th> 
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="card">
+                    <div class="body shadow mt-3 border-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover js-basic-example table-custom spacing5 mb-0" id="">
+                                <table id="example" class="table table-hover display nowrap">
+                                <thead>
+                                    <tr>                                                                                            
+                                        <th>ID</th>
+                                        <th>Expense Date</th>
+                                        <th>Approval Date</th>
+                                        <th>Type</th>
+                                        <th>Reason</th>
+                                        <th>Amount </th>
+                                        <th>Attachment(s)</th>                                               
+                                        <th>Status</th> 
+                                        <th>Action</th> 
+                                    </tr>
+                                </thead>
+                                <tbody id="reimb_table">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+        <div class="modal fade" id="getCodeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog_box">
+                <div class="modal-content">
+                    <div class="modal-header_box">
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="javascript:load_close()"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body text-center" id="getCode"></div>
+                    <div class="text-center mb-3">
+                        <button type="button" class="btn btn-primary modal2" data-dismiss="modal" onclick="javascript:load_close()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+           <!-- Add Department Modal -->
+    <div class="modal fade" id="editStatusModal" tabindex="-1" aria-labelledby="editStatusModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-md ">
+            <div class="modal-content pb-3 border-0" >
+                <div class="modal-header bg-my-primary">
+                    <h5 class="modal-title" id="addDepartmentModalLabel">Change status</h5>
+                    <button type="button" class="btn-close btn text-danger" data-dismiss="modal" aria-label="Close">X</button>
+
+                </div>
+                <div class="modal-body">
+                    <div class="row justify-content-center px-4">
+                        <div class="card mutt-card px-3 w-100">
+                            <form id="changeStatus"  >
+                                <fieldset>
+                                    <div class="form-card">
+                                        <input type="hidden" id="reimb_id" value="" />
+
+                                        <label class="fieldlabels">Status * </label>
+                                        <div class="mb-2">
+                                            <select id="status"  name="status" required class="form-control" required>
+                                              
+                                            </select>
+                                            <small class="cust_err" id="addDept_Name_Err">Error Message</small>
+                                        </div>                                       
+                                    </div>
+                                    <div class="row clearfix pt-3">
+                                        
+                                        <div class="col-6">
+                                            <button type="button" class="btn addBtn  btn-sm btn-block" value="Cancel"  data-dismiss="modal" aria-label="Close">Cancel</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="submit" class="btn btn-primary px-5 btn-sm  btn-block addBtn">Save</button>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Add Department Modal -->
+
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+    $(document).ready(function() {
+            var dataTable = $('#ReimbursementTableView').DataTable({
+                columns: [
+                { data: 'id' },
+                { data: 'expenseDate' },
+                { data: 'approvalDate' },
+                { data: 'type' },
+                { data: 'detail' },
+                { data: 'amount' },
+                { data: 'supportFile' },
+                // { data: '' },
+                { data: 'status' },
+                    {
+                        data: null,
+                        render: function(data, type, row) {
+                            return '<button data-id="' + data.id + '" class="edit-button btn btn-sm btn-default"><i class="fa fa-edit" data-toggle="modal" data-target="#editStatusModal"></i></button>' +
+                                   '<button class="btn btn-sm btn-default del_button delete-button ml-1" data-id="' + data.id + '"><i class="fa fa-trash"></i></button>';
+                        }
+                    }
+                ]
+            });
+
+            // Fetch API data using AJAX
+            $.ajax({
+                url: "/qxbox/api/payroll/reimbursement?cmp_id={{request.session.cmp_id}}"+"&status="+status,
+                method: "GET",
+                dataType: "json",
+                success: function(data) {
+                    // Add data to the DataTable
+                    dataTable.rows.add(data.data).draw();
+                    console.log(data)
+                     console.log("API request success.")
+                },
+                error: function() {
+                    console.log("API request failed.");
+                }
+
+            });
+
+            // Edit button click event
+            $('#data-table').on('click', '.edit-button', function() {
+                var id = $(this).data('id');
+                // Implement edit functionality here
+                console.log('Edit button clicked for ID:', id);
+            });
+
+            // Delete button click event
+            $('#data-table').on('click', '.delete-button', function() {
+                var id = $(this).data('id');
+                // Implement delete functionality here
+                console.log('Delete button clicked for ID:', id);
+            });
+        });
+</script>
+
+<!-- <script>
+    $(document).ready(function() {
+        // Fetch API data using AJAX
+        console.log("-------------Fetch API data using AJAX outside")
+        $.ajax({
+            // console.log("Fetch API data using AJAX outside")
+            // url: "/qxbox/api/payroll/reimbursement?cmp_id={{request.session.cmp_id}}"+"&status="+status+"&type="+type,
+            url: "/qxbox/api/payroll/reimbursement?cmp_id={{request.session.cmp_id}}"+"&status="+status,
+            method: "GET",
+            dataType: "json",
+            success: function(data) {
+                // Initialize DataTables with retrieved data
+                $('#ReimbursementTableView').DataTable({
+                    data: data.data,
+                    columns: [
+                        { data: 'id' },
+                        { data: 'expenseDate' },
+                        { data: 'approvalDate' },
+                        { data: 'type' },
+                        { data: 'detail' },
+                        { data: 'amount' },
+                        { data: 'supportFile' },
+                        { data: '' },
+                        { data: `status` },
+                    ]
+                });
+                console.log(data)
+                console.log("API request success.");
+            },
+            error: function() {
+                console.log("API request failed.");
+            }
+        });
+        console.log("Fetch API data using AJAX outside-------------")
+    });
+</script> -->
+    
+
+    <script type="text/javascript">
+        $(".selectpicker").select2();
+
+        function get_reimbursement(){
+            $("#reimb_table").html("");
+             
+            var status = $('.status_list option:selected').val()
+            var type = $('.types_list option:selected').val()
+            
+            $.ajax({
+                type: 'GET',
+                url: "/qxbox/api/payroll/reimbursement?cmp_id={{request.session.cmp_id}}"+"&status="+status+"&type="+type,
+                dataType: 'json',
+                headers: {
+                    "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                },
+                success: function (data,textStatus) {
+                    
+                    let resp = data;
+                    var domain = window.location.origin + "/media/";
+                    for(var i=0;i<resp['data'].length;i++){
+                        var hrefView = domain + resp['data'][i]['supportFile']
+                        
+                        $("#reimb_table").append(
+                            `
+                            <tr>
+                                <td>`+resp['data'][i]['id']+`</td>
+                                <td>`+resp['data'][i]['expenseDate']+`</td>
+                                <td>`+resp['data'][i]['approvalDate']+`</td>
+                                <td>`+resp['data'][i]['type']+`</td>
+                                <td>`+resp['data'][i]['detail']+`</td>
+                                <td>`+resp['data'][i]['amount']+`</td>
+                                <td><a href="`+hrefView+`">View</a></td>
+                                <td>`+resp['data'][i]['status']+`</td>
+                                <td>                                  
+                                    <span class="dis_in" title="" data-toggle="tooltip" data-placement="top" data-original-title="Edit">
+                                        
+                                            <button type="button" class="btn btn-sm btn-default" data-id="`+resp['data'][i]['id']+`" data-status="`+resp['statusList']+`" data-toggle="modal" data-target="#editStatusModal"><i class="fa fa-edit"></i></button>
+                                        
+                                    </span> 
+                                    <span class="dis_in" title="" data-toggle="tooltip" data-placement="top" data-original-title="Delete">
+                                                                                    
+                                            <button type="submit" id="`+resp['data'][i]['id']+`" class="btn btn-sm btn-default del_button"><i class="fa fa-trash"></i></button>                                    
+                                        
+                                    </span>                                                     
+                                </td>
+                            </tr>
+                            `
+                        )
+                    }
+
+                    $(".status_list").html("")
+
+                    $(".status_list").append(
+                            `
+                        <option value="" selected>--All--</option>                                                   
+
+                            `
+                    )
+
+                    for(var j=0;j<resp['statusList'].length;j++){
+                        $(".status_list").append(
+                            `
+                            <option value='`+resp['statusList'][j]+`'>`+resp['statusList'][j]+`</option>
+                            `
+                        )
+                    }
+
+                    $(".types_list").html("")
+                    $(".types_list").append(
+                            `
+                        <option value="" selected>--All--</option>                                                   
+
+                            `
+                    )
+
+                    for(var j=0;j<resp['typesList'].length;j++){
+
+                        $(".types_list").append(
+                            `
+                            <option value='`+resp['typesList'][j]+`'>`+resp['typesList'][j]+`</option>
+                            `
+                        )
+                    }                                
+
+                },
+                error:function(xhr, status, e) {
+                    alert('Error');
+                }
+            })
+           
+        }
+
+        $(document).ready(function() {    
+                                   
+            get_reimbursement();
+
+            $("#search_form").submit(function(e){
+                e.preventDefault();
+                
+                get_reimbursement();
+            })
+
+            $('#changeStatus').submit(function(e) {
+            e.preventDefault();
+            var status = $('#status').val();           
+            var reimb_id = $("#reimb_id").val()
+            
+                $.ajax({
+                type: "PATCH",
+                url: "/qxbox/api/payroll/reimbursement",
+                data: {"id":reimb_id,"status":status},
+                headers: {
+                    "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                },
+                success: function(response) {
+                   
+                    swal({
+                        title: response['msg'],
+                        type: "success",
+                        confirmButtonColor: "#007bff",
+                        confirmButtonText: "Close",
+                        closeOnConfirm: true
+                        },
+                        function(isConfirm) {
+                            window.location.replace("/qxbox/payroll/reimbursement/");
+                        });
+                        return true;
+                    
+                }
+                });
+            
+            });
+
+
+            $(document).on('click','.del_button', function(e) {
+                e.preventDefault();
+                
+                var reimb_id = $(this).attr('id')
+                console.log(reimb_id);
+                $.ajax({
+                type: "DELETE",
+                url: "/qxbox/api/payroll/reimbursement",
+                data: {"id":reimb_id},
+                headers: {
+                    "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                },
+                success: function(response) {
+                   
+                    swal({
+                        title: response['msg'],
+                        type: "success",
+                        confirmButtonColor: "#007bff",
+                        confirmButtonText: "Close",
+                        closeOnConfirm: true
+                        },
+                        function(isConfirm) {
+                            window.location.replace("/qxbox/payroll/reimbursement/");
+                        });
+                        return true;
+                    
+                }
+                });
+            
+            });
+
+        });
+
+
+        $('#editStatusModal').on('show.bs.modal', function(e) {
+
+        //get data-id attribute of the clicked element
+        var status = $(e.relatedTarget).data('status');
+        status = status.split(',')
+        
+        for(var i=0;i<status.length;i++){
+            $(e.currentTarget).find("#status").append(
+                `
+                <option value='`+status[i]+`'>`+status[i]+`</option>
+                `
+            )
+        }
+        //populate the textbox
+        $(e.currentTarget).find('input[id="reimb_id"]').val($(e.relatedTarget).data('id'));
+        });
+
+
+        function load_close() {
+            window.location.replace("./employee_list");
+        }
+
+        function jsbox() { // alert('sssssssssss');
+            swal("Please check if the user is active and official mail id is set!");
+        }
+
+  
+        function JSalert(emp_id) {
+            swal({
+                title: "Are you sure you want to delete this!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#007bff",
+                confirmButtonText: "Delete",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: false,
+                closeOnCancel: true
+            },
+            function(isConfirm) {
+                if (isConfirm) {
+                swal("Deleted Successfully!", " ", "success");
+                window.location.replace("./emp/employees/is_deleted/" + emp_id);
+                }
+            });
+        }
+
+        $(document).ready(function() {
+          $('#sortingtable').DataTable({
+            "order": [
+              [8, "asc"]
+            ]
+          });
+        });
+
+
+        $(document).ready(function() {
+            $('#sortingtable').DataTable({
+            "order": [0, 'asc'],
+            'ordering': true,
+            scrollY: 500,
+            scrollX: false
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('.empbutton').click(function() {
+            $('#employeelist').removeClass('active');
+            });
+        });
+
+    </script>
+
+    <script>
+        $(function() {
+            // initialize after multiselect
+            $('#basic-form').parsley();
+        });
+    </script>
+
+
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+        oTable = $('#datatable').dataTable({
+            "bJQueryUI": true,
+            "sPaginationType": "full_numbers"
+        });
+
+        $("#selectall").click(function () {
+            var checkAll = $("#selectall").prop('checked');
+                if (checkAll) {
+                    $(".case").prop("checked", true);
+                } else {
+                    $(".case").prop("checked", false);
+                }
+            });
+
+        $(".case").click(function(){
+            if($(".case").length == $(".case:checked").length) {
+                $("#selectall").prop("checked", true);
+            } else {
+                $("#selectall").prop("checked", false);
+            }
+
+        });
+    } );
+   
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,566 @@
+
+{% extends 'payroll/base/base.html' %}
+{% load static %}
+
+{% block css %}
+
+    <style>
+        table.dataTable th,
+        table.dataTable td {
+            white-space: nowrap;
+        }
+        td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        }
+
+        .parsley-errors {
+            color: rgb(225, 88, 88);
+            font-size: 0.9em;
+            margin-top: 3px;
+        }
+    </style>
+    
+    <style>
+        #menuBtn:active {
+            border: 2px solid #30239f;
+        }
+        #menuBtn:visited {
+            border: 2px solid #30239f;
+        }
+
+        #menuBtn:focus {
+            border: 2px solid #30239f;
+            outline: 1px dotted !important;
+        }
+    </style>
+
+<style>
+    td.details-control {
+        background: url('./assets/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+
+    tr.shown td.details-control {
+        background: url('./assets/images/details_open.png') no-repeat center center;
+    }
+
+    .parsley-errors {
+        color: rgb(225, 88, 88);
+        font-size: 0.9em;
+        margin-top: 3px;
+    }
+
+    #main-content {
+        margin-top: 1.5rem !important;
+    }
+
+    .BtnActive {
+        background-color: #187ebe;
+        border: 2px solid #187ebe;
+        color: white;
+        font-weight: 500;
+    }   
+    .prev{
+        float: initial !important;       
+    }
+</style>
+
+{% endblock %}
+
+{% block main_content %}
+
+        <div class="container-fluid">
+
+            <div class="block-header">
+                <div class="row clearfix">
+                    <div class="col-md-6 col-sm-12">                     
+                        <h1 class="ico_head"><i class="fa fa-bar-chart" aria-hidden="true"></i> <b>Leave Report</b></h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col-lg-12 mx-auto">
+                    <div class="card">
+
+                        <div class="body shadow mb-3 pt-0 border-0">
+                            <div class="tab-content">
+                
+                                <form id="search_form">
+                                    <div class="row pt-4">
+                                        <div class="col-lg-3 col-md-3 col-sm-6">
+                                            <div class="form-group">
+                                                <div class="multiselect_div">
+                                                    <select id="dept_id" class="form-control selectpicker w-100" data-live-search="true">
+                                                        <option value="">--All Department -- </option>                                             
+                                                       
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-sm-6">
+                                            <div class="form-group">
+                                                <div class="multiselect_div">
+                                                    <select class="form-control selectpicker w-100" id="employee_id" data-live-search="true">                                            
+                                                        <option value="">All Employee</option>
+                                                                                                  
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-sm-6">
+                                            <div class="form-group">
+                                                <div class="multiselect_div">
+                                                    <select id="month_and_year" class="form-control selectpicker w-100" data-live-search="true">
+                                                        <option value="">--All Month and Year -- </option>                                                                                                   
+                                                        
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+        
+                                        <div class="w-auto ml-2">
+                                            <button type="submit"
+                                                class="btn btn-primary empbutton addBtn" ><i
+                                                    class="fa fa-search mr-1"></i> Search</button>
+                                        </div>
+                                        <div class="w-auto ml-2">
+                                            <button onclick="window.location.href=window.location.href" class="btn btn-success addBtn"><i
+                                                    class="fa fa-refresh mr-1"></i> Refresh</button>
+                                        </div>  
+                                        <div class="w-auto ml-2">
+                                            <button id="download_records" class="btn btn btn-info addBtn"
+                                                title=""><i class="fa fa-download"></i> Download</a>
+                                        </div>                             
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- next -->
+                        <div class="body top_sp shadow border-0 pt-2" id="summary_id">
+                            <div class="tab-content">
+                                <div class="tab-pane show active" id="e_employees">
+                                    <select class="form-control form-control NofEntriesShowSel" id="NofEntriesSel" name="NofEntriesSel" data-live-search="true">
+        
+                                        <option value="10" selected>10</option>
+                                    
+                                        <option value="25" >25</option>
+                                    
+                                        <option value="50" >50</option>
+                                    
+                                        <option value="100" >100</option>
+                                    
+                                        <option value="10000" >All</option>
+                                    
+                                    </select>      
+                                    <div class="table-responsive">
+        
+                                            <table class="display table table-hover table-custom spacing5 mb-0" id="sortingtable">
+        
+                                        <thead>
+                                            <tr>
+                                                <th>Emp. ID</th>
+                                                <th>Employee Name</th>
+                                                <th>Department</th>                                                                                              
+                                                <th>Manager</th>                                                                                              
+                                                <th>Month</th>                                                                                              
+                                                <th>Working Days</th>                                                                                              
+                                                <th>Leaves</th>                                                                                              
+                                                <th>LOP</th>                                                                                              
+                                            </tr>	
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                             </tr>
+                                        </tfoot>	                                        					               
+                                    </table>
+                                    
+                                </div>                               
+
+                                <div class="row mt-3">
+                                    <div class="col-6">
+                                        <div>Showing <span class="currentRecord"><span class="lastRecord"></span> of
+                                                <span class="totalRecord"></span> entries</div>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <div class="btnGroup">
+                                            <button type="button"
+                                                class="btn btn-secondary btn-sm nav-btn prev disabled">Previous</button>
+                                            <button type="button" class="btn btn-sm cpage"></button>
+                                            <button type="button"
+                                                class="btn btn-secondary btn-sm nav-btn nxt disabled">Next</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                <!-- next end -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+  
+<script>
+    if(window.location.href.indexOf("/qxbox/payroll/reports/")) {
+            console.log("success")
+            $("#MainMenu").addClass("active")
+        } else {
+            console.log("failed")
+        }
+</script>
+
+
+
+<script>
+    $(document).on( "ajaxSend", function() {
+      $("#AjaxCallOverlay").fadeIn(300);
+    });
+    let myResponseStatus = true;
+
+  </script>
+
+
+<script>
+
+$(".selectpicker").select2();
+
+
+function set_filters(filtersData){
+    var dt = []
+    var empid = []
+    var depId = []
+    filtersData.forEach(function(item) {
+
+        if(!depId.includes(item['department'])){
+            depId.push(item['department'])
+            $('#dept_id').append("<option value='"+item['department']+"' >"+item['department']+"</option>")
+        }
+        if(!empid.includes(item['empId'])){
+            empid.push(item['empId'])
+            $('#employee_id').append("<option value='"+item['empId']+"' >"+item['employeeName']+"</option>")                    
+        }
+            if(!dt.includes(item['lopMonthYear'])){
+                dt.push(item['lopMonthYear'])
+                $('#month_and_year').append("<option value='"+item['lopMonthYear']+"' >"+changeDateFormatToMonthYear(item['lopMonthYear'])+"</option>")                    
+            }
+        });
+
+}
+
+
+    function setTable(results){            
+         
+        var rescounter = 0;
+        results.forEach(function(item) {
+            rescounter ++;
+            $('#sortingtable tbody').append(
+                `
+                <tr class="odd">
+                            <td>`+ item['empId'] + `</td>
+                            <td>`+ item['employeeName'] + `</td>
+                            <td>`+ item['department'] + `</td>
+                            <td>`+ item['manager'] + `</td>
+                            <td>`+ item['month'] + ` - `+item['year']+`</td>
+                            
+                            <td>`+ item['workingDays'] + `</td>
+                            <td>`+ item['leavesCount'] + `</td>
+                            <td>`+ item['updatedHrLopCount'] + `</td>
+                        </tr>
+                `
+            )
+        });
+    
+    }
+
+
+    function get_employees_list(page,page_size,department,employees,month_year,is_filter,apiurl){        
+        let apiUrl = "/qxbox/{% url 'leave-report' %}" 
+            if (apiurl){
+                apiUrl = apiurl
+            }else{
+                apiUrl = apiUrl + "?company_id="+ '{{request.session.cmp_id}}'            
+                apiUrl = apiUrl + '&page='+ page
+                apiUrl = apiUrl + '&page_size='+ page_size
+            }            
+            if (department.length>0){
+                apiUrl = apiUrl + '&dept_ids='+department
+            }            
+            if(employees.length>0){
+                apiUrl = apiUrl + '&emp_ids='+employees            
+            }
+            if(month_year.length>0){
+                apiUrl = apiUrl + '&month_years='+month_year            
+            }
+
+        $.ajax({
+            type: 'GET',
+            url: apiUrl,
+            dataType: 'json',           
+            contentType: "application/json",
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem('acc_token')
+            },
+            success: function (response) {
+
+                let filtersData = response['result']['filtersData'];
+                let paginatedData = response['result']['paginatedData'];
+                let results = paginatedData['results'];
+
+                $('#sortingtable').DataTable().clear().destroy()
+
+                setTable(results)
+                set_filters(results)
+
+                $('#sortingtable').DataTable(
+                    {
+                        responsive: true,
+                        destroy: true,
+                        pageLength: 10,
+                        paginate: false,
+                        info: false,
+                        // dom: 'Bfrtip',
+                        "order": [],     
+                        footerCallback: function( tfoot, data, start, end, display ) {
+                            var api = this.api();
+                            $(api.column(7).footer()).html(
+                                api.column(7).data().sum()
+                            );
+                            $(api.column(6).footer()).html(
+                                api.column(6).data().sum()
+                            );
+                        }                  
+                    }
+                );
+
+                if (paginatedData.previous) {
+                    $('.prev').removeClass('disabled')
+                    $('.prev').addClass('BtnActive')
+                    $('.prev').data('url', (paginatedData.previous).replace('api','qxbox/api').replace('http:','https:'))
+                } else {
+                    $('.prev').addClass('disabled')
+                }
+                if (paginatedData.next) {
+                    $('.nxt').removeClass('disabled')
+                    $('.nxt').addClass('BtnActive')
+                    $('.nxt').data('url', (paginatedData.next).replace('api','qxbox/api').replace('http:','https:'))
+                } else {
+                    $('.nxt').addClass('disabled')
+                }
+
+                $('.lastRecord').text(results.length)
+                $('.totalRecord').text(paginatedData.count)
+                $(".cpage").text(paginatedData.currentPage)
+            }
+            }).done(function() {
+                
+                if(myResponseStatus == true) {
+                    // setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    // },500);
+                } else {                    
+                    setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);
+                }
+                
+            }).fail(function (xhr, status, e) {                 
+                swal({   
+                    title: "Error",
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+                 setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);                
+            });      
+    }
+
+    $(document).ready(function () {        
+        get_employees_list(1,10,[],[],[],true,false)
+
+    })
+
+</script>
+
+
+
+
+
+<script>
+    function download_employees_list(department,employees,month_year){
+        
+        let apiUrl = "/qxbox/{% url 'leave-report' %}"     
+            apiUrl = apiUrl + "?company_id="+ '{{request.session.cmp_id}}'                                
+            
+            if (department.length>0){
+                apiUrl = apiUrl + '&dept_ids='+department
+            }            
+            if(employees.length>0){
+                apiUrl = apiUrl + '&emp_ids='+employees            
+            }
+            if(month_year.length>0){
+                apiUrl = apiUrl + '&month_years='+month_year            
+            }
+            apiUrl = apiUrl + '&download=true'
+
+        $.ajax({
+            type: 'GET',
+            url: apiUrl,
+            xhrFields: {
+                responseType: 'blob' // Set the response type to blob
+            },              
+            headers: {
+                "Authorization": "Bearer "+localStorage.getItem('acc_token')
+            },
+            success: function (data, status, xhr) {                
+                
+                const blob = new Blob([data], { type: 'application/ms-excel' }),               
+                link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "Leaves_Lop_Report.xlsx";
+                link.click();
+                
+            }            
+        }).done(function() {
+                    
+                    if(myResponseStatus == true) {
+                        // setTimeout(function(){
+                            $("#AjaxCallOverlay").fadeOut('slow');
+                        // },500);
+                    } else {                    
+                        setTimeout(function(){
+                            $("#AjaxCallOverlay").fadeOut('slow');
+                        },3000);
+                    }
+                    
+                }).fail(function (xhr, status, e) {                 
+                    swal({   
+                        title: "Error",
+                        type: "info",
+                        showCancelButton: false,
+                        confirmButtonColor: "#007bff",
+                        confirmButtonText: "Ok",
+                        closeOnConfirm: false,
+                        closeOnCancel: true 
+                    });
+                    setTimeout(function(){
+                            $("#AjaxCallOverlay").fadeOut('slow');
+                        },3000);                
+                }); 
+
+    }
+
+</script>
+
+
+<script>
+
+    var page_size = 10;
+
+    $('#NofEntriesSel').on('change', function() {
+        page_size = this.value 
+
+        let dept_id = [] 
+        if ($("#dept_id").val()){
+            dept_id.push($("#dept_id").val());
+        }
+        let emp_ids = []                    
+        if($('#employee_id').val()){
+            emp_ids.push($('#employee_id').val())
+        }
+        let month_and_year = []
+        if($("#month_and_year").val()){
+            month_and_year.push($("#month_and_year").val());
+        }
+
+        get_employees_list(1,page_size,dept_id,emp_ids,month_and_year,false,false)
+    });
+
+    $("#search_form").on('submit',function(e){
+        e.preventDefault()
+
+        let dept_id = [] 
+        if ($("#dept_id").val()){
+            dept_id.push($("#dept_id").val());
+        }
+        let emp_ids = []
+                   
+        if($('#employee_id').val()){
+            emp_ids.push($('#employee_id').val())
+        }
+        let month_and_year = []
+        if($("#month_and_year").val()){
+            month_and_year.push($("#month_and_year").val());
+        }
+
+        get_employees_list(1,page_size,dept_id,emp_ids,month_and_year,false,false)
+
+    })
+</script>
+
+<script>
+    
+    $('body').on('click','#download_records' ,function (e) {
+        e.preventDefault();
+        
+        let dept_id = [] 
+        if ($("#dept_id").val()){
+            dept_id.push($("#dept_id").val());
+        }
+        let emp_ids = []                       
+        if($('#employee_id').val()){
+            emp_ids.push($('#employee_id').val())
+        }
+        let month_and_year = []
+        if($("#month_and_year").val()){
+            month_and_year.push($("#month_and_year").val());
+        }           
+        download_employees_list(dept_id,emp_ids,month_and_year)        
+    })
+    
+
+$('body').on('click','.nav-btn' ,function (e) {
+    e.preventDefault();
+    let apiurl = $(this).data('url');    
+    let dept_id = [] 
+    if ($("#dept_id").val()){
+        dept_id.push($("#dept_id").val());
+    }
+    let emp_ids = []                       
+    if($('#employee_id').val()){
+        emp_ids.push($('#employee_id').val())
+    }
+    let month_and_year = []
+    if($("#month_and_year").val()){
+        month_and_year.push($("#month_and_year").val());
+    }
+    console.log(apiurl);                     
+    get_employees_list(1,page_size,dept_id,emp_ids,month_and_year,false,apiurl)        
+})
+
+</script>
+
+{% endblock %}

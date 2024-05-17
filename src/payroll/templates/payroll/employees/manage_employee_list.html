@@ -1,0 +1,706 @@
+{% extends 'payroll/base/base.html' %}
+
+{% block css %}
+
+    <style>
+        td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        }
+
+        .parsley-errors {
+            color: rgb(225, 88, 88);
+            font-size: 0.9em;
+            margin-top: 3px;
+        }
+
+        #menuBtn:active {
+            border: 2px solid #30239f;
+        }
+        #menuBtn:visited {
+            border: 2px solid #30239f;
+        }
+
+        #menuBtn:focus {
+            border: 2px solid #30239f;
+            outline: 1px dotted !important;
+        }
+
+    </style>
+
+    <style>
+        td.details-control {
+            background: url('assets/images/details_open.png') no-repeat center center;
+            cursor: pointer;
+        }
+
+        tr.shown td.details-control {
+            background: url('assets/images/details_close.png') no-repeat center center;
+        }
+
+        .table.table-custom tbody tr {
+            background: none;
+            border-radius: 0;
+        }
+
+        #dept_id,
+        #desi_id {
+            color: #4a4c4e;
+            border-color: #9E9E9E;
+            font-weight: 400;
+            padding: 6px 18px;
+            border-radius: 0.25rem;
+            display: inline-block;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 35px !important;
+
+        }
+
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #9E9E9E !important;
+            padding: 6px 18px !important;
+            border-radius: 0.25rem !important;
+        }
+    </style>
+    <style>
+        .select2-container {
+            max-width: 100% !important;
+        }
+    </style>
+
+    <style>
+        .select2-container .select2-selection--single {
+            height: 34px !important;
+        }
+    </style>
+    <style>
+        #main-content {
+            margin-top: 1.5rem !important;
+        }
+    
+        .BtnActive {
+            background-color: #187ebe;
+            border: 2px solid #187ebe;
+            color: white;
+            font-weight: 500;
+        }   
+        .prev{
+            float: initial !important;       
+        }
+    </style>
+
+{% endblock %}
+
+{% block main_content %}
+
+<div class="container-fluid">
+
+    {% include 'payroll/base/emp-block-header.html' with t2=True %}
+
+
+ 
+
+        <div class="block-header">
+            <div class="row clearfix">
+                <div class="col-md-6 col-sm-12">
+                    <h1 class="ico_head"><i class="icon-users"></i>Employee</h1>
+                </div>
+                <div class="col-md-6 col-sm-12 text-right hidden-xs"></div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12">
+                <div class="card">
+                    <!-- <div class="header newhead" style="position:absolute;">
+                        <ul class="header-dropdown dropdown">
+                            <li><a href="javascript:void(0);" class="full-screen"><i class="icon-frame"></i></a></li>
+                        </ul>
+                    </div> -->
+                    <div class="card mb-2">
+                        <div class="body  shadow-lg">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <div class="row justify-content-end pb-3 pr-3">
+                                        <div class="w-auto ml-2">
+                                            <a href="/qxbox{% url 'profile_add_employee' %}" class="btn btn-success addBtn"> <i class="fa fa-plus mr-1" aria-hidden="true"></i> Add Employee</a>
+                                        </div>
+                                        <div class="w-auto ml-2">
+                                            <a href="/qxbox{% url 'import_data_employee' %}" class="btn btn-success addBtn"><i class="fa fa-download mr-1" aria-hidden="true"></i> Import Employee Data</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <form name="search_form" id="search_form">
+                                <div class="row">
+                                    <div class="col-lg-2 col-md-3 col-sm-6">
+                                        <div class="form-group">
+                                            <div class="multiselect_div">
+                                                <select id="dept_id" class="form-control selectpicker w-100 form-control">                                                    
+                                                    <option value="" >All Department</option>  
+                                                                                                 
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>         
+                                    <div class="col-lg-2 col-md-3 col-sm-6">
+                                        <div class="form-group">
+                                            <div class="multiselect_div">
+                                                <select class="form-control selectpicker w-100 form-control" id="employee_id" data-live-search="true">                                                    
+                                                    <option value="" >All Employee</option>       
+             
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-3 col-sm-6">
+                                        <div class="form-group mb-0">
+                                            <div class="multiselect_div">
+                                                <select id="emp_status" class="form-control selectpicker w-100 form-control">
+                                                    <option value="">-- ALL -- </option>
+                                                    <option value="1" >Active</option>
+                                                    <option value="0" >InActive</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="w-auto ml-3">
+                                        <button type="submit" class="btn addBtn backBtn empbutton mr-2"><i class="fa fa-search mr-1"></i> Search</a>
+                                    </div>
+                                    <div class="w-auto ml-2">
+                                        <button onclick="window.location.href=window.location.href" class="btn addBtn backBtn empbutton "><i class="fa fa-refresh mr-1"></i> Refresh</button>
+                                    </div>
+                                    <div class="w-auto ml-2">
+                                        <button id="download_records" class="btn btn btn-info addBtn"
+                                            title=""><i class="fa fa-download"></i> Download</a>
+                                    </div> 
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="body  shadow-lg mt-3">
+                        <p>Select employees, to</p>
+                        <button onclick="activeemployeesfunc()" class="btn addBtn backBtn empbutton mr-2"><i class="fa fa-circle mr-1 ActiveColor" aria-hidden="true"></i> Active</button>
+        
+                        <button onclick="Inactiveemployeesfunc()" class="btn addBtn backBtn empbutton mr-2"><i class="fa fa-circle mr-1 InActiveColor" aria-hidden="true"></i> In-Active</button>
+                    
+                                        
+                        <div class="tab-content">
+                            <div class="tab-pane show active" id="e_employees">
+                                <select class="form-control form-control NofEntriesShowSel" id="NofEntriesSel" name="NofEntriesSel" data-live-search="true">
+
+                                    <option value="10" selected>10</option>
+                                
+                                    <option value="25" >25</option>
+                                
+                                    <option value="50" >50</option>
+                                
+                                    <option value="100" >100</option>
+                                
+                                    <option value="10000" >All</option>
+                                
+                                </select> 
+                                <div class="table-responsive">
+                                    <table class="display table table-hover table-custom spacing5 mb-0" id="sortingtable">                                        
+                                        <thead>
+                                            <tr>
+                                                <th><input type="checkbox" id="selectall" /></th>
+                                                <th>S.No.</th>                                                
+                                                <th>Employee</th>
+                                                <th>DOJ</th>
+                                                <th>LWD</th>
+                                                <th>Status</th>
+                                                <th>Organization </th>
+                                                <th>Department</th>
+                                                <!-- <th>Designation</th> 
+                                                <th>Mobile</th>-->
+                                                <th>Manager</th>
+                                                <th>Payroll Status</th>
+                                                <!-- <th>Send Mail</th>-->
+                                                <th>Action</th> 
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            
+                                                                                        
+                                                                                                                             
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-6">
+                                        <div>Showing <span class="currentRecord"><span class="lastRecord"></span> of
+                                                <span class="totalRecord"></span> entries</div>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <div class="btnGroup">
+                                            <button type="button"
+                                                class="btn btn-secondary btn-sm nav-btn prev disabled">Previous</button>
+                                            <button type="button" class="btn btn-sm cpage"></button>
+                                            <button type="button"
+                                                class="btn btn-secondary btn-sm nav-btn nxt disabled">Next</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="e_add">
+                                <div class="body">
+                                    <form id="basic-form" novalidate="" enctype="multipart/form-data" class="form-horizontal add-form" method="POST" name="FmCategory" action="./emp/employees/add">
+                                        <div class="row clearfix">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="des-code">Designation Code<span class="asterisk">*</span></label>
+                                                    <input id="designation_code" type="text" name="designation_code" class="form-control" required />
+                                                    <span class="parsley-errors" id="duplicate_code"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row clearfix">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Designation Name<span class="asterisk">*</span></label>
+                                                    <input id="designation_name" type="text" name="designation_name" class="form-control" required />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row clearfix">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="single-selection">Department Name<span class="asterisk">*</span></label>
+                                                    <div class="multiselect_div">
+                                                        <select id="dept_id" name="dept_id" required class="form-control">
+                                                            <option value="">--Select Department -- </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <input type="hidden" name="con_mode" value="add" />
+                                                <button type="reset" value="Reset" class="btn addBtn btn-secondary">Clear</button>
+                                                <button type="submit" class="btn addBtn btn-primary">Add</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                 
+                    </div>
+                </div>
+            </div>
+        </div>
+                </div>
+       
+
+{% endblock %}
+
+{% block js %}
+
+    <script type="text/javascript">
+        $(".selectpicker").select2();            
+
+        function set_filters(filtersData){
+            $.each(filtersData,function(index,value){ 
+                $('#dept_id').append("<option value='"+index+"' >"+index+"</option>")
+                value.forEach(function(item) {
+                    $('#employee_id').append("<option value='"+item['employeeId']+"' >"+item['employeeName']+"</option>")                    
+                });
+            });
+        }
+
+
+        function setTable(results){            
+             
+            var rescounter = 0;
+            results.forEach(function(item) {
+                rescounter ++;
+                $('#sortingtable tbody').append(
+                    `
+                    <tr>
+                        <td align="start">
+                            <input type="checkbox" class="case" name="case" value="`+item['id']+`" />
+                        </td>
+                        <td>`+rescounter+`</td>
+                        <td>`+item['employeeName']+`</td>
+                        <td>`+item['dateOfJoin']+`</td>
+                        <td>`+item['resignationInfo_LastWorkingDay']+`</td>
+                        <td>`+item['workDetails_EmployeeStatus']+`</td>
+                        <td>`+item['company_CompanyName']+`</td>
+                        <td>`+item['workDetails_Department_Name']+`</td>
+                        <td>`+item['manager']+`</td>
+                        <td><button type="button" class="badge badge-success">`+item['payrollStatus']+`</button></td>                      
+                        <td>
+                            <span class="dis_in" title="" data-toggle="tooltip" data-placement="top" data-original-title="view">
+                                <button onclick="location.href='/payroll/profile-view-employees/`+item['id']+`'" class="btn btn-sm btn-default">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                            </span>
+
+                            <span class="dis_in" title="" data-toggle="tooltip" data-placement="top" data-original-title="Edit">
+                                <a href="/qxbox/payroll/profile-edit-employees/`+item['id']+`" class="table-edit-link">
+                                    <button type="button" class="btn btn-sm btn-default"><i class="fa fa-edit"></i></button>
+                                </a>
+                            </span>                                                     
+                        </td>
+                    </tr>
+                    `
+                )
+            });
+        
+        }
+
+
+        function get_employees_list(page,page_size,department,employees,work_details_status,is_filter,apiurl){
+            let apiUrl = "/qxbox/{% url 'manage-employees' %}" 
+            if (apiurl){
+                apiUrl = apiurl
+            }else{
+                apiUrl = apiUrl + "?company_id="+ '{{request.session.cmp_id}}'            
+                apiUrl = apiUrl + '&page='+ page
+                apiUrl = apiUrl + '&page_size='+ page_size
+            }             
+            if (department.length>0){
+                apiUrl = apiUrl + '&departments='+department
+            }            
+            if(employees.length>0){
+                apiUrl = apiUrl + '&employees='+employees            
+            }
+            if(work_details_status>0){
+                apiUrl = apiUrl + '&work_details_status='+work_details_status            
+            }
+
+            $.ajax({
+                type: 'GET',
+                url: apiUrl,
+                headers: {
+                                "Authorization": "Bearer "+localStorage.getItem('acc_token'),                            
+                            },                
+                contentType: "application/json",
+                dataType:"json",            
+                success: function (response) {
+                    $('#sortingtable tbody').html('')
+
+
+                    let filtersData = response['result']['filtersData'];
+                    let paginatedData = response['result']['paginatedData'];
+                    let results = paginatedData['results'];
+                    
+                    if(is_filter){
+                        set_filters(filtersData);
+                    }
+                    
+                    // var oTable = $('#sortingtable').DataTable().destroy();
+                    $('#sortingtable').DataTable().clear().destroy()
+
+
+                    setTable(results);
+
+                    
+
+                    $('#sortingtable').DataTable(
+                        {
+                            destroy: true,
+                            responsive: true,
+                            pageLength: 10,
+                            paginate: false,
+                            info: false,
+                            order: [],
+                            // dom: 'Bfrtip',
+                            // buttons: [
+                            //     'copy', 'csv', 'excel', 'pdf'
+                            // ]
+                        }
+                    );
+
+                   
+                    if (paginatedData.previous) {
+                        $('.prev').removeClass('disabled')
+                        $('.prev').addClass('BtnActive')
+                        $('.prev').data('url', (paginatedData.previous).replace('api','qxbox/api').replace('http:','https:'))
+                    } else {
+                        $('.prev').addClass('disabled')
+                    }
+                    if (paginatedData.next) {
+                        $('.nxt').removeClass('disabled')
+                        $('.nxt').addClass('BtnActive')
+                        $('.nxt').data('url', (paginatedData.next).replace('api','qxbox/api').replace('http:','https:'))
+                    } else {
+                        $('.nxt').addClass('disabled')
+                    }
+
+
+                    $('.lastRecord').text(results.length)
+                    $('.totalRecord').text(paginatedData.count)
+                    $(".cpage").text(paginatedData.currentPage)
+
+
+                }
+            })
+
+        }
+
+
+
+        function download_employees_list(department,employees,work_details_status){
+            let apiUrl = "/qxbox/{% url 'manage-employees' %}" 
+            apiUrl = apiUrl + "?company_id="+ '{{request.session.cmp_id}}'                        
+            if (department.length>0){
+                apiUrl = apiUrl + '&departments='+department
+            }            
+            if(employees.length>0){
+                apiUrl = apiUrl + '&employees='+employees            
+            }
+            if(work_details_status>0){
+                apiUrl = apiUrl + '&work_details_status='+work_details_status            
+            }
+            apiUrl = apiUrl + '&download=true'
+
+
+            $.ajax({
+                type: 'GET',
+                url: apiUrl,
+                headers: {
+                                "Authorization": "Bearer "+localStorage.getItem('acc_token'),                            
+                            },                
+                            xhrFields: {
+                                responseType: 'blob' // Set the response type to blob
+                            },           
+                success: function (data, status, xhr) {
+                 
+                    const blob = new Blob([data], { type: 'application/ms-excel' })
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "report.xlsx";
+                    link.click();
+    }
+            })
+
+        }
+
+
+
+        $(document).ready(function() {
+            
+            get_employees_list(1,10,[],[],[],true,false)
+           
+            $("#selectall").click(function () {
+            var checkAll = $("#selectall").prop('checked');
+                if (checkAll) {
+                    $(".case").prop("checked", true);
+                } else {
+                    $(".case").prop("checked", false);
+                }
+            });
+
+        });
+    
+    </script>
+
+    <script>
+        $("#search_form").on('submit',function(e){
+            e.preventDefault()
+            let dept_id = [] 
+            if ($("#dept_id").val()){
+                dept_id.push($("#dept_id").val());
+            }
+            let emp_ids = []                       
+            if($('#employee_id').val()){
+                emp_ids.push($('#employee_id').val())
+            }
+            let emp_status = []
+            if($("#emp_status").val()){
+                emp_status.push($("#emp_status").val());
+            }
+            
+
+            get_employees_list(1,10,dept_id,emp_ids,emp_status,false,false)
+
+        })
+    </script>
+  
+
+    <script>
+        $(function() {
+            // initialize after multiselect
+            $('#basic-form').parsley();
+        });
+    </script>
+
+
+<script type="text/javascript" charset="utf-8">
+
+    function checked_values_list(){
+ 
+        var IDs = new Object();
+        var checkedValueArray = []; 
+        var inputElements = document.getElementsByClassName('case')
+
+        for(var i=0; inputElements[i]; ++i){
+            if(inputElements[i].checked){
+            checkedValueArray.push(inputElements[i].value);
+        }
+        }
+        IDs["emp_ids"]=checkedValueArray
+        return IDs;
+    } 
+    
+    
+    function Inactiveemployeesfunc() {
+        var emp_ids = checked_values_list();
+        var final_emp_ids=emp_ids['emp_ids']
+        var status = "False"
+
+        var raw_data ={"emp_ids": final_emp_ids,"status":status};
+        // console.log("raw_data", raw_data)
+
+            $.ajax({
+            type: 'POST',
+            url: "/qxbox/{% url 'employee_update_status' %}",
+            headers: {
+                            "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                        },
+                        contentType: "application/json",
+            dataType:"json",
+            data: JSON.stringify(raw_data),
+            success: function (response) {
+                myResponseStatus = true;
+                swal({   title:"Updated",
+                                type: "success",
+                                confirmButtonColor: "#007bff",
+                                confirmButtonText: "Ok",
+                                closeOnConfirm: true  },
+                                function(isConfirm){
+                                    window.location.replace("/qxbox/payroll/manage-employees/");
+                                });
+
+                                window.setTimeout(function () {
+                                    window.location.replace("/qxbox/payroll/manage-employees/");
+
+                                    }, 500);
+                
+            },error: function (response) {
+                console.log("error response is",response)
+            }
+        });
+        
+    }
+
+    function activeemployeesfunc() {
+        var emp_ids = checked_values_list();
+        var final_emp_ids=emp_ids['emp_ids']
+        var status = "True"
+
+        var raw_data ={"emp_ids": final_emp_ids,"status":status};
+        console.log("raw_data", JSON.stringify(raw_data))
+
+        $.ajax({
+            type: 'POST',
+            url: "/qxbox/{% url 'employee_update_status' %}",
+            headers: {
+                            "Authorization": "Bearer "+localStorage.getItem('acc_token'),
+                            
+                        },
+                        processData: false,
+            contentType: "application/json",
+            dataType:"json",
+            data:JSON.stringify(raw_data) ,
+            success: function (response) {
+                swal({   title:"Updated",
+                                type: "success",
+                                confirmButtonColor: "#007bff",
+                                confirmButtonText: "Ok",
+                                closeOnConfirm: true  },
+                                function(isConfirm){
+                                    window.location.replace("/qxbox/payroll/manage-employees/");
+                                });
+
+                                window.setTimeout(function () {
+                                    window.location.replace("/qxbox/payroll/manage-employees/");
+
+                                    }, 500);
+                
+            },
+            error: function (response) {
+                console.log("error response is",response)
+                
+            }
+        })
+        
+    }
+
+</script>
+
+<script>
+      
+      $('body').on('click','#download_records' ,function (e) {
+            e.preventDefault();
+            
+            let dept_id = [] 
+            if ($("#dept_id").val()){
+                dept_id.push($("#dept_id").val());
+            }
+            let emp_ids = []                       
+            if($('#employee_id').val()){
+                emp_ids.push($('#employee_id').val())
+            }
+            let emp_status = []
+            if($("#emp_status").val()){
+                emp_status.push($("#emp_status").val());
+            }          
+            download_employees_list(dept_id,emp_ids,emp_status)        
+        })
+        
+            var page_size = 10;
+
+    $('#NofEntriesSel').on('change', function() {
+        page_size = this.value 
+
+        let dept_id = [] 
+            if ($("#dept_id").val()){
+                dept_id.push($("#dept_id").val());
+            }
+            let emp_ids = []                       
+            if($('#employee_id').val()){
+                emp_ids.push($('#employee_id').val())
+            }
+            let emp_status = []
+            if($("#emp_status").val()){
+                emp_status.push($("#emp_status").val());
+            }   
+
+        get_employees_list(1,page_size,dept_id,emp_ids,emp_status,false,false)
+    });
+
+
+    $('body').on('click','.nav-btn' ,function (e) {
+        e.preventDefault();
+        let apiurl = $(this).data('url');    
+        let dept_id = [] 
+            if ($("#dept_id").val()){
+                dept_id.push($("#dept_id").val());
+            }
+            let emp_ids = []                       
+            if($('#employee_id').val()){
+                emp_ids.push($('#employee_id').val())
+            }
+            let emp_status = []
+            if($("#emp_status").val()){
+                emp_status.push($("#emp_status").val());
+            }   
+                
+        get_employees_list(1,page_size,dept_id,emp_ids,emp_status,false,apiurl)        
+    })
+</script>
+
+<script>
+    if(window.location.href.indexOf("/qxbox/payroll/active-employees/")) {
+        $("#employeeNavItem").addClass("active")
+    }
+</script>
+
+{% endblock %}

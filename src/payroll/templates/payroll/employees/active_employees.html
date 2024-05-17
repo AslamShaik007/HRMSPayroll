@@ -1,0 +1,476 @@
+{% extends 'payroll/base/base.html' %}
+
+
+{% block css %}
+<style>
+    .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    }
+
+    .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    }
+
+    .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+
+    .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+
+    .sliderchecked {
+    background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+    border-radius: 34px;
+    }
+
+    .slider.round:before {
+    border-radius: 50%;
+    }
+
+    div.dataTables_wrapper div.dataTables_length label {
+    color: #000 !important;
+    }
+    .prev{
+        float: initial !important;       
+    }
+    
+</style>
+{% endblock %}
+
+{% block main_content %}
+
+<div class="container-fluid">
+
+   {% include 'payroll/base/emp-block-header.html' with t1=True %}
+
+   <div class="block-header">
+    <div class="row clearfix">
+        <div class="col-md-6 col-sm-12">
+            <h1 class="ico_head"><i class="icon-users"></i> Active Employees</h1>
+        </div>
+    </div>
+</div>
+<div class="row clearfix">
+    <div class="col-lg-12">
+        <div class="card mb-3">
+            <div class="body shadow border-0">
+                <div class="row clearfix">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="card">
+                            <div class="row">
+                                <div class="col-lg-9">
+                                    <form name="search_form" id="search_form">
+                                        <div class="row">                                  
+                                            <div class="col-lg-3 col-md-3 col-sm-6">
+                                                <div class="form-group">
+                                                    <div class="multiselect_div">
+                                                        <select  name="dept_id" id="dept_id" class="form-control selectpicker w-100 dept_id">
+                                                            <option value="">All Departments</option>   
+                                                          
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-3 col-sm-6">
+                                                <div class="form-group">
+                                                    <div class="multiselect_div">
+                                                        <select class="form-control selectpicker w-100 emp_id" id="emp_id" name="employee_id"  data-live-search="true">                                                    
+                                                            <option value="">All Employees</option>  
+                                                                                                          
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-lg-3 col-md-3 col-sm-6">
+                                                <div class="form-group">
+                                                    <div class="multiselect_div">
+                                                        <select class="form-control selectpicker11 w-100 emp_id" id="emp_payroll" name="emp_payroll">                                                    
+                                                            <option selected value="True">Active</option>
+                                                            <option value="False">In Active</option>                                                   
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+        
+                                            <div class="col-lg-3 col-md-3 col-sm-6">
+                                                <button type="submit" class="btn addBtn btn-primary empbutton"><i class="fa fa-search mr-1"></i> Search</button>
+                                                <!-- <button onclick="window.location.href=window.location.href" class="btn addBtn btn-success"><i class="fa fa-refresh mr-1"></i> Refresh</button> -->
+                                               
+                                                <!-- <button onclick="" ><i class="fa fa-refresh mr-1"></i>Complete Leave/LOP</button> -->
+                                            </div>                                  
+                                        </div>
+                                    
+                                    </form>
+                                </div>
+                                <div class="col-lg-3 d-flex justify-content-end">
+                                    <!-- <form method="POST">{% csrf_token %}
+                                        <button type="submit" class="btn addBtn btn-success">Complete All LOPsss</button>
+                                    </form> -->
+                                </div>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="body shadow border_radius_10 bg-white border-0">
+                <div class="row clearfix">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <select class="form-control form-control NofEntriesShowSel" id="NofEntriesSel" name="NofEntriesSel" data-live-search="true">
+
+                            <option value="10" selected>10</option>
+                        
+                            <option value="25" >25</option>
+                        
+                            <option value="50" >50</option>
+                        
+                            <option value="100" >100</option>
+                        
+                            <option value="10000" >All</option>
+                        
+                        </select>         
+                        <div class="table-responsive pt-2">
+           
+
+                            <table class="display table table-hover table-custom spacing5 mb-0 no-footer" id="deptTable">
+                                <thead>
+                                    <tr>
+                                        <th>Sr. No</th>
+                                        <th>Emp. ID</th>
+                                        <th>Name</th>
+                                        <th>Org. Name</th>
+                                        <th>Department</th>
+                                        <th>Gross Per Month (Rs.)</th>
+                                        <th>Bank Details</th>
+                                        <th>Salary Details</th>
+                                        <!-- <th>TDS</th>-->
+                                        <th>LOP Setup</th>
+                                        <th>Payslips</th>
+                                        <!-- <th>Saving Declaration</th> -->
+                                    </tr>
+                                </thead>
+                                <tbody id="empTable">
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <div>Showing <span class="countRecord"></span> of <span class="totalRecord"></span> entries</div>                              
+                            </div>                            
+                            <div class="col-6 text-right">                             
+                                <div class="btnGroup">
+                                    <button type="button"
+                                        class="btn btn-secondary btn-sm nav-btn prev disabled" data-m="minus">Previous</button>
+                                    <button type="button" class="btn btn-sm cpage">1</button>
+                                    <button type="button"
+                                        class="btn btn-secondary btn-sm nav-btn nxt disabled" data-m="add">Next</button>
+                                </div>
+                            </div>
+                        </div>
+                    <!-- </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function() {
+        $(".selectpicker").select2();
+
+        $.ajax({
+                url: "/qxbox/{% url 'department_emps' %}",
+                type: "GET",
+                dataType: 'json',
+                headers: {
+                    "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                },
+                success: function(response) {
+                    // {
+                    //     "workDetails_DepartmentId": 75,
+                    //     "workDetails_Department_Name": "testr",
+                    //     "id": 729,
+                    //     "empName": "abhinesh  sai"
+                    // }
+                    let wid = []
+                    response.forEach(item => {
+                        if(!wid.includes(item['workDetails_DepartmentId'])){
+                            wid.push(item['workDetails_DepartmentId'])
+                            $('#dept_id').append("<option value='"+item['workDetails_DepartmentId']+"' >"+item['workDetails_Department_Name']+"</option>")
+                        }
+                        $('#emp_id').append("<option value='"+item['id']+"' >"+item['empName']+"</option>")
+
+
+                    });
+                }
+            })
+
+        
+        $("#runPayrollBtn").removeClass('addBtn')
+
+        function get_active_employees(page_size,empid,depid,apiurlset){
+            var apiurl = ""            
+            if (apiurlset){
+                apiurl = apiurlset
+            }else{
+                var apiurl = "/qxbox/api/payroll/active_employees/"+'{{request.session.cmp_id}}'
+                var emp_payroll = document.querySelector("#emp_payroll").value;
+                apiurl = apiurl + '/?limit='+ page_size +'&payroll-status='+emp_payroll
+
+                if(empid){
+                    apiurl = apiurl +'&emp_id='+empid
+                }
+                if(depid){
+                    apiurl = apiurl +'&dept_id='+depid
+                }                    
+            }
+           
+            $('#deptTable').DataTable().clear().destroy()
+
+            $.ajax({
+                url: apiurl,
+                type: "GET",
+                dataType: 'json',
+                headers: {
+                    "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                },
+                success: function(response) {
+                // alert(response);
+
+                    if (response && response != 0) {
+                        let data = response;        
+                        results = response['results'];
+                    
+                            $("#empTable").html('')
+
+                        for(var i=0;i<results.length;i++){                                                    
+
+                            let bank_badge = 'badge-danger'
+                            let salary_badge = 'badge-danger'
+                            let lop_badge = 'badge-danger'
+                            let payslip_badge = 'badge-danger'
+                            let dep_badge = 'badge-danger'
+                            let salId = "";
+                            let lopId = "";
+                            let lopStatus = "in-complete" ;  
+                            let department = "NA"
+                            var sal_url = "/qxbox/payroll/employee-salary-edit/"+results[i]['id']
+                            
+                            if(results[i]['salaryDetails']?.['id']){
+                                salId = results[i]['salaryDetails']['id'];
+                                salary_badge = 'badge-success'
+                                sal_url = "/qxbox/payroll/employee-salary/"+results[i]['id']
+                            }
+                            if(results[i]['lopSetup']['status']){
+                                lopId = results[i]['lopSetup']
+                                lopStatus = "complete"
+                                lop_badge = 'badge-success'
+                            }
+                            if (results[i]['bankDetails']?.['id']){
+                                bank_badge = 'badge-success'
+                            }
+                            
+                            if(results[i]['payslips']){
+                                payslip_badge = 'badge-success'
+                            }
+
+                            if((results[i]['department']?.['error'])){
+                                department = "NA"                            
+                            }else{
+                                department = results[i]['department']
+                                dep_badge = 'badge-success'
+                            }
+
+                            if((results[i]['grossPerMonth']?.['error'])){
+                                grossPerMonth = "NA"
+                            }else{
+                                grossPerMonth = parseInt(results[i]['grossPerMonth']).toLocaleString('en-IN')
+                            }
+
+                            
+
+                            $("#empTable").append(
+                                `
+                                <tr>
+                                        <td>`+(i+1)+`</td>
+                                        <td>`+results[i]['empNumber']+`</td>
+                                        <td>`+results[i]['firstName']+` `+results[i]['middleName']+` `+results[i]['lastName']+`</td>
+                                        <td>`+results[i]['companyName']+`</td>
+                                        <td><span class="badge `+dep_badge+`">`+department+`</span></td>
+                                        <td>`+grossPerMonth+`</td>
+
+                                        <td><a href="/qxbox/payroll/employee-bank-details/`+results[i]['id']+`"> <span class="badge `+bank_badge+`">`+results[i]['bankDetails']['status']+`</span></a></td>
+                                        <td><a href="`+sal_url+`">  <span class="badge `+salary_badge+`">`+results[i]['salaryDetails']['status']+`</span></a></td>
+                                        <td><a href="/qxbox/payroll/employee-lop-details/`+results[i]['id']+`"> <span class="badge `+lop_badge+`">`+lopStatus+`</span></a></td>
+                                        <td><a href="/qxbox/payroll/employee-payslips/`+results[i]['id']+`"> <span class="badge `+payslip_badge+`">`+results[i]['payslips']+`</span></a></td>
+                                    </tr>
+                                `
+                            )
+                        }                                
+                    
+                        $('#deptTable').DataTable(
+                        {
+                            responsive: true,
+                            pageLength: 10,
+                            paginate: false,
+                            ordering:false,
+                            order:[],
+                            info: false,
+                            order:[],
+                            dom: 'Bfrtip',
+                            buttons: [
+                                'copy', 'csv', 'excel', 'pdf'
+                            ]
+                        })
+
+                        if (data.previous) {
+                            $('.prev').removeClass('disabled')
+                            $('.prev').addClass('BtnActive')
+                            $('.prev').data('url', (data.previous).replace('api','qxbox/api').replace('http:','https:'))
+                        } else {
+                            $('.prev').addClass('disabled')
+                        }
+                        if (data.next) {
+                            $('.nxt').removeClass('disabled')
+                            $('.nxt').addClass('BtnActive')
+                            $('.nxt').data('url', (data.next).replace('api','qxbox/api').replace('http:','https:'))
+                        } else {
+                            $('.nxt').addClass('disabled')
+                        }
+                        $('.countRecord').text(results.length)
+                        $('.totalRecord').text(data.count)                        
+                    
+                    
+                    }
+            
+                },
+                error: function (xhr, status, e) {
+                    alert('Error');
+                }
+            });
+       
+        }
+
+        
+        get_active_employees(10,null,null,null);
+
+
+        var page_size = 10;
+
+        $('#NofEntriesSel').on('change', function() {
+            page_size = this.value 
+
+            var emp_id = $("#emp_id").val()
+            var dept_id = $("#dept_id").val()  
+
+            get_active_employees(page_size,emp_id,dept_id,false)
+        });
+
+        $("#search_form").submit(function(e){
+            e.preventDefault()
+            var emp_id = $("#emp_id").val()
+            var dept_id = $("#dept_id").val()                        
+
+            get_active_employees(page_size,emp_id,dept_id,null)
+
+        })
+    var page_no = 1;
+    $('body').on('click','.nav-btn' ,function (e) {
+        e.preventDefault();
+        let apiurl = $(this).data('url');                
+        var emp_id = $("#emp_id").val()
+        var dept_id = $("#dept_id").val()   
+
+        if($(this).data('m') == "add"){
+            page_no = page_no + 1;
+            $('.cpage').text(page_no)
+        }
+        if($(this).data('m') == "minus"){
+            page_no = page_no - 1;
+            $('.cpage').text(page_no)
+        }
+
+        get_active_employees(page_size,emp_id,dept_id,apiurl);        
+    })
+        
+
+    });
+</script>
+
+<script>
+    if(window.location.href.indexOf("/qxbox/payroll/active-employees/")) {
+        $("#employeeNavItem").addClass("active")
+    }
+</script>
+
+
+<!-- <script>
+    $(document).on( "ajaxSend", function() {
+      $("#AjaxCallOverlay").fadeIn(300);
+    });
+    let myResponseStatus = true;
+
+    
+    if(myResponseStatus == true) {
+        setTimeout(function(){
+            $("#AjaxCallOverlay").fadeOut('slow');
+        },2000);
+    }else {
+        console.log("failed msg")
+        setTimeout(function(){
+            $("#AjaxCallOverlay").fadeOut('slow');
+        },2000);
+    }
+
+  </script> -->
+
+ 
+
+{% endblock %}

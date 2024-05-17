@@ -1,0 +1,288 @@
+{% extends 'payroll/base/base.html' %}
+
+{% block css %}
+
+    <style>
+        td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        }
+
+        .parsley-errors {
+            color: rgb(225, 88, 88);
+            font-size: 0.9em;
+            margin-top: 3px;
+        }
+
+        #menuBtn:active {
+            border: 2px solid #30239f;
+        }
+        #menuBtn:visited {
+            border: 2px solid #30239f;
+        }
+
+        #menuBtn:focus {
+            border: 2px solid #30239f;
+            outline: 1px dotted !important;
+        }
+
+    </style>
+
+    <style>
+        .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+        }
+
+        .switch input { 
+        opacity: 0;
+        width: 0;
+        height: 0;
+        }
+
+        .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+        }
+
+        .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+        }
+
+        .sliderchecked {
+        background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+        border-radius: 34px;
+        }
+
+        .slider.round:before {
+        border-radius: 50%;
+        }
+
+        #ot-upload-form {
+            display: none;
+        }
+    </style>
+
+    {% endblock %}
+
+    {% block main_content %}
+    
+    <div class="container-fluid">
+    
+        {% include 'payroll/base/emp-block-header.html' with t4=True %}
+                <div class="block-header">
+                    <div class="row clearfix">
+                        <div class="col-md-6 col-sm-12">
+                            <h1 class="ico_head"><i class="icon-users"></i> Export/Import Overtime</h1>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row clearfix"> 
+                    <div class="col-lg-10 mx-auto">
+                        <div class="card">
+                            <div class="body shadow border-0 p-4 mb-3">
+                                <div class="row clearfix">
+                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                        <div class="card"> 
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12 col-sm-12" id="exportDataContainer">
+                                                    <div class="form-group text-center">
+                                                        <button  class="btn btn-success exportdata addBtn" id="exportDataBtn">
+                                                            <i class="fa fa-upload mr-1" aria-hidden="true"></i> Export</button>
+                                                    </div>
+                                                    <div class="exportDataText font-16 text-center">In order to import Overtime for the current month, Please export the current month employee's details and then import the data with same file.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <form class="form-horizontal add-form w-100" id="ot-upload-form"  name="upload_excel" enctype="multipart/form-data">
+                                                    <div class="col-lg-12">
+                                                        <div class="row mt-5">
+                                                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                                                <div class="form-group">
+                                                                    <div class="input-group">
+                                                                        <input type="file" name="file" id="file" class="input-large d-block" accept=".xlsx"  style="z-index: 2; background: #fff; width: 400px; margin-top: 4px; margin-left: 4px;" />
+                                                                        <label class="custom-file-label d-block font-16" for="file" aria-describedby="inputGroupFile">Choose file</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-sm-2">
+                                                                <div class="form-group text-center">
+                                                                    <button type="submit" id="submit" name="Import" class="btn btn-primary button-loading addBtn" data-loading-text="Loading...">Submit</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          \
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+{% endblock %}
+
+    {% block js %}
+
+    <script>
+        $(document).ready(function() {
+            $(".exportdata").click(function() {                         
+
+                $.ajax({
+                        type: "GET",
+                        url: "/qxbox/{% url 'ot-report' %}",
+                        xhrFields: {
+                            responseType: 'blob' // Set the response type to blob
+                        }, 
+                        headers: {
+                            "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                        },
+                        data: {"download": true,"company_id":'{{request.session.cmp_id}}'},                        
+                        success: function (data, status, xhr) {
+
+                            const blob = new Blob([data], { type: 'application/ms-excel' })
+                            var link = document.createElement('a');
+                            link.href = window.URL.createObjectURL(blob);
+                            link.download = "ot_report.xlsx";
+                            link.click();
+                               
+                        },
+                        error:function(xhr, status, e) {
+                            
+                            swal({   
+                                title: 'Error' + e + xhr +status,
+                                type: "info",
+                                showCancelButton: false,
+                                confirmButtonColor: "#007bff",
+                                confirmButtonText: "Ok",
+                                closeOnConfirm: false,
+                                closeOnCancel: true 
+                            });
+                        }
+                });
+            
+            });
+        
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function (e) {
+            $("#ot-upload-form").on('submit',(function(e) {
+                var file = $('#file').val();
+                //alert(file);
+                if ($('#file').val() == '')
+                {
+                    swal("Please Attach File");
+                    return false;
+                }
+                e.preventDefault();
+
+                formdata = new FormData(this)
+                formdata.append("type","upload")
+                $.ajax({
+                    type: "POST",
+                    url: "/qxbox/{% url 'ot-report' %}",
+                    headers: {
+                        "Authorization": "Bearer "+localStorage.getItem('acc_token')
+                    },                        
+                    data:  formdata,
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    success: function(data)
+                    {
+                        //$("#targetLayer").html(data);
+                        // alert(data);
+                        swal({   
+                            title: "File Uploaded",
+                            type: "success",
+                            showCancelButton: false,
+                            confirmButtonColor: "#007bff",
+                            confirmButtonText: "Okay",
+                            closeOnConfirm: false,
+                            closeOnCancel: true 
+                        });
+                        $(".confirm").on('click',function(){
+                            window.location.replace('/payroll/import-overtime-employees/');
+                        });                        
+                    },
+                    error: function(data)
+                    {
+                        swal("file not uploaded successfully")
+                        console.log(data);
+                    }
+            });
+            }));
+        });
+    </script>
+    <script>
+        $('INPUT[type="file"]').change(function () {
+        var ext = this.value.match(/\.(.+)$/)[1];
+        switch (ext) {
+            case 'xlsx':            
+            
+                //$('#uploadButton').attr('disabled', false);
+                break;
+            default:
+                swal('This is not an allowed file type.');
+                this.value = '';
+            }
+        });
+
+        // New Script added starting here
+        $("#exportDataBtn").click(function() {
+            $("#exportDataContainer").css("display", "none");
+            $("#ot-upload-form").css("display", "block");
+        })
+
+        // New Script ending here
+
+    </script> 
+
+<script>
+    if(window.location.href.indexOf("/qxbox/payroll/active-employees/")) {
+        $("#employeeNavItem").addClass("active")
+    }
+</script>
+
+{% endblock %}

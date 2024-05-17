@@ -1,0 +1,567 @@
+
+{% extends 'payroll/base/base.html' %}
+{% load static %}
+
+{% block css %}
+
+    <style>
+        table.dataTable th,
+        table.dataTable td {
+            white-space: nowrap;
+        }
+        td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url('./assets/images/details_open.png') no-repeat center center;
+        }
+
+        .parsley-errors {
+            color: rgb(225, 88, 88);
+            font-size: 0.9em;
+            margin-top: 3px;
+        }
+    </style>
+    
+    <style>
+        #menuBtn:active {
+            border: 2px solid #30239f;
+        }
+        #menuBtn:visited {
+            border: 2px solid #30239f;
+        }
+
+        #menuBtn:focus {
+            border: 2px solid #30239f;
+            outline: 1px dotted !important;
+        }
+    </style>
+<style>
+    .select2-container .select2-selection--single {
+        height: 34px;
+        padding-top: 3px;
+    }
+</style>
+<style type="text/css">
+    .has-search .form-control-feedback {
+        position: absolute;
+        z-index: 2;
+        display: block;
+        width: 2.375rem;
+        height: 2.375rem;
+        line-height: 2.075rem;
+        right: 15px;
+        text-align: center;
+        cursor: pointer;
+        color: #aaa;
+    }
+
+   
+</style>
+
+<style>
+    td.details-control {
+        background: url('./assets/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+
+    tr.shown td.details-control {
+        background: url('./assets/images/details_open.png') no-repeat center center;
+    }
+
+    .parsley-errors {
+        color: rgb(225, 88, 88);
+        font-size: 0.9em;
+        margin-top: 3px;
+    }
+
+    #main-content {
+        margin-top: 1.5rem !important;
+    }
+
+    .BtnActive {
+        background-color: #187ebe;
+        border: 2px solid #187ebe;
+        color: white;
+        font-weight: 500;
+    }   
+    .prev{
+        float: initial !important;       
+    }
+</style>
+
+
+{% endblock %}
+
+{% block main_content %}
+
+        <div class="container-fluid">
+
+            <div class="block-header">
+                <div class="row clearfix">
+                    <div class="col-md-6 col-sm-12">
+                        <h1 class="ico_head"><i class="fa fa-bar-chart" aria-hidden="true"></i> <b>Audit Report</b></h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col-lg-12">
+                    <div class="card">
+
+                        <div class="body shadow mb-3 border-0 pt-0">
+                            <div class="tab-content">
+                
+                                <form name="search_form" id="search_form" method="GET" action="">
+                                    <div class="row">                                                                               
+                                        <div class="col-lg-3 col-md-3 col-sm-6">
+                                            <div class="form-group">
+                                                <div class="multiselect_div">
+                                                    <label class="formFieldLabel font-16">Employee</label>
+                                                    <select class="form-control selectpicker w-100 form-control emp_id"  id="employee_id" data-live-search="true">                                                        
+                                                        <option value="" selected>All</option>                                                        
+                                                  
+                                                        
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-sm-6">
+                                            <div class="form-group">
+                                                <div class="multiselect_div">
+                                                    <label class="formFieldLabel font-16">Module</label>
+                                                    <select class="form-control  form-select" aria-label="AuditReportModuleFilter" name="AuditReportModuleFilter" id="AuditReportModuleFilter">
+                                                        <option value="">-- Select Module Filter --</option>
+                                                        <!-- <option value="api/company/">Company Profile</option> -->
+                                                        <option value="api/directory">Employee Management</option>
+                                                        <option value="api/investment_declaration/">Saving Declaration</option>
+                                                        <!-- <option value="api/leave/">Leave Management</option>                                                         -->
+                                                        <option value="api/payroll/">Payroll</option>                                                                                                                
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-sm-6">
+                                            <div class="form-group">
+                                                <div class="multiselect_div">
+                                                    <label class="formFieldLabel font-16">From Date</label>
+                                                    <input type="text" id="from_date" class="form-control errorbox" placeholder="yyyy-mm-dd" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-sm-6">
+                                            <div class="form-group">
+                                                <div class="multiselect_div">
+                                                    <label class="formFieldLabel font-16">To Date</label>
+                                                    <input type="text" id="to_date" class="form-control errorbox" placeholder="yyyy-mm-dd" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="w-auto ml-2">
+                                            <button type="submit"
+                                                class="btn btn-primary empbutton addBtn" ><i
+                                                    class="fa fa-search mr-1"></i> Search</button>
+                                        </div>
+                                        <div class="w-auto ml-2">
+                                            <button onclick="window.location.href=window.location.href" class="btn btn-success addBtn"><i
+                                                    class="fa fa-refresh mr-1"></i> Refresh</button>
+                                        </div>  
+                                        <div class="w-auto ml-2">
+                                            <button id="download_records" class="btn btn btn-info addBtn"
+                                                title=""><i class="fa fa-download"></i> Download</a>
+                                        </div>  
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- next -->
+                        
+                        <div class="body top_sp shadow pt-2 border-0" id="summary_id">
+                            <div class="tab-content">
+                                <div class="tab-pane show active" id="e_employees">
+                                    <select class="form-control form-control NofEntriesShowSel" id="NofEntriesSel" name="NofEntriesSel" data-live-search="true">
+        
+                                        <option value="10" selected>10</option>
+                                    
+                                        <option value="25" >25</option>
+                                    
+                                        <option value="50" >50</option>
+                                    
+                                        <option value="100" >100</option>
+                                    
+                                        <option value="10000" >All</option>
+                                    
+                                    </select>      
+                                    <div class="table-responsive">
+        
+                                            <table class="display table table-hover table-custom spacing5 mb-0" id="sortingtable">
+        
+                                        <thead>
+                                            <tr>
+                                                <th>S. NO</th>
+                                                <th>Date</th>
+                                                <th>Host By</th>
+                                                <th>Field</th>
+                                                <th>Action</th>
+                                                <th>Changed Data At</th>                                                
+                                                <th>Old Data</th>
+                                                <th>New Data</th>                                                 
+                                            </tr>	
+                                        </thead>
+                                        <tbody>	
+                                          
+                                        </tbody>							               
+                                    </table>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-6">
+                                        <div>Showing <span class="currentRecord"><span class="lastRecord"></span> of
+                                                <span class="totalRecord"></span> entries</div>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <div class="btnGroup">
+                                            <button type="button"
+                                                class="btn btn-secondary btn-sm nav-btn prev disabled">Previous</button>
+                                            <button type="button" class="btn btn-sm cpage"></button>
+                                            <button type="button"
+                                                class="btn btn-secondary btn-sm nav-btn nxt disabled">Next</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- next end -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+
+
+<script>
+    function set_employee_filter(){        
+    
+        let apiUrl = "/qxbox/{% url 'active_employees' %}"            
+        apiUrl = apiUrl + '?company_id='+'{{request.session.cmp_id}}'
+
+        $.ajax({
+            type: 'GET',
+            url: apiUrl,
+            headers: {
+                            "Authorization": "Bearer "+localStorage.getItem('acc_token'),                            
+                        },                
+            contentType: "application/json",
+            dataType:"json",            
+            success: function (response) {   
+                let data = response.data;
+                data.forEach(function(item) {                                    
+                    $('#employee_id').append("<option value='"+item['employeeName']+"' >"+item['employeeName']+"</option>")                
+                })
+
+            }
+        })
+
+    }
+
+
+    function setTable(results){            
+             
+             var rescounter = 0;
+             results.forEach(function(item) {
+                 rescounter ++;
+                 $('#sortingtable tbody').append(
+                     `
+                     <tr>                                            
+                         <td>`+rescounter+`</td>    
+                         <td>`+item.createdAt_Date+`</td>    
+                                              
+                         <td>`+item.userName+`</td>
+                         <td>`+item.moduleName+`</td>
+                         <td>`+item.action+`</td>
+ 
+                         <td>`+item.changedDataAt+`</td>
+                         <td>`+item.oldData+`</td>
+                         <td>`+item.payload+`</td>                                       
+                     </tr> 
+                     `
+                 )
+             });
+         
+         }
+
+         
+    function get_report_data(page,page_size,employee_name,module_name,from_date,to_date,apiurl){        
+    
+        let apiUrl = "/qxbox/{% url 'v2_logging_records' %}" 
+       
+        if (apiurl){
+            apiUrl = apiurl
+        }else{          
+            apiUrl = apiUrl + '?page='+ page
+            apiUrl = apiUrl + '&page_size='+ page_size   
+            apiUrl = apiUrl + '&from_date='+from_date
+            apiUrl = apiUrl + '&to_date='+to_date
+        }     
+        if(employee_name){
+            apiUrl = apiUrl + '&employee_name='+ employee_name   
+        }
+        if(module_name){
+            apiUrl = apiUrl + '&module_name='+ module_name   
+        }
+
+        $.ajax({
+            type: 'GET',
+            url: apiUrl,
+            headers: {
+                            "Authorization": "Bearer "+localStorage.getItem('acc_token'),                            
+                        },                
+            contentType: "application/json",
+            dataType:"json",            
+            success: function (response) {
+                $('#sortingtable tbody').html('')
+    
+    
+                
+                let results = response['result']['results'];
+                
+                $('#sortingtable').DataTable().clear().destroy()
+    
+    
+                setTable(results);
+    
+                
+    
+                $('#sortingtable').DataTable(
+                    {
+                        destroy: true,
+                        responsive: true,
+                        pageLength: 10,
+                        paginate: false,
+                        info: false,
+                        order: [],
+                        // dom: 'Bfrtip',
+                        // buttons: [
+                        //     'copy', 'csv', 'excel', 'pdf'
+                        // ]
+                    }
+                );
+    
+                if (response['result'].previous) {
+                    $('.prev').removeClass('disabled')
+                    $('.prev').addClass('BtnActive')
+                    $('.prev').data('url', response['result'].previous)
+                } else {
+                    $('.prev').addClass('disabled')
+                }
+                if (response['result'].next) {
+                    $('.nxt').removeClass('disabled')
+                    $('.nxt').addClass('BtnActive')
+                    $('.nxt').data('url', response['result'].next)
+                } else {
+                    $('.nxt').addClass('disabled')
+                }
+    
+                $('.lastRecord').text(response['result']['results'].length)
+                $('.totalRecord').text(response['result'].count)
+                $(".cpage").text(response['result'].currentPage)
+    
+    
+            }
+        }).done(function() {
+            
+            if(myResponseStatus == true) {
+                // setTimeout(function(){
+                    $("#AjaxCallOverlay").fadeOut('slow');
+                // },500);
+            } else {                    
+                setTimeout(function(){
+                    $("#AjaxCallOverlay").fadeOut('slow');
+                },3000);
+            }
+            
+        }).fail(function (xhr, status, e) {                 
+            swal({   
+                title: "Error",
+                type: "info",
+                showCancelButton: false,
+                confirmButtonColor: "#007bff",
+                confirmButtonText: "Ok",
+                closeOnConfirm: false,
+                closeOnCancel: true 
+            });
+             setTimeout(function(){
+                    $("#AjaxCallOverlay").fadeOut('slow');
+                },3000);                
+        }); 
+    
+    }
+    
+    function download_employees_list(employee_name,module_name,from_date,to_date){        
+        
+        let apiUrl = "/qxbox/{% url 'v2_logging_records' %}" 
+        
+        apiUrl = apiUrl + '&from_date='+from_date
+        apiUrl = apiUrl + '&to_date='+to_date
+
+        if(employee_name){
+            apiUrl = apiUrl + '&employee_name='+ employee_name   
+        }
+        if(module_name){
+            apiUrl = apiUrl + '&module_name='+ module_name   
+        }
+        apiUrl = apiUrl + '&download=true'
+
+        $.ajax({
+            type: 'GET',
+            url: apiUrl,
+            xhrFields: {
+                            responseType: 'blob' // Set the response type to blob
+                        }, 
+            headers: {
+                            "Authorization": "Bearer "+localStorage.getItem('acc_token'),                            
+                        },                                        
+            success: function (data, status, xhr) {
+                const blob = new Blob([data], { type: 'application/ms-excel' })
+                            var link = document.createElement('a');
+                            link.href = window.URL.createObjectURL(blob);
+                            link.download = "Audit_Report.xlsx";
+                            link.click();
+
+            }
+        }).done(function() {
+                
+                if(myResponseStatus == true) {
+                    // setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    // },500);
+                } else {                    
+                    setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);
+                }
+                
+            }).fail(function (xhr, status, e) {                 
+                swal({   
+                    title: "Error",
+                    type: "info",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "Ok",
+                    closeOnConfirm: false,
+                    closeOnCancel: true 
+                });
+                setTimeout(function(){
+                        $("#AjaxCallOverlay").fadeOut('slow');
+                    },3000);                
+            }); 
+
+    }
+
+
+    </script>
+    
+    
+    <script>
+        $(document).ready(function(){
+
+            
+            set_employee_filter()
+
+            $('#from_date').datepicker({
+                format: "yyyy-mm-dd",
+                endDate: new Date()
+            });
+            $('#to_date').datepicker({
+                format: "yyyy-mm-dd",
+                endDate: new Date()
+            });
+
+            var d = new Date();
+            idate = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate()
+
+            document.querySelector("#from_date").value = idate
+            document.querySelector("#to_date").value = idate
+
+            get_report_data(1,10,"","",idate,idate,false)
+        })
+    </script>
+    
+
+    <script>
+
+        var page_size = 10;
+    
+        $('#NofEntriesSel').on('change', function() {
+            page_size = this.value 
+    
+            let from_date = $("#from_date").val();
+            let to_date = $("#to_date").val();
+            let module_name = $("#AuditReportModuleFilter").val();
+            let employee_name = $("employee_id").val();
+    
+            get_report_data(1,page_size,employee_name,module_name,from_date,to_date,false)
+        });
+    
+        $("#search_form").on('submit',function(e){
+            e.preventDefault()
+    
+            let from_date = $("#from_date").val();
+            let to_date = $("#to_date").val();
+            let module_name = $("#AuditReportModuleFilter").val();
+            let employee_name = $("employee_id").val();
+    
+            get_report_data(1,page_size,employee_name,module_name,from_date,to_date,false)
+    
+        })
+    </script>
+
+
+<script>
+        
+        $('body').on('click','#download_records' ,function (e) {
+            e.preventDefault();
+            
+            let from_date = $("#from_date").val();
+            let to_date = $("#to_date").val();
+            let module_name = $("#AuditReportModuleFilter").val();
+            let employee_name = $("employee_id").val();
+                
+            download_employees_list(employee_name,module_name,from_date,to_date)        
+        })
+        
+
+    $('body').on('click','.nav-btn' ,function (e) {
+        e.preventDefault();
+        let apiurl = $(this).data('url');    
+        let from_date = $("#from_date").val();
+        let to_date = $("#to_date").val();
+        let module_name = $("#AuditReportModuleFilter").val();
+        let employee_name = $("employee_id").val();
+
+        get_report_data(1,page_size,employee_name,module_name,from_date,to_date,apiurl)
+    
+    })
+
+    if(window.location.href.indexOf("/qxbox/payroll/reports/")) {
+            console.log("success")
+            $("#MainMenu").addClass("active")
+        } else {
+            console.log("failed")
+        }
+</script>
+
+
+<script>
+    $(document).on( "ajaxSend", function() {
+      $("#AjaxCallOverlay").fadeIn(300);
+    });
+    let myResponseStatus = true;
+
+  </script>
+
+
+{% endblock %}
